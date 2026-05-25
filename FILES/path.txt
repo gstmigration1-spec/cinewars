@@ -1,2 +1,0 @@
-cd C:\Users\EVO\Desktop\cinewars
-npm run dev

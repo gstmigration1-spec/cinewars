@@ -696,8 +696,7 @@ export default function CineWarsHomepage() {
                   </div>
                    <Link
   href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-  className="flex items-center justify-center gap-2 py
-  -2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
+  className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
   View Debate <ArrowRight className="w-3.5 h-3.5" />
 </Link>
                   {/* Voting Elements */}
