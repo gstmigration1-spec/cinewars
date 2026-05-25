@@ -64,8 +64,8 @@ const mockMovies = [
   {
     id: "cw-3",
 title: "Ramayana",
-poster: "/posters/ramayana.png",
-backdrop: "/posters/ramayana.png",
+poster: "/posters/Ramayana.png",
+backdrop: "/posters/Ramayana.png",
 releaseDate: "Diwali 2026",
 genre: "Mythological Epic",
 synopsis: "An ambitious large-scale cinematic retelling of the Ramayana with war, emotion, and mythology at massive scale.",
