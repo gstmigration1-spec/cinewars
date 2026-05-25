@@ -633,12 +633,11 @@ export default function CineWarsHomepage() {
             {mockMovies.map((movie) => (
               <div key={movie.id} className="glass-card rounded-2xl overflow-hidden border border-[#1f2c3d] bg-neutral-950 flex flex-col h-full group shadow-xl transition-all duration-500 hover:border-sky-400/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(56,189,248,0.10)]">
                 {/* Backdrop Layer */}
-                <div className="relative h-72 w-full bg-[#1c110f] overflow-hidden shrink-0">
+                <div className="relative min-h-[320px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
                   <img
   src={movie.backdrop}
   alt={movie.title}
-  className="object-contain w-full h-full opacity-20 group-hover:opacity-30 group-hover:scale-105 transition-all duration-700 ease-out"
-/>
+  className="object-contain w-full h-full max-h-[300px] md:max-h-full transition-all duration-700 ease-out"/>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/65 via-[#050303]/20 to-transparent" />
                   
                   <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2d1b18] flex items-center gap-1.5 shadow-md">
@@ -685,10 +684,7 @@ export default function CineWarsHomepage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 bg-[#0a0605]/40 p-4 rounded-xl text-center font-mono relative overflow-hidden"><div className="absolute top-2 right-3 flex items-center gap-1 text-[9px] text-sky-400 font-semibold">
-  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-  LIVE
-</div>
+                  <div className="grid grid-cols-2 gap-4 bg-[#0a0605]/40 p-4 rounded-xl text-center font-mono relative overflow-hidden">
                     <div className="border-r border-[#2d1b18]">
                       <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-0.5 font-bold">Expected Opening</span>
                       <span className="text-base font-black text-white">{movie.expectedOpening}</span>
@@ -700,7 +696,8 @@ export default function CineWarsHomepage() {
                   </div>
                    <Link
   href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-  className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
+  className="flex items-center justify-center gap-2 py
+  -2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
   View Debate <ArrowRight className="w-3.5 h-3.5" />
 </Link>
                   {/* Voting Elements */}
