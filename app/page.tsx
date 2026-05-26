@@ -1,4 +1,5 @@
 "use client";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -314,9 +315,26 @@ useEffect(() => {
     return () => clearInterval(interval);
   }, []);
 
-  const handlePulseVote = (movieId: string, option: string) => {
-    setPredictionPulse(prev => ({ ...prev, [movieId]: option }));
-  };
+const handlePulseVote = async (movieId: string, option: string) => {
+  setPredictionPulse(prev => ({
+    ...prev,
+    [movieId]: option
+  }));
+
+  const sessionId =
+    localStorage.getItem("cinewars_session") ||
+    crypto.randomUUID();
+
+  localStorage.setItem("cinewars_session", sessionId);
+
+  await supabase.from("movie_votes").insert([
+    {
+      movie_id: movieId,
+      vote_type: option,
+      session_id: sessionId,
+    },
+  ]);
+};
 
   // 5. REVENUE BADGE DECORATOR FUNCTION FOR BALANCED HUES
   const getBadgeStyle = (type: string) => {
