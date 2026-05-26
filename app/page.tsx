@@ -375,7 +375,7 @@ export default function CineWarsHomepage() {
           <div className="hidden md:flex items-center space-x-2 text-xs font-black uppercase tracking-wider text-neutral-400">
             {[
               { label: "Predictions", href: "#trending" },
-              { label: "Rankings", href: "#leaderboard" },
+              { label: "Rankings", href: "/leaderboard" },
               { label: "Debates", href: "/debates" }
             ].map((item, idx) => (
               <a 
@@ -678,7 +678,13 @@ export default function CineWarsHomepage() {
                         whileInView={{ width: `${movie.hypeScore}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 1.2, ease: "easeOut" }}
-                        className="h-full bg-gradient-to-r from-[#e63917] via-[#f97316] to-[#f5a60b] rounded-full shadow-[0_0_15px_rgba(249,115,22,0.6)] relative overflow-hidden"
+                        className={`h-full rounded-full relative overflow-hidden ${
+  movie.hypeScore < 50
+    ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500 shadow-[0_0_30px_rgba(239,68,68,0.95)]"
+    : movie.hypeScore < 75
+    ? "bg-gradient-to-r from-yellow-500 via-amber-400 to-orange-400 shadow-[0_0_30px_rgba(251,191,36,0.95)]"
+    : "bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 shadow-[0_0_30px_rgba(56,189,248,0.95)]"
+}`}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
                       </motion.div>
@@ -712,7 +718,11 @@ export default function CineWarsHomepage() {
                             onClick={() => handlePulseVote(movie.id, opt)}
                             className={`py-2 px-1 rounded-lg text-[9px] font-black uppercase tracking-wider text-center border transition ${
                               isSelected
-                                ? "bg-gradient-to-r from-[#e63917] to-[#f97316] border-transparent text-white shadow-[0_0_15px_rgba(249,115,22,0.25)] font-bold"
+                                ? opt === "Will Flop"
+  ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500 text-white border-transparent shadow-[0_0_22px_rgba(239,68,68,0.75)] font-bold"
+  : opt === "Meet Expectations"
+  ? "bg-gradient-to-r from-yellow-500 via-amber-400 to-orange-400 text-black border-transparent shadow-[0_0_22px_rgba(251,191,36,0.7)] font-bold"
+  : "bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 text-white border-transparent shadow-[0_0_22px_rgba(56,189,248,0.7)] font-bold"
                                 : "bg-neutral-950 border-[#2d1b18] text-neutral-500 hover:text-neutral-300 hover:border-neutral-700"
                             }`}
                           >
@@ -957,66 +967,7 @@ export default function CineWarsHomepage() {
         {/* DEBATE INTERACTIVE DISCUSSION AREA */}
         
         {/* GLOBAL STANDINGS */}
-        <section id="leaderboard" className="space-y-6">
-          <div className="flex justify-between items-end">
-            <div>
-              <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
-                🏆 Global Box Office Accuracy Rankings
-              </h2>
-              <p className="text-xs text-neutral-500 font-medium">Verified leaderboard tracking structural projection accuracy records over time.</p>
-            </div>
-            <button className="hidden sm:flex items-center gap-1 text-xs font-black uppercase tracking-wider text-orange-400 hover:text-orange-300 transition font-bold">
-              View All Standings <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="glass-card rounded-2xl border border-[#2d1b18] overflow-hidden shadow-2xl">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-neutral-950 border-b border-[#2d1b18] text-[10px] font-black uppercase tracking-widest text-neutral-500 font-bold">
-                    <th className="p-4 text-center w-16">Rank</th>
-                    <th className="p-4">Verified Forecaster</th>
-                    <th className="p-4">Calibration Milestone</th>
-                    <th className="p-4 text-right">Box Office Accuracy Index</th>
-                    <th className="p-4 text-right">Prediction Trust Score</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#2d1b18] text-xs font-medium text-neutral-300">
-                  {mockLeaderboard.map((user) => (
-                    <tr key={user.rank} className="hover:bg-neutral-900/20 transition-colors">
-                      <td className="p-4 text-center font-black">
-                        {user.rank === 1 ? (
-                          <span className="bg-amber-500/10 border border-amber-500/30 rounded-full px-2 py-0.5 text-amber-400 text-[10px]">#1</span>
-                        ) : user.rank === 2 ? (
-                          <span className="bg-slate-400/10 border border-slate-400/30 rounded-full px-2 py-0.5 text-slate-300 text-[10px]">#2</span>
-                        ) : (
-                          `#${user.rank}`
-                        )}
-                      </td>
-                      <td className="p-4 font-bold text-white flex items-center space-x-2">
-                        <span className="text-lg">{user.avatar}</span>
-                        <span>@{<Link href={`/user/${user.username.toLowerCase()}`}>
-  @{user.username}
-</Link>}</span>
-                      </td>
-                      <td className="p-4">
-                        <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border ${getBadgeStyle(user.badgeType)}`}>
-                          {user.badge}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right font-black text-emerald-400 font-mono text-sm">
-                        {user.accuracy}%
-                        {user.streak > 5 && <Zap className="inline w-3 h-3 text-orange-500 fill-orange-500 ml-1" />}
-                      </td>
-                      <td className="p-4 text-right font-black text-white font-mono tracking-wide">{user.trustScore}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
+       
 
         {/* AI CINE ANALYST HUB */}
         <section id="ai-analyst" className="glass-card rounded-3xl border border-red-500/10 p-6 md:p-10 relative overflow-hidden bg-gradient-to-tr from-[#0b0807] via-[#1c1210]/30 to-black shadow-2xl">
@@ -1090,7 +1041,7 @@ export default function CineWarsHomepage() {
       <span className="text-[10px] font-bold uppercase">Pulse</span>
     </a>
 
-    <a href="#leaderboard" className="flex flex-col items-center text-neutral-300">
+    <a href="/leaderboard" className="flex flex-col items-center text-neutral-300">
       <Trophy className="w-5 h-5" />
       <span className="text-[10px] font-bold uppercase">Ranks</span>
     </a>
