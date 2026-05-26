@@ -20,7 +20,9 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-neutral-900 bg-neutral-950/70 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full border-b border-neutral-900 bg-neutral-950/70 backdrop-blur-md"><div className="fixed top-0 left-0 z-[99999] bg-red-500 text-white text-xl p-4">
+  TEST NAV
+</div>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           
@@ -69,13 +71,17 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="flex md:hidden">
+          <div className="flex md:hidden min-h-[48px] items-center">
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center rounded-xl p-2.5 text-neutral-400 bg-neutral-900/50 border border-neutral-800/80 hover:text-white focus:outline-none"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+  onClick={() => setIsOpen(!isOpen)}
+  className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-orange-500 bg-black text-white shadow-[0_0_15px_rgba(249,115,22,0.35)]"
+>
+  {isOpen ? (
+    <X className="h-7 w-7 text-white" />
+  ) : (
+    <Menu className="h-7 w-7 text-white" />
+  )}
+</button>
           </div>
         </div>
       </div>

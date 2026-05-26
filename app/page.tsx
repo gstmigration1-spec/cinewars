@@ -1081,7 +1081,7 @@ export default function CineWarsHomepage() {
       </footer>
 
       {/* MOBILE INTERACTION NAVIGATION */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 glass-card bg-[#050303]/95 backdrop-blur-xl border-t border-neutral-900 py-2.5 px-6 flex justify-between items-center md:hidden rounded-t-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-neutral-700 backdrop-blur-xl border-t border-neutral-900 py-2.5 px-6 flex justify-between items-center md:hidden rounded-t-2xl">
         <a href="#" className="flex flex-col items-center justify-center space-y-1 flex-1 text-orange-500">
           <Flame className="w-5 h-5 fill-orange-500/20" />
           <span className="text-[9px] font-black uppercase tracking-tight font-bold">Pulse</span>
