@@ -274,7 +274,27 @@ useEffect(() => {
   async function fetchMovies() {
     try {
       const movies = await getTrendingMovies();
-      setTrendingMovies(movies);
+      const enhancedMovies = movies.map((movie: any) => {
+  const popularity = movie.popularity || 0;
+
+  let generatedHype = 50;
+
+  if (popularity > 1000) {
+    generatedHype = 85 + Math.floor(Math.random() * 10);
+  } else if (popularity > 500) {
+    generatedHype = 70 + Math.floor(Math.random() * 10);
+  } else if (popularity > 200) {
+    generatedHype = 55 + Math.floor(Math.random() * 10);
+  } else {
+    generatedHype = 35 + Math.floor(Math.random() * 15);
+  }
+
+  return {
+    ...movie,
+    hypeScore: generatedHype,
+  };
+});
+      setTrendingMovies(enhancedMovies);
     } catch (error) {
       console.error("TMDB fetch failed:", error);
     }
