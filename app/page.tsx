@@ -23,7 +23,8 @@ import {
   ThumbsDown, 
   Film, 
   Activity,
-  MessageCircle
+  MessageCircle,
+  Trophy,
 } from "lucide-react";
 
 // ==========================================
@@ -1081,24 +1082,31 @@ export default function CineWarsHomepage() {
       </footer>
 
       {/* MOBILE INTERACTION NAVIGATION */}
-      <div className="fixed bottom-4 left-3 right-3 z-50 bg-black border-t border-neutral-700 backdrop-blur-xl border-t border-neutral-900 py-2.5 px-6 flex justify-between items-center md:hidden rounded-t-2xl">
-        <a href="#" className="flex flex-col items-center justify-center space-y-1 flex-1 text-orange-500">
-          <Flame className="w-5 h-5 fill-orange-500/20" />
-          <span className="text-[9px] font-black uppercase tracking-tight font-bold">Pulse</span>
-        </a>
-        <a href="#trust" className="flex flex-col items-center justify-center space-y-1 flex-1 text-neutral-500 hover:text-white">
-          <ShieldCheck className="w-5 h-5" />
-          <span className="text-[9px] font-black uppercase tracking-tight font-bold">Accuracy</span>
-        </a>
-        <a href="#calls" className="flex flex-col items-center justify-center space-y-1 flex-1 text-neutral-500 hover:text-white">
-          <Award className="w-5 h-5" />
-          <span className="text-[9px] font-black uppercase tracking-tight font-bold">Proven Calls</span>
-        </a>
-        <a href="#reality-check" className="flex flex-col items-center justify-center space-y-1 flex-1 text-neutral-500 hover:text-white">
-          <AlertTriangle className="w-5 h-5" />
-          <span className="text-[9px] font-black uppercase tracking-tight font-bold">Track Record</span>
-        </a>
-      </div>
+      <div className="fixed bottom-4 left-3 right-3 z-50 md:hidden">
+  <div className="flex items-center justify-between rounded-2xl border border-neutral-700 bg-black px-5 py-3 shadow-2xl">
+    
+    <a href="#trending" className="flex flex-col items-center text-orange-500">
+      <Flame className="w-5 h-5" />
+      <span className="text-[10px] font-bold uppercase">Pulse</span>
+    </a>
+
+    <a href="#leaderboard" className="flex flex-col items-center text-neutral-300">
+      <Trophy className="w-5 h-5" />
+      <span className="text-[10px] font-bold uppercase">Ranks</span>
+    </a>
+
+    <a href="/debates" className="flex flex-col items-center text-neutral-300">
+      <MessageCircle className="w-5 h-5" />
+      <span className="text-[10px] font-bold uppercase">Debates</span>
+    </a>
+
+    <a href="#ai-analyst" className="flex flex-col items-center text-neutral-300">
+      <Sparkles className="w-5 h-5" />
+      <span className="text-[10px] font-bold uppercase">AI</span>
+    </a>
+
+  </div>
+</div>
 
     </div>
   );
