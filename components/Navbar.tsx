@@ -16,7 +16,7 @@ export default function Navbar() {
     { name: "Receipts", href: "/receipts", icon: Ticket },
     { name: "AI Analyst", href: "/ai-analyst", icon: Sparkles },
     { name: "Debates", href: "/debates", icon: Flame },
-    { name: "TEST", href: "/testpage", icon: Flame },
+    
   ];
 
   return (

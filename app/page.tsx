@@ -405,7 +405,7 @@ export default function CineWarsHomepage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-20 md:space-y-28 relative z-10">
         
         {/* HERO AREA WITH HIGH-FIDELITY LUXURY LIGHTING */}
-        <div className="pt-4">
+        <div className="pt-24 md:pt-4">
           <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#160f0e] via-[#050303] to-[#050303] border border-[#2d1a17] p-6 sm:p-8 md:p-16 text-center shadow-2xl cinema-glow-container">
             
             {/* Animated Projector Flares */}
