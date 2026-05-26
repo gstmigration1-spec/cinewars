@@ -320,7 +320,7 @@ export default function CineWarsHomepage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-16 md:pb-0 relative overflow-x-hidden font-sans">
+    <div className="min-h-screen pt-20 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-16 md:pb-0 relative overflow-x-hidden font-sans">
       
       {/* 8. FJALLA ONE TYPOGRAPHY ENGINE & REFINED PALETTE BACKGROUND */}
       <style jsx global>{`
@@ -438,7 +438,7 @@ export default function CineWarsHomepage() {
               </span>
               
               {/* 1. RESTORE ORIGINAL TAGLINE EXACTLY */}
-              <h1 className="text-[2.5rem] sm:text-6xl md:text-8xl font-black uppercase tracking-tight leading-none mb-6 text-display text-white">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tight leading-none mb-6 text-display text-white">
               
                 Track predictions. <br />
                 Rate credibility. <br />
