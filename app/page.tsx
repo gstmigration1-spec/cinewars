@@ -1063,12 +1063,15 @@ useEffect(() => {
 
       {/* FOOTER */}
       <footer className="w-full border-t border-[#2d1b18] mt-24 bg-neutral-950/40 py-8 text-center text-xs text-neutral-600 font-medium tracking-wide">
-        <div className="max-w-7xl mx-auto px-4 space-y-2">
-          <p>© 2026 CineWars Hub. All data represent gamified movie prediction tracker metrics inside cinematic social networks. No financial components involved.</p>
-          <p className="text-[10px] text-neutral-700 font-mono">Reviewer reliability index tracking managed across aggregate historical indicators.</p><p className="text-[10px] text-neutral-700">
-  This product uses the TMDB API but is not endorsed or certified by TMDB.
-</p>
-        </div>
+        <div className="mt-2 flex items-center justify-center gap-2 text-[10px] text-neutral-600">
+  <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+
+  <img
+    src="/tmdb-logo.svg"
+    alt="TMDB Logo"
+    className="h-4 w-auto opacity-80"
+  />
+</div>
       </footer>
 
       {/* MOBILE INTERACTION NAVIGATION */}
