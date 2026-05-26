@@ -320,7 +320,7 @@ export default function CineWarsHomepage() {
   };
 
   return (
-    <div className="min-h-screen pt-20 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-16 md:pb-0 relative overflow-x-hidden font-sans">
+    <div className="min-h-screen pt-20 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-28 md:pb-0 relative overflow-x-hidden font-sans">
       
       {/* 8. FJALLA ONE TYPOGRAPHY ENGINE & REFINED PALETTE BACKGROUND */}
       <style jsx global>{`
@@ -1081,7 +1081,7 @@ export default function CineWarsHomepage() {
       </footer>
 
       {/* MOBILE INTERACTION NAVIGATION */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-neutral-700 backdrop-blur-xl border-t border-neutral-900 py-2.5 px-6 flex justify-between items-center md:hidden rounded-t-2xl">
+      <div className="fixed bottom-4 left-3 right-3 z-50 bg-black border-t border-neutral-700 backdrop-blur-xl border-t border-neutral-900 py-2.5 px-6 flex justify-between items-center md:hidden rounded-t-2xl">
         <a href="#" className="flex flex-col items-center justify-center space-y-1 flex-1 text-orange-500">
           <Flame className="w-5 h-5 fill-orange-500/20" />
           <span className="text-[9px] font-black uppercase tracking-tight font-bold">Pulse</span>
