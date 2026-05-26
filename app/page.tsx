@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getTrendingMovies } from "@/lib/tmdb";
 import { 
   Flame, 
   ShieldCheck, 
@@ -268,7 +269,19 @@ export default function CineWarsHomepage() {
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
   const [liveFeed, setLiveFeed] = useState(mockLiveFeed);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+useEffect(() => {
+  async function fetchMovies() {
+    try {
+      const movies = await getTrendingMovies();
+      setTrendingMovies(movies);
+    } catch (error) {
+      console.error("TMDB fetch failed:", error);
+    }
+  }
 
+  fetchMovies();
+}, []);
   useEffect(() => {
     const interval = setInterval(() => {
       setLiveFeed((prev) => {
@@ -631,12 +644,16 @@ export default function CineWarsHomepage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {mockMovies.map((movie) => (
+            {(trendingMovies.length > 0 ? trendingMovies.slice(0, 4) : mockMovies).map((movie: any, index) => (
               <div key={movie.id} className="glass-card rounded-2xl overflow-hidden border border-[#1f2c3d] bg-neutral-950 flex flex-col h-full group shadow-xl transition-all duration-500 hover:border-sky-400/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(56,189,248,0.10)]">
                 {/* Backdrop Layer */}
                 <div className="relative min-h-[320px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
                   <img
-  src={movie.backdrop}
+  src={
+  movie.backdrop
+    ? movie.backdrop
+    : `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
+}
   alt={movie.title}
   className="object-contain w-full h-full max-h-[300px] md:max-h-full transition-all duration-700 ease-out"/>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/65 via-[#050303]/20 to-transparent" />
@@ -646,7 +663,7 @@ export default function CineWarsHomepage() {
                   </div>
                   <div className="absolute bottom-4 left-4">
                     <span className="text-[9px] font-black uppercase bg-[#e63917] text-white px-2 py-0.5 rounded mr-2 font-bold">{movie.genre}</span>
-                    <span className="text-xs text-neutral-300 font-bold">{movie.releaseDate}</span>
+                    <span className="text-xs text-neutral-300 font-bold">{movie.releaseDate || movie.release_date}</span>
                   </div>
                 </div>
 
@@ -660,7 +677,7 @@ export default function CineWarsHomepage() {
   </Link>
 
   <p className="text-[11px] text-neutral-500 leading-relaxed">
-    {movie.synopsis}
+    {movie.synopsis || movie.overview}
   </p>
                   </div>
 
@@ -1028,7 +1045,9 @@ export default function CineWarsHomepage() {
       <footer className="w-full border-t border-[#2d1b18] mt-24 bg-neutral-950/40 py-8 text-center text-xs text-neutral-600 font-medium tracking-wide">
         <div className="max-w-7xl mx-auto px-4 space-y-2">
           <p>© 2026 CineWars Hub. All data represent gamified movie prediction tracker metrics inside cinematic social networks. No financial components involved.</p>
-          <p className="text-[10px] text-neutral-700 font-mono">Reviewer reliability index tracking managed across aggregate historical indicators.</p>
+          <p className="text-[10px] text-neutral-700 font-mono">Reviewer reliability index tracking managed across aggregate historical indicators.</p><p className="text-[10px] text-neutral-700">
+  This product uses the TMDB API but is not endorsed or certified by TMDB.
+</p>
         </div>
       </footer>
 
