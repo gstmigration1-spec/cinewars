@@ -298,6 +298,23 @@ async function fetchMovies() {
       const records = movieVotes.filter(
         (v) => v.vote_type === "Crush Records"
       ).length;
+      const totalVotes =
+  flop + expectations + records;
+
+const flopPercent =
+  totalVotes > 0
+    ? Math.round((flop / totalVotes) * 100)
+    : 0;
+
+const expectationsPercent =
+  totalVotes > 0
+    ? Math.round((expectations / totalVotes) * 100)
+    : 0;
+
+const recordsPercent =
+  totalVotes > 0
+    ? Math.round((records / totalVotes) * 100)
+    : 0;
 
       const score =
         records * 25 +
@@ -324,6 +341,11 @@ async function fetchMovies() {
         hypeScore,
         fanSentiment,
         totalPredictions: movieVotes.length,
+        voteBreakdown: {
+  flop: flopPercent,
+  expectations: expectationsPercent,
+  records: recordsPercent,
+},
         communityConfidence:
           movieVotes.length > 50
             ? "High"
@@ -333,7 +355,21 @@ async function fetchMovies() {
       };
     });
 
-    setTrendingMovies(enhancedMovies);
+    const sortedMovies = enhancedMovies.sort(
+  (a: any, b: any) => {
+    const scoreA =
+      a.hypeScore * 2 +
+      a.totalPredictions * 1.5;
+
+    const scoreB =
+      b.hypeScore * 2 +
+      b.totalPredictions * 1.5;
+
+    return scoreB - scoreA;
+  }
+);
+
+setTrendingMovies(sortedMovies);
   } catch (error) {
     console.error("TMDB fetch failed:", error);
   }
@@ -633,6 +669,7 @@ await fetchMovies();
               Live Platform Pulse
             </span>
           </div>
+          
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <AnimatePresence mode="popLayout">
@@ -650,6 +687,87 @@ await fetchMovies();
             </AnimatePresence>
           </div>
         </section>
+        <section className="space-y-5">
+
+  <div className="flex items-end justify-between">
+    <div>
+      <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
+        🔥 Hot Upcoming Releases
+      </h2>
+
+      <p className="text-xs text-neutral-500 mt-1">
+        The internet’s most anticipated upcoming movie battles.
+      </p>
+    </div>
+  </div>
+
+  <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+
+    {(trendingMovies.length > 0
+      ? trendingMovies.slice(0, 8)
+      : mockMovies).map((movie: any) => (
+
+      <Link
+        key={movie.id}
+        href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+        className="min-w-[180px] max-w-[180px] group"
+      >
+
+        <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-1">
+
+          <img
+            src={
+              movie.poster_path
+                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                : movie.poster
+            }
+            alt={movie.title}
+            className="w-full h-[260px] object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
+
+          <div className="absolute bottom-0 left-0 right-0 p-3">
+
+            <h3 className="text-sm font-black text-white uppercase line-clamp-2 text-display">
+              {movie.title}
+            </h3>
+
+            <p className="text-[10px] text-neutral-400 mt-1">
+              {movie.releaseDate || movie.release_date}
+            </p>
+
+            <div className="mt-2 flex items-center justify-between">
+
+              <span
+                className={`text-[9px] font-black uppercase px-2 py-1 rounded-full ${
+                  movie.hypeScore >= 75
+                    ? "bg-cyan-500/20 text-cyan-300"
+                    : movie.hypeScore >= 40
+                    ? "bg-amber-500/20 text-amber-300"
+                    : "bg-red-500/20 text-red-300"
+                }`}
+              >
+                {movie.hypeScore >= 75
+                  ? "Explosive Buzz"
+                  : movie.hypeScore >= 40
+                  ? "Strong Momentum"
+                  : "Weak Buzz"}
+              </span>
+
+              <span className="text-[10px] text-white font-black">
+                {movie.hypeScore}%
+              </span>
+
+            </div>
+          </div>
+        </div>
+
+      </Link>
+    ))}
+
+  </div>
+</section>
 
         {/* 6. REDESIGNED USER IDENTITY SPACING PLATFORM & 7. STRUCTURAL INFO FOOTNOTE */}
         <section className="space-y-5">
@@ -740,14 +858,55 @@ await fetchMovies();
   className="object-contain w-full h-full max-h-[300px] md:max-h-full transition-all duration-700 ease-out"/>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/65 via-[#050303]/20 to-transparent" />
                   
-                  <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2d1b18] flex items-center gap-1.5 shadow-md">
-                    <span className="text-[10px] font-black uppercase text-orange-300 tracking-wider">Confidence: {movie.communityConfidence}</span>
-                  </div>
-                  <div className="absolute bottom-4 left-4">
-                    <span className="text-[9px] font-black uppercase bg-[#e63917] text-white px-2 py-0.5 rounded mr-2 font-bold">{movie.genre}</span>
-                    <span className="text-xs text-neutral-300 font-bold">{movie.releaseDate || movie.release_date}</span>
-                  </div>
-                </div>
+                  <div className="absolute top-4 left-4 flex flex-col gap-2">
+
+  {/* Trending Rank */}
+  <div className="bg-gradient-to-r from-orange-500 to-red-500 px-3 py-1 rounded-lg shadow-[0_0_20px_rgba(249,115,22,0.35)] border border-orange-300/20">
+    <span className="text-[10px] font-black uppercase tracking-wider text-white">
+      #{index + 1} Trending
+    </span>
+  </div>
+
+  {/* Confidence Badge */}
+  <div className="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2d1b18] flex items-center gap-1.5 shadow-md">
+    <span className="text-[10px] font-black uppercase text-orange-300 tracking-wider">
+      Confidence: {movie.communityConfidence}
+    </span>
+  </div>
+
+</div>
+                  <div className="absolute bottom-4 left-4 space-y-2">
+
+  <div className="flex items-center gap-2 flex-wrap">
+
+    <span className="text-[9px] font-black uppercase bg-[#e63917] text-white px-2 py-0.5 rounded font-bold">
+      {movie.genre}
+    </span>
+
+    <span className="text-xs text-neutral-300 font-bold">
+      {movie.releaseDate || movie.release_date}
+    </span>
+
+  </div>
+
+  <div className="flex items-center gap-2 flex-wrap">
+
+    {movie.totalPredictions >= 25 && (
+      <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/20">
+        🚀 Rising Fast
+      </span>
+    )}
+
+    {movie.hypeScore >= 75 && (
+      <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-orange-500/20 text-orange-300 border border-orange-400/20">
+        🔥 Fan War Active
+      </span>
+    )}
+
+  </div>
+
+</div>
+</div>
 
                 {/* Content Dashboard Area */}
                 <div className="p-4 md:p-5 justify-between space-y-6">
@@ -790,21 +949,117 @@ await fetchMovies();
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 bg-[#0a0605]/40 p-4 rounded-xl text-center font-mono relative overflow-hidden">
-                    <div className="border-r border-[#2d1b18]">
-                      <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-0.5 font-bold">Expected Opening</span>
-                      <span className="text-base font-black text-white">{movie.expectedOpening}</span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-0.5 font-bold">Expected Lifetime</span>
-                      <span className="text-base font-black text-orange-300">{movie.expectedLifetime}</span>
-                    </div>
-                  </div>
+               <div className="grid grid-cols-2 gap-4 bg-[#0a0605]/40 p-4 rounded-xl text-center font-mono relative overflow-hidden">
+
+  <div className="border-r border-[#2d1b18]">
+    <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-1">
+      Total Predictions
+    </span>
+
+    <span className="text-base font-black text-white">
+      {movie.totalPredictions || 0}
+    </span>
+  </div>
+
+  <div>
+    <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-1">
+      Community Verdict
+    </span>
+
+    <span
+      className={`text-sm font-black uppercase tracking-wide ${
+        movie.hypeScore >= 75
+          ? "text-cyan-400"
+          : movie.hypeScore >= 40
+          ? "text-amber-400"
+          : "text-red-400"
+      }`}
+    >
+      {movie.hypeScore >= 75
+  ? "🔥 Explosive Buzz"
+  : movie.hypeScore >= 40
+  ? "⚡ Strong Momentum"
+  : "🚨 Weak Buzz"}
+    </span>
+  </div>
+
+</div>
                    <Link
   href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
   className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
   View Debate <ArrowRight className="w-3.5 h-3.5" />
 </Link>
+<div className="space-y-2 bg-[#120908]/50 border border-[#2d1b18] rounded-xl p-3">
+
+  <div className="flex items-center justify-between text-[9px] uppercase tracking-widest font-black text-neutral-500">
+    <span>Community Split</span>
+    <span>{movie.totalPredictions || 0} Votes</span>
+  </div>
+
+  <div className="space-y-2">
+
+    <div>
+      <div className="flex justify-between text-[10px] mb-1">
+        <span className="text-cyan-400 font-bold">
+          🚀 Crush Records
+        </span>
+        <span className="text-white font-black">
+          {movie.voteBreakdown?.records || 0}%
+        </span>
+      </div>
+
+      <div className="h-2 rounded-full bg-black/40 overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-cyan-500 to-sky-400"
+          style={{
+            width: `${movie.voteBreakdown?.records || 0}%`,
+          }}
+        />
+      </div>
+    </div>
+
+    <div>
+      <div className="flex justify-between text-[10px] mb-1">
+        <span className="text-amber-400 font-bold">
+          ⚡ Meet Expectations
+        </span>
+        <span className="text-white font-black">
+          {movie.voteBreakdown?.expectations || 0}%
+        </span>
+      </div>
+
+      <div className="h-2 rounded-full bg-black/40 overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-amber-400 to-orange-400"
+          style={{
+            width: `${movie.voteBreakdown?.expectations || 0}%`,
+          }}
+        />
+      </div>
+    </div>
+
+    <div>
+      <div className="flex justify-between text-[10px] mb-1">
+        <span className="text-red-400 font-bold">
+          🚨 Will Flop
+        </span>
+        <span className="text-white font-black">
+          {movie.voteBreakdown?.flop || 0}%
+        </span>
+      </div>
+
+      <div className="h-2 rounded-full bg-black/40 overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-red-700 to-red-500"
+          style={{
+            width: `${movie.voteBreakdown?.flop || 0}%`,
+          }}
+        />
+      </div>
+    </div>
+
+  </div>
+</div>
                   {/* Voting Elements */}
                   <div className="pt-2 space-y-2">
                     <span className="text-[10px] text-neutral-400 uppercase font-black tracking-widest block font-bold">Your Provem Calls:</span>
