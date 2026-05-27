@@ -19,6 +19,8 @@ export default function MovieDebatePage() {
   const [message, setMessage] = useState("");
   const [debates, setDebates] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [reactionCounts, setReactionCounts] = useState<any>({});
+  const [likedDebates, setLikedDebates] = useState<any>({});
 
   const fetchDebates = async () => {
     const { data } = await supabase
@@ -31,10 +33,61 @@ export default function MovieDebatePage() {
       setDebates(data);
     }
   };
+  const fetchReactions = async () => {
+  const { data } = await supabase
+    .from("debate_reactions")
+    .select("*");
 
-  useEffect(() => {
+  if (!data) return;
+
+  const grouped: any = {};
+
+  data.forEach((reaction) => {
+    grouped[reaction.debate_id] =
+      (grouped[reaction.debate_id] || 0) + 1;
+  });
+
+  setReactionCounts(grouped);
+};
+
+ useEffect(() => {
+  fetchDebates();
+  fetchReactions();
+
+  const channel = supabase
+    .channel("movie-debates-realtime")
+
+    .on(
+  "postgres_changes",
+  {
+    event: "*",
+    schema: "public",
+    table: "movie_debates",
+  },
+  () => {
     fetchDebates();
-  }, []);
+  }
+)
+
+.on(
+  "postgres_changes",
+  {
+    event: "*",
+    schema: "public",
+    table: "debate_reactions",
+  },
+  () => {
+    fetchReactions();
+  }
+)
+
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+
+}, []);
 
   const handlePost = async () => {
     if (!message.trim()) return;
@@ -44,7 +97,9 @@ export default function MovieDebatePage() {
     await supabase.from("movie_debates").insert([
       {
         movie_id: slug,
-        username: "Anonymous",
+        username:
+  "Fan#" +
+  Math.floor(Math.random() * 10000),
         message,
       },
     ]);
@@ -55,8 +110,46 @@ export default function MovieDebatePage() {
 
     setLoading(false);
   };
+const handleReaction = async (debateId: string) => {
+  console.log("reaction clicked");
+  if (likedDebates[debateId]) return;
 
-  return (
+  let sessionId =
+    localStorage.getItem("cinewars_reaction_session");
+
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+
+    localStorage.setItem(
+      "cinewars_reaction_session",
+      sessionId
+    );
+  }
+
+  const { error } = await supabase
+    .from("debate_reactions")
+    .insert([
+      {
+        debate_id: debateId,
+        session_id: sessionId,
+      },
+    ]);
+
+  if (error) {
+    // duplicate like ignored
+    if (error.code === "23505") {
+      return;
+    }
+
+    console.log(error);
+    return;
+  }
+setLikedDebates((prev: any) => ({
+  ...prev,
+  [debateId]: true,
+}));
+  fetchReactions();
+};  return (
     <main className="min-h-screen bg-[#050303] text-white px-4 py-10">
 
       <div className="max-w-3xl mx-auto space-y-8">
@@ -103,7 +196,13 @@ export default function MovieDebatePage() {
             </div>
           )}
 
-          {debates.map((debate) => (
+          {[...debates]
+  .sort(
+    (a, b) =>
+      (reactionCounts[b.id] || 0) -
+      (reactionCounts[a.id] || 0)
+  )
+  .map((debate) => (
 
             <div
               key={debate.id}
@@ -125,11 +224,17 @@ export default function MovieDebatePage() {
               </div>
 
               <p className="text-sm leading-relaxed text-neutral-200">
-                {debate.message}
-              </p>
+  {debate.message}
+</p>
 
-            </div>
+<div
+  onClick={() => handleReaction(debate.id)}
+  className="mt-4 text-xs font-black uppercase tracking-wider text-orange-300 hover:text-orange-200 transition-colors cursor-pointer"
+>
+  👍 Support Take ({reactionCounts[debate.id] || 0})
+</div>
 
+</div>
           ))}
 
         </div>

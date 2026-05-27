@@ -279,6 +279,9 @@ async function fetchMovies() {
     const { data: votes } = await supabase
       .from("movie_votes")
       .select("movie_id, vote_type");
+      const { data: debates } = await supabase
+  .from("movie_debates")
+  .select("movie_id");
 
     const enhancedMovies = movies.map((movie: any) => {
       const movieVotes =
@@ -298,8 +301,16 @@ async function fetchMovies() {
       const records = movieVotes.filter(
         (v) => v.vote_type === "Crush Records"
       ).length;
+      
+      const debateCount = debates?.filter(
+  (debate: any) =>
+    debate.movie_id ===
+    movie.title.toLowerCase().replace(/\s+/g, "-")
+).length || 0;
+      
       const totalVotes =
   flop + expectations + records;
+  
 
 const flopPercent =
   totalVotes > 0
@@ -341,6 +352,7 @@ const recordsPercent =
         hypeScore,
         fanSentiment,
         totalPredictions: movieVotes.length,
+        debateCount,
         voteBreakdown: {
   flop: flopPercent,
   expectations: expectationsPercent,
@@ -358,12 +370,14 @@ const recordsPercent =
     const sortedMovies = enhancedMovies.sort(
   (a: any, b: any) => {
     const scoreA =
-      a.hypeScore * 2 +
-      a.totalPredictions * 1.5;
+  a.hypeScore * 2 +
+  a.totalPredictions * 1.5 +
+  a.debateCount * 4;
 
-    const scoreB =
-      b.hypeScore * 2 +
-      b.totalPredictions * 1.5;
+const scoreB =
+  b.hypeScore * 2 +
+  b.totalPredictions * 1.5 +
+  b.debateCount * 4;
 
     return scoreB - scoreA;
   }
