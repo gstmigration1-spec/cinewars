@@ -1,4 +1,5 @@
 "use client";
+import { calculateHype } from "@/lib/hype";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
@@ -271,39 +272,76 @@ export default function CineWarsHomepage() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [liveFeed, setLiveFeed] = useState(mockLiveFeed);
   const [trendingMovies, setTrendingMovies] = useState([]);
+async function fetchMovies() {
+  try {
+    const movies = await getTrendingMovies();
+
+    const { data: votes } = await supabase
+      .from("movie_votes")
+      .select("movie_id, vote_type");
+
+    const enhancedMovies = movies.map((movie: any) => {
+      const movieVotes =
+        votes?.filter(
+          (vote) =>
+            String(vote.movie_id) === String(movie.id)
+        ) || [];
+
+      const flop = movieVotes.filter(
+        (v) => v.vote_type === "Will Flop"
+      ).length;
+
+      const expectations = movieVotes.filter(
+        (v) => v.vote_type === "Meet Expectations"
+      ).length;
+
+      const records = movieVotes.filter(
+        (v) => v.vote_type === "Crush Records"
+      ).length;
+
+      const score =
+        records * 25 +
+        expectations * 15 -
+        flop * 10;
+
+      let fanSentiment = "Weak Buzz";
+
+      if (score >= 120) {
+        fanSentiment = "Historic Hype";
+      } else if (score >= 80) {
+        fanSentiment = "Explosive Buzz";
+      } else if (score >= 40) {
+        fanSentiment = "Growing Buzz";
+      }
+
+      const hypeScore = Math.max(
+        15,
+        Math.min(98, score)
+      );
+
+      return {
+        ...movie,
+        hypeScore,
+        fanSentiment,
+        totalPredictions: movieVotes.length,
+        communityConfidence:
+          movieVotes.length > 50
+            ? "High"
+            : movieVotes.length > 20
+            ? "Moderate"
+            : "Early Buzz",
+      };
+    });
+
+    setTrendingMovies(enhancedMovies);
+  } catch (error) {
+    console.error("TMDB fetch failed:", error);
+  }
+}
+
 useEffect(() => {
-  async function fetchMovies() {
-    try {
-      const movies = await getTrendingMovies();
-      const enhancedMovies = movies.map((movie: any) => {
-  const popularity = movie.popularity || 0;
-
-  let generatedHype = 50;
-
-  if (popularity > 1000) {
-    generatedHype = 85 + Math.floor(Math.random() * 10);
-  } else if (popularity > 500) {
-    generatedHype = 70 + Math.floor(Math.random() * 10);
-  } else if (popularity > 200) {
-    generatedHype = 55 + Math.floor(Math.random() * 10);
-  } else {
-    generatedHype = 35 + Math.floor(Math.random() * 15);
-  }
-
-  return {
-    ...movie,
-    hypeScore: generatedHype,
-  };
-});
-      setTrendingMovies(enhancedMovies);
-    } catch (error) {
-      console.error("TMDB fetch failed:", error);
-    }
-  }
-
   fetchMovies();
-}, []);
-  useEffect(() => {
+}, []);  useEffect(() => {
     const interval = setInterval(() => {
       setLiveFeed((prev) => {
         const copy = [...prev];
@@ -327,13 +365,19 @@ const handlePulseVote = async (movieId: string, option: string) => {
 
   localStorage.setItem("cinewars_session", sessionId);
 
-  await supabase.from("movie_votes").insert([
-    {
-      movie_id: movieId,
-      vote_type: option,
-      session_id: sessionId,
-    },
-  ]);
+  await supabase
+    .from("movie_votes")
+    .upsert(
+      {
+        movie_id: movieId,
+        vote_type: option,
+        session_id: sessionId,
+      },
+      {
+        onConflict: "movie_id,session_id",
+      }
+    );   
+await fetchMovies();
 };
 
   // 5. REVENUE BADGE DECORATOR FUNCTION FOR BALANCED HUES
