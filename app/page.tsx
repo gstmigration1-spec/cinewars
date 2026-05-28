@@ -416,11 +416,11 @@ const handlePulseVote = async (movieId: string, option: string) => {
     crypto.randomUUID();
 
   localStorage.setItem("cinewars_session", sessionId);
-console.log(movieId, option);
+
   await supabase
   .from("movie_votes")
   .insert
-    const { data, error } = await supabase
+    await supabase
   .from("movie_votes")
   .insert([
     {
@@ -430,8 +430,8 @@ console.log(movieId, option);
     },
   ]);
 
-console.log(data);
-console.log(error);
+
+
 await fetchMovies();
 };
 

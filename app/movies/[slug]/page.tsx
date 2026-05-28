@@ -55,19 +55,32 @@ export default function MovieDebatePage() {
   fetchReactions();
 
   const channel = supabase
-    .channel("movie-debates-realtime")
+  .channel("movie-debates-realtime")
 
-    .on(
-  "postgres_changes",
-  {
-    event: "*",
-    schema: "public",
-    table: "movie_debates",
-  },
-  () => {
-    fetchDebates();
-  }
-)
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "movie_debates",
+      filter: `movie_id=eq.${slug}`,
+    },
+    () => {
+      fetchDebates();
+    }
+  )
+
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "debate_reactions",
+    },
+    () => {
+      fetchReactions();
+    }
+  )
 
 .on(
   "postgres_changes",
