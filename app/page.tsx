@@ -850,7 +850,86 @@ await fetchMovies();
             ))}
           </div>
         </section>
+<section className="space-y-5">
 
+  <div className="flex items-end justify-between">
+    <div>
+      <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
+        🔥 Most Active Fan Wars
+      </h2>
+
+      <p className="text-xs text-neutral-500 mt-1">
+        Movies generating the internet’s loudest fandom battles right now.
+      </p>
+    </div>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+    {[...trendingMovies]
+      .sort(
+        (a: any, b: any) =>
+          (b.debateCount || 0) -
+          (a.debateCount || 0)
+      )
+      .slice(0, 3)
+      .map((movie: any, index) => (
+
+        <Link
+          key={movie.id}
+          href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+          className="group"
+        >
+
+          <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] p-5 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1">
+
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+            <div className="flex items-start justify-between relative z-10">
+
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-black mb-2">
+                  #{index + 1} Fan War
+                </p>
+
+                <h3 className="text-2xl font-black uppercase text-white text-display leading-none">
+                  {movie.title}
+                </h3>
+
+                <p className="text-xs text-neutral-500 mt-2">
+                  {movie.debateCount || 0} active debates
+                </p>
+              </div>
+
+              <div className="text-right">
+                <span className="text-3xl">🔥</span>
+              </div>
+
+            </div>
+
+            <div className="mt-5 h-2 rounded-full bg-black/40 overflow-hidden">
+
+              <div
+                className="h-full bg-gradient-to-r from-orange-500 to-red-500"
+                style={{
+                  width: `${Math.min(
+                    100,
+                    (movie.debateCount || 0) * 8
+                  )}%`,
+                }}
+              />
+
+            </div>
+
+          </div>
+
+        </Link>
+
+      ))}
+
+  </div>
+
+</section>
         {/* MOVIE PREDICTIONS GRID */}
         <section id="trending" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
