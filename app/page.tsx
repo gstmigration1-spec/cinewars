@@ -343,9 +343,11 @@ const recordsPercent =
       }
 
       const hypeScore = Math.max(
-        15,
-        Math.min(98, score)
-      );
+  15,
+  Math.min(98, score)
+);
+
+console.log(movie.title, hypeScore);
 
       return {
         ...movie,
@@ -414,19 +416,22 @@ const handlePulseVote = async (movieId: string, option: string) => {
     crypto.randomUUID();
 
   localStorage.setItem("cinewars_session", sessionId);
-
+console.log(movieId, option);
   await supabase
-    .from("movie_votes")
-    .upsert(
-      {
-        movie_id: movieId,
-        vote_type: option,
-        session_id: sessionId,
-      },
-      {
-        onConflict: "movie_id,session_id",
-      }
-    );   
+  .from("movie_votes")
+  .insert
+    const { data, error } = await supabase
+  .from("movie_votes")
+  .insert([
+    {
+      movie_id: movieId,
+      vote_type: option,
+      session_id: sessionId,
+    },
+  ]);
+
+console.log(data);
+console.log(error);
 await fetchMovies();
 };
 
