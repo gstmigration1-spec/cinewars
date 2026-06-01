@@ -272,6 +272,8 @@ export default function CineWarsHomepage() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [liveFeed, setLiveFeed] = useState(mockLiveFeed);
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 async function fetchMovies() {
   try {
     const movies = await getTrendingMovies();
@@ -404,6 +406,25 @@ useEffect(() => {
     }, 3500);
     return () => clearInterval(interval);
   }, []);
+  useEffect(() => {
+  const loadUser = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    setCurrentUser(profile);
+  };
+
+  loadUser();
+}, []);
 
 const handlePulseVote = async (movieId: string, option: string) => {
   setPredictionPulse(prev => ({
@@ -471,8 +492,8 @@ await fetchMovies();
   };
 
   return (
-    <div className="min-h-screen pt-20 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-28 md:pb-0 relative overflow-x-hidden font-sans">
-      
+  
+    <><div className="min-h-screen pt-20 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-28 md:pb-0 relative overflow-x-hidden font-sans">
       {/* 8. FJALLA ONE TYPOGRAPHY ENGINE & REFINED PALETTE BACKGROUND */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -521,16 +542,16 @@ await fetchMovies();
             <Film className="w-6 h-6 text-[#e63917]" />
             <span className="text-display text-3xl">CineWars</span>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-2 text-xs font-black uppercase tracking-wider text-neutral-400">
             {[
               { label: "Predictions", href: "#trending" },
               { label: "Rankings", href: "/leaderboard" },
               { label: "Debates", href: "/debates" }
             ].map((item, idx) => (
-              <a 
+              <a
                 key={idx}
-                href={item.href} 
+                href={item.href}
                 className="relative px-5 py-2 rounded-lg transition-all duration-200 hover:text-white hover:bg-neutral-900/40 group tracking-widest font-bold"
               >
                 <span>{item.label}</span>
@@ -538,31 +559,41 @@ await fetchMovies();
               </a>
             ))}
           </div>
-          
-          <motion.a 
-            href="#trending"
+
+          <motion.button
+            onClick={() => setShowLoginModal(true)}
+
             whileHover={{ scale: 1.04, boxShadow: "0 0 25px rgba(249,115,22,0.5)" }}
             whileTap={{ scale: 0.98 }}
             className="relative group overflow-hidden bg-gradient-to-r from-[#e63917] to-[#f97316] text-[11px] font-black uppercase tracking-widest px-5 py-3 rounded-xl text-white shadow-[0_4px_15px_rgba(230,57,23,0.3)] transition-all duration-300 font-bold"
           >
             <span className="relative z-10 flex items-center gap-1.5">
-              Join Arena <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
-            </span>
-          </motion.a>
+  {currentUser?.username ? (
+    <>
+      @{currentUser.username}
+    </>
+  ) : (
+    <>
+      Join Arena
+      <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
+    </>
+  )}
+</span>
+          </motion.button>
         </div>
       </nav>
 
       {/* CORE WRAPPER HUB */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-20 md:space-y-28 relative z-10">
-        
+
         {/* HERO AREA WITH HIGH-FIDELITY LUXURY LIGHTING */}
         <div className="pt-24 md:pt-4">
           <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#160f0e] via-[#050303] to-[#050303] border border-[#2d1a17] p-6 sm:p-8 md:p-16 text-center shadow-2xl cinema-glow-container">
-            
+
             {/* Animated Projector Flares */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/90 via-[#050303]/40 to-transparent" />
-            <motion.div 
-              animate={{ 
+            <motion.div
+              animate={{
                 scale: [1, 1.05, 1],
                 opacity: [0.3, 0.45, 0.3],
               }}
@@ -587,36 +618,36 @@ await fetchMovies();
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-[#f97316]/10 text-[#f97316] uppercase tracking-widest border border-[#f97316]/20 mb-6 font-bold">
                 <Flame className="w-3.5 h-3.5 fill-[#f97316]" /> Movie prediction credibility tracking
               </span>
-              
+
               {/* 1. RESTORE ORIGINAL TAGLINE EXACTLY */}
               <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tight leading-none mb-6 text-display text-white">
-              
+
                 Track predictions. <br />
                 Rate credibility. <br />
                 <span className="bg-gradient-to-r from-[#e63917] via-[#f97316] to-[#f5a60b] text-transparent bg-clip-text drop-shadow-[0_4px_25px_rgba(249,115,22,0.4)]">
                   Settle movie debates.
                 </span>
               </h1>
-              
+
               {/* SUPPORTING COPY */}
               <p className="max-w-2xl mx-auto text-neutral-400 text-xs sm:text-[13px] md:text-base font-medium leading-relaxed mb-10">
                 Fans predict. Critics react. Trackers call the numbers. CineWars remembers who holds the ultimate box office accuracy rating and resolves the internet's loudest movie debates.
               </p>
-              
+
               {/* HERO SECTION CLEAR INTERACTIVE CTAs */}
               <div className="flex flex-wrap justify-center gap-4 mb-12 relative z-20">
-                <motion.a 
+                <motion.a
                   whileHover={{ scale: 1.05, y: -2, boxShadow: "0 0 30px rgba(230,57,23,0.55)" }}
                   whileTap={{ scale: 0.97 }}
-                  href="#trending" 
+                  href="#trending"
                   className="px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest bg-gradient-to-r from-[#e63917] to-[#f97316] text-white shadow-[0_4px_25px_rgba(230,57,23,0.4)] flex items-center gap-2 font-bold transition-all duration-200"
                 >
                   Join the Arena <Zap className="w-4 h-4 fill-current text-amber-300" />
                 </motion.a>
-                <motion.a 
+                <motion.a
                   whileHover={{ scale: 1.05, backgroundColor: "#2b1814" }}
                   whileTap={{ scale: 0.97 }}
-                  href="#trending" 
+                  href="#trending"
                   className="px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest bg-[#1a0f0d] border border-[#422621] text-neutral-300 font-bold transition-all duration-200"
                 >
                   Explore Predictions
@@ -660,25 +691,25 @@ await fetchMovies();
             </div>
           </section>
         </div>
-<div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#120908] border border-[#2d1b18] text-xs text-neutral-300 font-semibold tracking-wide shadow-lg">
-  <span className="relative flex h-2.5 w-2.5">
-    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
-    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500" />
-  </span>
+        <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#120908] border border-[#2d1b18] text-xs text-neutral-300 font-semibold tracking-wide shadow-lg">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500" />
+          </span>
 
-  <span>
-    <strong className="text-orange-400">14,382 fans</strong> debating
-    <span className="text-white font-bold"> RAMAYANA </span>
-    right now
-  </span>
-</div>
+          <span>
+            <strong className="text-orange-400">14,382 fans</strong> debating
+            <span className="text-white font-bold"> RAMAYANA </span>
+            right now
+          </span>
+        </div>
         {/* 3. IMPROVED LIVE PULSE FEED SECTION WITH GLOW & PULSING DOT */}
         <section className="space-y-4 bg-gradient-to-r from-[#170e0d] to-[#0c0807] border border-[#341d19] rounded-2xl p-5 shadow-xl">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center space-x-2.5">
               <div className="relative flex h-3 w-3 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75 shadow-[0_0_10px_#38bdf8]" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-400 shadow-[0_0_8px_#38bdf8]" />  
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-400 shadow-[0_0_8px_#38bdf8]" />
               </div>
               <h2 className="text-xs font-black uppercase tracking-widest text-white font-bold flex items-center gap-1.5">
                 <Activity className="w-3.5 h-3.5 text-sky-400" /> What's Trending Right Now
@@ -688,7 +719,7 @@ await fetchMovies();
               Live Platform Pulse
             </span>
           </div>
-          
+
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <AnimatePresence mode="popLayout">
@@ -708,85 +739,80 @@ await fetchMovies();
         </section>
         <section className="space-y-5">
 
-  <div className="flex items-end justify-between">
-    <div>
-      <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
-        🔥 Hot Upcoming Releases
-      </h2>
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
+                🔥 Hot Upcoming Releases
+              </h2>
 
-      <p className="text-xs text-neutral-500 mt-1">
-        The internet’s most anticipated upcoming movie battles.
-      </p>
-    </div>
-  </div>
-
-  <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-
-    {(trendingMovies.length > 0
-      ? trendingMovies.slice(0, 8)
-      : mockMovies).map((movie: any) => (
-
-      <Link
-        key={movie.id}
-        href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-        className="min-w-[180px] max-w-[180px] group"
-      >
-
-        <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-1">
-
-          <img
-            src={
-              movie.poster_path
-                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                : movie.poster
-            }
-            alt={movie.title}
-            className="w-full h-[260px] object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
-
-          <div className="absolute bottom-0 left-0 right-0 p-3">
-
-            <h3 className="text-sm font-black text-white uppercase line-clamp-2 text-display">
-              {movie.title}
-            </h3>
-
-            <p className="text-[10px] text-neutral-400 mt-1">
-              {movie.releaseDate || movie.release_date}
-            </p>
-
-            <div className="mt-2 flex items-center justify-between">
-
-              <span
-                className={`text-[9px] font-black uppercase px-2 py-1 rounded-full ${
-                  movie.hypeScore >= 75
-                    ? "bg-cyan-500/20 text-cyan-300"
-                    : movie.hypeScore >= 40
-                    ? "bg-amber-500/20 text-amber-300"
-                    : "bg-red-500/20 text-red-300"
-                }`}
-              >
-                {movie.hypeScore >= 75
-                  ? "Explosive Buzz"
-                  : movie.hypeScore >= 40
-                  ? "Strong Momentum"
-                  : "Weak Buzz"}
-              </span>
-
-              <span className="text-[10px] text-white font-black">
-                {movie.hypeScore}%
-              </span>
-
+              <p className="text-xs text-neutral-500 mt-1">
+                The internet’s most anticipated upcoming movie battles.
+              </p>
             </div>
           </div>
-        </div>
 
-      </Link>
-    ))}
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
 
-  </div>
-</section>
+            {(trendingMovies.length > 0
+              ? trendingMovies.slice(0, 8)
+              : mockMovies).map((movie: any) => (
+
+                <Link
+                  key={movie.id}
+                  href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="min-w-[180px] max-w-[180px] group"
+                >
+
+                  <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-1">
+
+                    <img
+                      src={movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                        : movie.poster}
+                      alt={movie.title}
+                      className="w-full h-[260px] object-cover transition-transform duration-500 group-hover:scale-105" />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
+
+                    <div className="absolute bottom-0 left-0 right-0 p-3">
+
+                      <h3 className="text-sm font-black text-white uppercase line-clamp-2 text-display">
+                        {movie.title}
+                      </h3>
+
+                      <p className="text-[10px] text-neutral-400 mt-1">
+                        {movie.releaseDate || movie.release_date}
+                      </p>
+
+                      <div className="mt-2 flex items-center justify-between">
+
+                        <span
+                          className={`text-[9px] font-black uppercase px-2 py-1 rounded-full ${movie.hypeScore >= 75
+                              ? "bg-cyan-500/20 text-cyan-300"
+                              : movie.hypeScore >= 40
+                                ? "bg-amber-500/20 text-amber-300"
+                                : "bg-red-500/20 text-red-300"}`}
+                        >
+                          {movie.hypeScore >= 75
+                            ? "Explosive Buzz"
+                            : movie.hypeScore >= 40
+                              ? "Strong Momentum"
+                              : "Weak Buzz"}
+                        </span>
+
+                        <span className="text-[10px] text-white font-black">
+                          {movie.hypeScore}%
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </Link>
+              ))}
+
+          </div>
+        </section>
 
         {/* 6. REDESIGNED USER IDENTITY SPACING PLATFORM & 7. STRUCTURAL INFO FOOTNOTE */}
         <section className="space-y-5">
@@ -795,8 +821,8 @@ await fetchMovies();
               <h3 className="text-[11px] font-black uppercase tracking-widest text-[#f97316] mb-1 font-bold">Accuracy Spotlights</h3>
               <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">WHO’S ACTUALLY GETTING IT RIGHT?</h2>
               <p className="text-sm text-neutral-400 mt-2">
-  Fans, critics, reviewers, and trackers ranked by long-term prediction accuracy.
-</p>
+                Fans, critics, reviewers, and trackers ranked by long-term prediction accuracy.
+              </p>
             </div>
             <div className="text-right max-w-md bg-[#120908] border border-[#301c19] p-2.5 rounded-xl">
               <p className="text-[11px] text-neutral-400 font-medium leading-normal">
@@ -808,7 +834,7 @@ await fetchMovies();
           {/* Expanded Card spacing to reduce layout congestion */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
             {mockLeaderboard.map((user) => (
-              <motion.div 
+              <motion.div
                 whileHover={{ y: -4, borderColor: "rgba(249,115,22,0.35)" }}
                 key={user.rank}
                 className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-5 relative overflow-hidden group shadow-2xl"
@@ -850,86 +876,84 @@ await fetchMovies();
             ))}
           </div>
         </section>
-<section className="space-y-5">
+        <section className="space-y-5">
 
-  <div className="flex items-end justify-between">
-    <div>
-      <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
-        🔥 Most Active Fan Wars
-      </h2>
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
+                🔥 Most Active Fan Wars
+              </h2>
 
-      <p className="text-xs text-neutral-500 mt-1">
-        Movies generating the internet’s loudest fandom battles right now.
-      </p>
-    </div>
-  </div>
-
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-    {[...trendingMovies]
-      .sort(
-        (a: any, b: any) =>
-          (b.debateCount || 0) -
-          (a.debateCount || 0)
-      )
-      .slice(0, 3)
-      .map((movie: any, index) => (
-
-        <Link
-          key={movie.id}
-          href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-          className="group"
-        >
-
-          <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] p-5 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1">
-
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-            <div className="flex items-start justify-between relative z-10">
-
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-black mb-2">
-                  #{index + 1} Fan War
-                </p>
-
-                <h3 className="text-2xl font-black uppercase text-white text-display leading-none">
-                  {movie.title}
-                </h3>
-
-                <p className="text-xs text-neutral-500 mt-2">
-                  {movie.debateCount || 0} active debates
-                </p>
-              </div>
-
-              <div className="text-right">
-                <span className="text-3xl">🔥</span>
-              </div>
-
+              <p className="text-xs text-neutral-500 mt-1">
+                Movies generating the internet’s loudest fandom battles right now.
+              </p>
             </div>
+          </div>
 
-            <div className="mt-5 h-2 rounded-full bg-black/40 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-              <div
-                className="h-full bg-gradient-to-r from-orange-500 to-red-500"
-                style={{
-                  width: `${Math.min(
-                    100,
-                    (movie.debateCount || 0) * 8
-                  )}%`,
-                }}
-              />
+            {[...trendingMovies]
+              .sort(
+                (a: any, b: any) => (b.debateCount || 0) -
+                  (a.debateCount || 0)
+              )
+              .slice(0, 3)
+              .map((movie: any, index) => (
 
-            </div>
+                <Link
+                  key={movie.id}
+                  href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="group"
+                >
+
+                  <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] p-5 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1">
+
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    <div className="flex items-start justify-between relative z-10">
+
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-black mb-2">
+                          #{index + 1} Fan War
+                        </p>
+
+                        <h3 className="text-2xl font-black uppercase text-white text-display leading-none">
+                          {movie.title}
+                        </h3>
+
+                        <p className="text-xs text-neutral-500 mt-2">
+                          {movie.debateCount || 0} active debates
+                        </p>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="text-3xl">🔥</span>
+                      </div>
+
+                    </div>
+
+                    <div className="mt-5 h-2 rounded-full bg-black/40 overflow-hidden">
+
+                      <div
+                        className="h-full bg-gradient-to-r from-orange-500 to-red-500"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            (movie.debateCount || 0) * 8
+                          )}%`,
+                        }} />
+
+                    </div>
+
+                  </div>
+
+                </Link>
+
+              ))}
 
           </div>
 
-        </Link>
-
-      ))}
-
-  </div>
-
-</section>
+        </section>
         {/* MOVIE PREDICTIONS GRID */}
         <section id="trending" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
@@ -947,77 +971,75 @@ await fetchMovies();
                 {/* Backdrop Layer */}
                 <div className="relative min-h-[320px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
                   <img
-  src={
-  movie.backdrop
-    ? movie.backdrop
-    : `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
-}
-  alt={movie.title}
-  className="object-contain w-full h-full max-h-[300px] md:max-h-full transition-all duration-700 ease-out"/>
+                    src={movie.backdrop
+                      ? movie.backdrop
+                      : `https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                    alt={movie.title}
+                    className="object-contain w-full h-full max-h-[300px] md:max-h-full transition-all duration-700 ease-out" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/65 via-[#050303]/20 to-transparent" />
-                  
+
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
 
-  {/* Trending Rank */}
-  <div className="bg-gradient-to-r from-orange-500 to-red-500 px-3 py-1 rounded-lg shadow-[0_0_20px_rgba(249,115,22,0.35)] border border-orange-300/20">
-    <span className="text-[10px] font-black uppercase tracking-wider text-white">
-      #{index + 1} Trending
-    </span>
-  </div>
+                    {/* Trending Rank */}
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 px-3 py-1 rounded-lg shadow-[0_0_20px_rgba(249,115,22,0.35)] border border-orange-300/20">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-white">
+                        #{index + 1} Trending
+                      </span>
+                    </div>
 
-  {/* Confidence Badge */}
-  <div className="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2d1b18] flex items-center gap-1.5 shadow-md">
-    <span className="text-[10px] font-black uppercase text-orange-300 tracking-wider">
-      Confidence: {movie.communityConfidence}
-    </span>
-  </div>
+                    {/* Confidence Badge */}
+                    <div className="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#2d1b18] flex items-center gap-1.5 shadow-md">
+                      <span className="text-[10px] font-black uppercase text-orange-300 tracking-wider">
+                        Confidence: {movie.communityConfidence}
+                      </span>
+                    </div>
 
-</div>
+                  </div>
                   <div className="absolute bottom-4 left-4 space-y-2">
 
-  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-2 flex-wrap">
 
-    <span className="text-[9px] font-black uppercase bg-[#e63917] text-white px-2 py-0.5 rounded font-bold">
-      {movie.genre}
-    </span>
+                      <span className="text-[9px] font-black uppercase bg-[#e63917] text-white px-2 py-0.5 rounded font-bold">
+                        {movie.genre}
+                      </span>
 
-    <span className="text-xs text-neutral-300 font-bold">
-      {movie.releaseDate || movie.release_date}
-    </span>
+                      <span className="text-xs text-neutral-300 font-bold">
+                        {movie.releaseDate || movie.release_date}
+                      </span>
 
-  </div>
+                    </div>
 
-  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-2 flex-wrap">
 
-    {movie.totalPredictions >= 25 && (
-      <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/20">
-        🚀 Rising Fast
-      </span>
-    )}
+                      {movie.totalPredictions >= 25 && (
+                        <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/20">
+                          🚀 Rising Fast
+                        </span>
+                      )}
 
-    {movie.hypeScore >= 75 && (
-      <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-orange-500/20 text-orange-300 border border-orange-400/20">
-        🔥 Fan War Active
-      </span>
-    )}
+                      {movie.hypeScore >= 75 && (
+                        <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-orange-500/20 text-orange-300 border border-orange-400/20">
+                          🔥 Fan War Active
+                        </span>
+                      )}
 
-  </div>
+                    </div>
 
-</div>
-</div>
+                  </div>
+                </div>
 
                 {/* Content Dashboard Area */}
                 <div className="p-4 md:p-5 justify-between space-y-6">
                   <div>
                     <Link href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}>
-    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-normal text-white mb-2 text-display group-hover:text-orange-400 transition-colors">
-      {movie.title}
-    </h3>
-  </Link>
+                      <h3 className="text-2xl md:text-3xl font-black uppercase tracking-normal text-white mb-2 text-display group-hover:text-orange-400 transition-colors">
+                        {movie.title}
+                      </h3>
+                    </Link>
 
-  <p className="text-[11px] text-neutral-500 leading-relaxed">
-    {movie.synopsis || movie.overview}
-  </p>
+                    <p className="text-[11px] text-neutral-500 leading-relaxed">
+                      {movie.synopsis || movie.overview}
+                    </p>
                   </div>
 
                   {/* FLAME-BASED IGNITION BAR HYPE METER */}
@@ -1029,135 +1051,128 @@ await fetchMovies();
                       <span className="text-neutral-400">Sentiment: {movie.fanSentiment}</span>
                     </div>
                     <div className="h-3 w-full bg-[#050303] rounded-full overflow-hidden border border-[#492d27] p-[2px] relative">
-                      <motion.div 
+                      <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${movie.hypeScore}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 1.2, ease: "easeOut" }}
-                        className={`h-full rounded-full relative overflow-hidden ${
-  movie.hypeScore < 50
-    ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500 shadow-[0_0_30px_rgba(239,68,68,0.95)]"
-    : movie.hypeScore < 75
-    ? "bg-gradient-to-r from-yellow-500 via-amber-400 to-orange-400 shadow-[0_0_30px_rgba(251,191,36,0.95)]"
-    : "bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 shadow-[0_0_30px_rgba(56,189,248,0.95)]"
-}`}
+                        className={`h-full rounded-full relative overflow-hidden ${movie.hypeScore < 50
+                            ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500 shadow-[0_0_30px_rgba(239,68,68,0.95)]"
+                            : movie.hypeScore < 75
+                              ? "bg-gradient-to-r from-yellow-500 via-amber-400 to-orange-400 shadow-[0_0_30px_rgba(251,191,36,0.95)]"
+                              : "bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 shadow-[0_0_30px_rgba(56,189,248,0.95)]"}`}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
                       </motion.div>
                     </div>
                   </div>
 
-               <div className="grid grid-cols-2 gap-4 bg-[#0a0605]/40 p-4 rounded-xl text-center font-mono relative overflow-hidden">
+                  <div className="grid grid-cols-2 gap-4 bg-[#0a0605]/40 p-4 rounded-xl text-center font-mono relative overflow-hidden">
 
-  <div className="border-r border-[#2d1b18]">
-    <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-1">
-      Total Predictions
-    </span>
+                    <div className="border-r border-[#2d1b18]">
+                      <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-1">
+                        Total Predictions
+                      </span>
 
-    <span className="text-base font-black text-white">
-      {movie.totalPredictions || 0}
-    </span>
-  </div>
+                      <span className="text-base font-black text-white">
+                        {movie.totalPredictions || 0}
+                      </span>
+                    </div>
 
-  <div>
-    <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-1">
-      Community Verdict
-    </span>
+                    <div>
+                      <span className="text-[9px] text-neutral-500 block uppercase font-black tracking-widest mb-1">
+                        Community Verdict
+                      </span>
 
-    <span
-      className={`text-sm font-black uppercase tracking-wide ${
-        movie.hypeScore >= 75
-          ? "text-cyan-400"
-          : movie.hypeScore >= 40
-          ? "text-amber-400"
-          : "text-red-400"
-      }`}
-    >
-      {movie.hypeScore >= 75
-  ? "🔥 Explosive Buzz"
-  : movie.hypeScore >= 40
-  ? "⚡ Strong Momentum"
-  : "🚨 Weak Buzz"}
-    </span>
-  </div>
+                      <span
+                        className={`text-sm font-black uppercase tracking-wide ${movie.hypeScore >= 75
+                            ? "text-cyan-400"
+                            : movie.hypeScore >= 40
+                              ? "text-amber-400"
+                              : "text-red-400"}`}
+                      >
+                        {movie.hypeScore >= 75
+                          ? "🔥 Explosive Buzz"
+                          : movie.hypeScore >= 40
+                            ? "⚡ Strong Momentum"
+                            : "🚨 Weak Buzz"}
+                      </span>
+                    </div>
 
-</div>
-                   <Link
-  href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-  className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
-  View Debate <ArrowRight className="w-3.5 h-3.5" />
-</Link>
-<div className="space-y-2 bg-[#120908]/50 border border-[#2d1b18] rounded-xl p-3">
+                  </div>
+                  <Link
+                    href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+                    className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
+                    View Debate <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <div className="space-y-2 bg-[#120908]/50 border border-[#2d1b18] rounded-xl p-3">
 
-  <div className="flex items-center justify-between text-[9px] uppercase tracking-widest font-black text-neutral-500">
-    <span>Community Split</span>
-    <span>{movie.totalPredictions || 0} Votes</span>
-  </div>
+                    <div className="flex items-center justify-between text-[9px] uppercase tracking-widest font-black text-neutral-500">
+                      <span>Community Split</span>
+                      <span>{movie.totalPredictions || 0} Votes</span>
+                    </div>
 
-  <div className="space-y-2">
+                    <div className="space-y-2">
 
-    <div>
-      <div className="flex justify-between text-[10px] mb-1">
-        <span className="text-cyan-400 font-bold">
-          🚀 Crush Records
-        </span>
-        <span className="text-white font-black">
-          {movie.voteBreakdown?.records || 0}%
-        </span>
-      </div>
+                      <div>
+                        <div className="flex justify-between text-[10px] mb-1">
+                          <span className="text-cyan-400 font-bold">
+                            🚀 Crush Records
+                          </span>
+                          <span className="text-white font-black">
+                            {movie.voteBreakdown?.records || 0}%
+                          </span>
+                        </div>
 
-      <div className="h-2 rounded-full bg-black/40 overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-cyan-500 to-sky-400"
-          style={{
-            width: `${movie.voteBreakdown?.records || 0}%`,
-          }}
-        />
-      </div>
-    </div>
+                        <div className="h-2 rounded-full bg-black/40 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-cyan-500 to-sky-400"
+                            style={{
+                              width: `${movie.voteBreakdown?.records || 0}%`,
+                            }} />
+                        </div>
+                      </div>
 
-    <div>
-      <div className="flex justify-between text-[10px] mb-1">
-        <span className="text-amber-400 font-bold">
-          ⚡ Meet Expectations
-        </span>
-        <span className="text-white font-black">
-          {movie.voteBreakdown?.expectations || 0}%
-        </span>
-      </div>
+                      <div>
+                        <div className="flex justify-between text-[10px] mb-1">
+                          <span className="text-amber-400 font-bold">
+                            ⚡ Meet Expectations
+                          </span>
+                          <span className="text-white font-black">
+                            {movie.voteBreakdown?.expectations || 0}%
+                          </span>
+                        </div>
 
-      <div className="h-2 rounded-full bg-black/40 overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-amber-400 to-orange-400"
-          style={{
-            width: `${movie.voteBreakdown?.expectations || 0}%`,
-          }}
-        />
-      </div>
-    </div>
+                        <div className="h-2 rounded-full bg-black/40 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-amber-400 to-orange-400"
+                            style={{
+                              width: `${movie.voteBreakdown?.expectations || 0}%`,
+                            }} />
+                        </div>
+                      </div>
 
-    <div>
-      <div className="flex justify-between text-[10px] mb-1">
-        <span className="text-red-400 font-bold">
-          🚨 Will Flop
-        </span>
-        <span className="text-white font-black">
-          {movie.voteBreakdown?.flop || 0}%
-        </span>
-      </div>
+                      <div>
+                        <div className="flex justify-between text-[10px] mb-1">
+                          <span className="text-red-400 font-bold">
+                            🚨 Will Flop
+                          </span>
+                          <span className="text-white font-black">
+                            {movie.voteBreakdown?.flop || 0}%
+                          </span>
+                        </div>
 
-      <div className="h-2 rounded-full bg-black/40 overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-red-700 to-red-500"
-          style={{
-            width: `${movie.voteBreakdown?.flop || 0}%`,
-          }}
-        />
-      </div>
-    </div>
+                        <div className="h-2 rounded-full bg-black/40 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-red-700 to-red-500"
+                            style={{
+                              width: `${movie.voteBreakdown?.flop || 0}%`,
+                            }} />
+                        </div>
+                      </div>
 
-  </div>
-</div>
+                    </div>
+                  </div>
                   {/* Voting Elements */}
                   <div className="pt-2 space-y-2">
                     <span className="text-[10px] text-neutral-400 uppercase font-black tracking-widest block font-bold">Your Provem Calls:</span>
@@ -1168,15 +1183,13 @@ await fetchMovies();
                           <button
                             key={opt}
                             onClick={() => handlePulseVote(movie.id, opt)}
-                            className={`py-2 px-1 rounded-lg text-[9px] font-black uppercase tracking-wider text-center border transition ${
-                              isSelected
+                            className={`py-2 px-1 rounded-lg text-[9px] font-black uppercase tracking-wider text-center border transition ${isSelected
                                 ? opt === "Will Flop"
-  ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500 text-white border-transparent shadow-[0_0_22px_rgba(239,68,68,0.75)] font-bold"
-  : opt === "Meet Expectations"
-  ? "bg-gradient-to-r from-yellow-500 via-amber-400 to-orange-400 text-black border-transparent shadow-[0_0_22px_rgba(251,191,36,0.7)] font-bold"
-  : "bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 text-white border-transparent shadow-[0_0_22px_rgba(56,189,248,0.7)] font-bold"
-                                : "bg-neutral-950 border-[#2d1b18] text-neutral-500 hover:text-neutral-300 hover:border-neutral-700"
-                            }`}
+                                  ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500 text-white border-transparent shadow-[0_0_22px_rgba(239,68,68,0.75)] font-bold"
+                                  : opt === "Meet Expectations"
+                                    ? "bg-gradient-to-r from-yellow-500 via-amber-400 to-orange-400 text-black border-transparent shadow-[0_0_22px_rgba(251,191,36,0.7)] font-bold"
+                                    : "bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 text-white border-transparent shadow-[0_0_22px_rgba(56,189,248,0.7)] font-bold"
+                                : "bg-neutral-950 border-[#2d1b18] text-neutral-500 hover:text-neutral-300 hover:border-neutral-700"}`}
                           >
                             {opt}
                           </button>
@@ -1218,10 +1231,10 @@ await fetchMovies();
                       <span className="text-base">{p.avatar}</span>
                       <div>
                         <Link href={`/user/${p.name.toLowerCase()}`}>
-  <span className="text-xs font-bold text-white block hover:text-orange-400 transition">
-    @{p.name}
-  </span>
-</Link>
+                          <span className="text-xs font-bold text-white block hover:text-orange-400 transition">
+                            @{p.name}
+                          </span>
+                        </Link>
                         <span className="text-[10px] text-orange-500 font-black uppercase tracking-wider font-bold">{p.role}</span>
                       </div>
                     </div>
@@ -1238,29 +1251,29 @@ await fetchMovies();
               <div className="space-y-3">
                 {trustSpotlight.reviewerCredibility.map((p, idx) => (
                   <div
-  key={idx}
-  className="flex justify-between items-center p-3 rounded-xl border border-[#2a1208] bg-[#120908]"
->
-  <div className="flex items-center space-x-2">
-    <span className="text-base">{p.avatar}</span>
+                    key={idx}
+                    className="flex justify-between items-center p-3 rounded-xl border border-[#2a1208] bg-[#120908]"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="text-base">{p.avatar}</span>
 
-    <div>
-      <Link href={`/user/${p.name.toLowerCase()}`}>
-        <span className="text-xs font-bold text-white block hover:text-orange-400 transition">
-          @{p.name}
-        </span>
-      </Link>
+                      <div>
+                        <Link href={`/user/${p.name.toLowerCase()}`}>
+                          <span className="text-xs font-bold text-white block hover:text-orange-400 transition">
+                            @{p.name}
+                          </span>
+                        </Link>
 
-      <span className="text-[10px] text-[#f97316] font-black uppercase tracking-wide">
-        {p.role}
-      </span>
-    </div>
-  </div>
+                        <span className="text-[10px] text-[#f97316] font-black uppercase tracking-wide">
+                          {p.role}
+                        </span>
+                      </div>
+                    </div>
 
-  <span className="text-xs font-black bg-red-500/10 border border-red-500/20 px-2 py-1 rounded-full text-red-400">
-    {p.score}
-  </span>
-</div>
+                    <span className="text-xs font-black bg-red-500/10 border border-red-500/20 px-2 py-1 rounded-full text-red-400">
+                      {p.score}
+                    </span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1293,10 +1306,10 @@ await fetchMovies();
                         <span className="text-xl bg-[#0e0a09] p-1.5 rounded-lg border border-[#2d1b18]">{call.avatar}</span>
                         <div>
                           <Link href={`/user/${call.username.toLowerCase()}`}>
-  <span className="text-xs font-black text-white block hover:text-orange-400 transition">
-    @{call.username}
-  </span>
-</Link>
+                            <span className="text-xs font-black text-white block hover:text-orange-400 transition">
+                              @{call.username}
+                            </span>
+                          </Link>
                           <span className={`text-[9px] border px-2 py-0.2 rounded font-black uppercase tracking-wider ${getBadgeStyle(call.badgeType)}`}>{call.userType}</span>
                         </div>
                       </div>
@@ -1369,13 +1382,13 @@ await fetchMovies();
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {mockRealityChecks.map((item) => (
-              <motion.div 
+              <motion.div
                 key={item.id}
                 whileHover={{ y: -4, borderColor: "rgba(239, 68, 68, 0.35)" }}
                 className="bg-neutral-950 border border-[#38231e] rounded-2xl overflow-hidden flex flex-col justify-between p-5 space-y-4 shadow-xl relative group"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-[50px] pointer-events-none rounded-full" />
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500 bg-neutral-900 px-2 py-0.5 rounded border border-[#2d1b18] font-bold">
@@ -1417,14 +1430,14 @@ await fetchMovies();
         </section>
 
         {/* DEBATE INTERACTIVE DISCUSSION AREA */}
-        
+
         {/* GLOBAL STANDINGS */}
-       
+
 
         {/* AI CINE ANALYST HUB */}
         <section id="ai-analyst" className="glass-card rounded-3xl border border-red-500/10 p-6 md:p-10 relative overflow-hidden bg-gradient-to-tr from-[#0b0807] via-[#1c1210]/30 to-black shadow-2xl">
           <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-orange-500/5 blur-[80px] rounded-full pointer-events-none" />
-          
+
           <div className="max-w-3xl space-y-5">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-500 uppercase border border-orange-500/20 tracking-wider font-bold">
               <Sparkles className="w-3.5 h-3.5" /> Predictive Credibility Intelligence Engine
@@ -1443,14 +1456,13 @@ await fetchMovies();
             </div>
 
             <form onSubmit={handleAiBanter} className="flex flex-col sm:flex-row gap-3 pt-2">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={aiQuestion}
                 onChange={(e) => setAiQuestion(e.target.value)}
-                placeholder="Query data: 'Will word of mouth rescue Spirit at the box office?'" 
-                className="flex-1 bg-neutral-950 rounded-xl px-4 py-3.5 text-sm text-white border border-[#2d1b18] focus:outline-none focus:border-orange-500 font-medium transition" 
-              />
-              <button 
+                placeholder="Query data: 'Will word of mouth rescue Spirit at the box office?'"
+                className="flex-1 bg-neutral-950 rounded-xl px-4 py-3.5 text-sm text-white border border-[#2d1b18] focus:outline-none focus:border-orange-500 font-medium transition" />
+              <button
                 type="submit"
                 disabled={loadingAi}
                 className="px-6 py-3.5 bg-neutral-100 hover:bg-neutral-200 text-black font-black uppercase text-xs tracking-wider rounded-xl transition shrink-0 disabled:opacity-50 font-bold"
@@ -1461,7 +1473,7 @@ await fetchMovies();
 
             <AnimatePresence>
               {aiResponse && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
@@ -1479,44 +1491,86 @@ await fetchMovies();
       {/* FOOTER */}
       <footer className="w-full border-t border-[#2d1b18] mt-24 bg-neutral-950/40 py-8 text-center text-xs text-neutral-600 font-medium tracking-wide">
         <div className="mt-2 flex items-center justify-center gap-2 text-[10px] text-neutral-600">
-  <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+          <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
 
-  <img
-    src="/tmdb-logo.svg"
-    alt="TMDB Logo"
-    className="h-4 w-auto opacity-80"
-  />
-</div>
+          <img
+            src="/tmdb-logo.svg"
+            alt="TMDB Logo"
+            className="h-4 w-auto opacity-80" />
+        </div>
       </footer>
 
       {/* MOBILE INTERACTION NAVIGATION */}
       <div className="fixed bottom-4 left-3 right-3 z-50 md:hidden">
-  <div className="flex items-center justify-between rounded-2xl border border-neutral-700 bg-black px-5 py-3 shadow-2xl">
-    
-    <a href="#trending" className="flex flex-col items-center text-orange-500">
-      <Flame className="w-5 h-5" />
-      <span className="text-[10px] font-bold uppercase">Pulse</span>
-    </a>
+        <div className="flex items-center justify-between rounded-2xl border border-neutral-700 bg-black px-5 py-3 shadow-2xl">
 
-    <a href="/leaderboard" className="flex flex-col items-center text-neutral-300">
-      <Trophy className="w-5 h-5" />
-      <span className="text-[10px] font-bold uppercase">Ranks</span>
-    </a>
+          <a href="#trending" className="flex flex-col items-center text-orange-500">
+            <Flame className="w-5 h-5" />
+            <span className="text-[10px] font-bold uppercase">Pulse</span>
+          </a>
 
-    <a href="/debates" className="flex flex-col items-center text-neutral-300">
-      <MessageCircle className="w-5 h-5" />
-      <span className="text-[10px] font-bold uppercase">Debates</span>
-    </a>
+          <a href="/leaderboard" className="flex flex-col items-center text-neutral-300">
+            <Trophy className="w-5 h-5" />
+            <span className="text-[10px] font-bold uppercase">Ranks</span>
+          </a>
 
-    <a href="#ai-analyst" className="flex flex-col items-center text-neutral-300">
-      <Sparkles className="w-5 h-5" />
-      <span className="text-[10px] font-bold uppercase">AI</span>
-    </a>
+          <a href="/debates" className="flex flex-col items-center text-neutral-300">
+            <MessageCircle className="w-5 h-5" />
+            <span className="text-[10px] font-bold uppercase">Debates</span>
+          </a>
 
-  </div>
-</div>
+          <a href="#ai-analyst" className="flex flex-col items-center text-neutral-300">
+            <Sparkles className="w-5 h-5" />
+            <span className="text-[10px] font-bold uppercase">AI</span>
+          </a>
 
-    </div>
+        </div>
+      </div>
+
+    </div><AnimatePresence>
+        {showLoginModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4"
+            onClick={() => setShowLoginModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-950 p-6"
+            >
+              <h2 className="text-2xl font-bold text-white mb-2">
+                Join CineWars
+              </h2>
+
+              <p className="text-neutral-400 mb-6">
+                Enter the arena as a member or continue as a guest.
+              </p>
+
+              <a
+                href="/auth"
+                className="block w-full text-center bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl mb-3"
+              >
+                Continue with Google
+              </a>
+
+              <button
+                onClick={() => {
+                  window.location.href = "/username";
+                } }
+                className="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl"
+              >
+                Continue as Guest
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence></>
+  
   );
 }
 
