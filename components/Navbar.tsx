@@ -1,14 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, Menu, X, Home, Trophy, Ticket, Sparkles, LogIn } from "lucide-react";
-
+import { supabase } from "@/lib/supabase";
+import { ChevronDown, LogOut, User } from "lucide-react";
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+const [currentUser, setCurrentUser] = useState<any>(null);
+const [showDropdown, setShowDropdown] = useState(false);
+useEffect(() => {
+  const loadUser = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .single();
+
+    if (data) {
+      setCurrentUser(data);
+    }
+  };
+
+  loadUser();
+}, []);
+const handleLogout = async () => {
+  await supabase.auth.signOut();
+  window.location.reload();
+};
 
   const navItems = [
     { name: "Home", href: "/", icon: Home },
@@ -20,9 +48,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-neutral-900 bg-neutral-950/70 backdrop-blur-md"><div className="fixed top-0 left-0 z-[99999] bg-red-500 text-white text-xl p-4">
-  TEST NAV
-</div>
+  <nav className="sticky top-0 z-50 w-full border-b border-neutral-900 bg-neutral-950/70 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           
@@ -61,14 +87,44 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Desktop Action Button */}
-          <div className="hidden md:flex items-center">
-            <button className="group relative flex items-center space-x-2 overflow-hidden rounded-xl bg-neutral-900 px-5 py-2.5 text-sm font-black uppercase tracking-wider text-white border border-neutral-800 transition-all duration-300 hover:border-orange-500/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.2)]">
-              <span className="absolute inset-0 z-0 bg-gradient-to-r from-red-600 to-orange-500 opacity-0 transition-opacity duration-300 group-hover:opacity-10" />
-              <LogIn className="z-10 w-4 h-4 text-orange-500" />
-              <span className="z-10">Access Vault</span>
-            </button>
-          </div>
+         <div className="hidden md:flex items-center relative">
+  {currentUser ? (
+    <>
+      <button
+        onClick={() => setShowDropdown(!showDropdown)}
+        className="flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-white"
+      >
+        <User className="w-4 h-4" />
+        <span>{currentUser.username}</span>
+        <ChevronDown className="w-4 h-4" />
+      </button>
+
+      {showDropdown && (
+        <div className="absolute right-0 top-12 w-44 rounded-xl border border-neutral-800 bg-neutral-950 shadow-lg">
+          <button
+            className="flex w-full items-center gap-2 px-4 py-3 hover:bg-neutral-900"
+          >
+            <User className="w-4 h-4" />
+            Profile
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-2 px-4 py-3 hover:bg-neutral-900 text-red-400"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </div>
+      )}
+    </>
+  ) : (
+    <button className="group relative flex items-center space-x-2 overflow-hidden rounded-xl bg-neutral-900 px-5 py-2.5 text-sm font-black uppercase tracking-wider text-white border border-neutral-800">
+      <LogIn className="w-4 h-4 text-orange-500" />
+      <span>Join Arena</span>
+    </button>
+  )}
+</div>
 
           {/* Mobile Menu Toggle */}
           <div className="flex md:hidden min-h-[48px] items-center">
