@@ -18,14 +18,16 @@ export default function UsernamePage() {
     setLoading(true);
 
     const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  data: { user },
+} = await supabase.auth.getUser();
 
-    if (!user) {
-      alert("Please login first");
-      setLoading(false);
-      return;
-    }
+if (!user) {
+  localStorage.setItem("guestUsername", username);
+
+  setLoading(false);
+  router.push("/");
+  return;
+}
 
     const { data: existing } = await supabase
       .from("profiles")
@@ -46,14 +48,16 @@ export default function UsernamePage() {
     username,
   });
 
-    setLoading(false);
+setLoading(false);
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+if (error) {
+  alert(error.message);
+  return;
+}
 
-    router.push("/");
+localStorage.removeItem("guestUsername");
+
+router.push("/");
   };
 
   return (

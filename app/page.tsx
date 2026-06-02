@@ -274,6 +274,7 @@ export default function CineWarsHomepage() {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 async function fetchMovies() {
   try {
     const movies = await getTrendingMovies();
@@ -412,15 +413,26 @@ useEffect(() => {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) return;
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", user.id)
+        .maybeSingle();
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", user.id)
-      .maybeSingle();
+      setCurrentUser(profile);
+      return;
+    }
 
-    setCurrentUser(profile);
+    const guestUsername =
+      localStorage.getItem("guestUsername");
+
+    if (guestUsername) {
+      setCurrentUser({
+        username: guestUsername,
+        guest: true,
+      });
+    }
   };
 
   loadUser();
@@ -560,26 +572,53 @@ await fetchMovies();
             ))}
           </div>
 
-          <motion.button
-            onClick={() => setShowLoginModal(true)}
+          
+            <div className="relative">
+  <motion.button
+    onClick={() => {
+      if (currentUser?.username) {
+        setShowDropdown(!showDropdown);
+      } else {
+        setShowLoginModal(true);
+      }
+    }}
+    whileHover={{ scale: 1.04 }}
+    whileTap={{ scale: 0.98 }}
+    className="relative group overflow-hidden bg-gradient-to-r from-[#e63917] to-[#f97316] text-[11px] font-black uppercase tracking-widest px-5 py-3 rounded-xl text-white"
+  >
+    {currentUser?.username ? (
+      <span>@{currentUser.username} ▼</span>
+    ) : (
+      <span className="flex items-center gap-1.5">
+        Join Arena
+        <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
+      </span>
+    )}
+  </motion.button>
 
-            whileHover={{ scale: 1.04, boxShadow: "0 0 25px rgba(249,115,22,0.5)" }}
-            whileTap={{ scale: 0.98 }}
-            className="relative group overflow-hidden bg-gradient-to-r from-[#e63917] to-[#f97316] text-[11px] font-black uppercase tracking-widest px-5 py-3 rounded-xl text-white shadow-[0_4px_15px_rgba(230,57,23,0.3)] transition-all duration-300 font-bold"
-          >
-            <span className="relative z-10 flex items-center gap-1.5">
-  {currentUser?.username ? (
-    <>
-      @{currentUser.username}
-    </>
-  ) : (
-    <>
-      Join Arena
-      <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
-    </>
+  {showDropdown && currentUser?.username && (
+    <div className="absolute right-0 mt-2 w-40 rounded-xl bg-neutral-900 border border-neutral-800 shadow-lg overflow-hidden">
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-neutral-800"
+      >
+        Profile
+      </button>
+
+      <button
+        onClick={async () => {
+          localStorage.removeItem("guestUsername");
+
+await supabase.auth.signOut();
+
+window.location.reload();
+        }}
+        className="w-full text-left px-4 py-3 text-red-400 hover:bg-neutral-800"
+      >
+        Logout
+      </button>
+    </div>
   )}
-</span>
-          </motion.button>
+</div>          
         </div>
       </nav>
 

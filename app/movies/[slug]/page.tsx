@@ -21,6 +21,9 @@ export default function MovieDebatePage() {
   const [loading, setLoading] = useState(false);
   const [reactionCounts, setReactionCounts] = useState<any>({});
   const [likedDebates, setLikedDebates] = useState<any>({});
+  const [openingPrediction, setOpeningPrediction] = useState("");
+const [lifetimePrediction, setLifetimePrediction] = useState("");
+const [predictionLoading, setPredictionLoading] = useState(false);
 
   const fetchDebates = async () => {
     const { data } = await supabase
@@ -162,7 +165,57 @@ setLikedDebates((prev: any) => ({
   [debateId]: true,
 }));
   fetchReactions();
-};  return (
+}; const handlePredictionSubmit = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    alert("Please login to submit predictions");
+    return;
+  }
+
+  if (!openingPrediction && !lifetimePrediction) {
+    alert("Enter at least one prediction");
+    return;
+  }
+
+  setPredictionLoading(true);
+
+  try {
+    if (openingPrediction) {
+      await supabase.from("movie_predictions").insert([
+        {
+          user_id: user.id,
+          movie_id: slug,
+          prediction_type: "opening_day",
+          predicted_value: Number(openingPrediction),
+        },
+      ]);
+    }
+
+    if (lifetimePrediction) {
+      await supabase.from("movie_predictions").insert([
+        {
+          user_id: user.id,
+          movie_id: slug,
+          prediction_type: "lifetime",
+          predicted_value: Number(lifetimePrediction),
+        },
+      ]);
+    }
+
+    alert("Prediction submitted!");
+
+    setOpeningPrediction("");
+    setLifetimePrediction("");
+  } catch (error) {
+    console.error(error);
+    alert("Failed to submit prediction");
+  }
+
+  setPredictionLoading(false);
+}; return (
     <main className="min-h-screen bg-[#050303] text-white px-4 py-10">
 
       <div className="max-w-3xl mx-auto space-y-8">
@@ -183,7 +236,39 @@ setLikedDebates((prev: any) => ({
         </div>
 
         <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-4 space-y-4">
+<div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-4 space-y-4">
 
+  <h2 className="text-xl font-black uppercase text-orange-400">
+    Box Office Predictions
+  </h2>
+
+  <input
+    type="number"
+    value={openingPrediction}
+    onChange={(e) => setOpeningPrediction(e.target.value)}
+    placeholder="Opening Day Collection (Cr)"
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4 outline-none text-sm"
+  />
+
+  <input
+    type="number"
+    value={lifetimePrediction}
+    onChange={(e) => setLifetimePrediction(e.target.value)}
+    placeholder="Lifetime Collection (Cr)"
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4 outline-none text-sm"
+  />
+
+  <button
+    onClick={handlePredictionSubmit}
+    disabled={predictionLoading}
+    className="bg-orange-500 hover:bg-orange-400 transition-colors px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-white"
+  >
+    {predictionLoading
+      ? "Submitting..."
+      : "Submit Prediction"}
+  </button>
+
+</div>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
