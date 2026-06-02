@@ -184,25 +184,28 @@ setLikedDebates((prev: any) => ({
 
   try {
     if (openingPrediction) {
-      await supabase.from("movie_predictions").insert([
-        {
-          user_id: user.id,
-          movie_id: slug,
-          prediction_type: "opening_day",
-          predicted_value: Number(openingPrediction),
-        },
-      ]);
+      await supabase
+  .from("movie_predictions")
+  .update({
+    predicted_value: Number(openingPrediction),
+  })
+  .eq("user_id", user.id)
+  .eq("movie_id", slug)
+  .eq("prediction_type", "opening_day");
     }
 
     if (lifetimePrediction) {
-      await supabase.from("movie_predictions").insert([
-        {
-          user_id: user.id,
-          movie_id: slug,
-          prediction_type: "lifetime",
-          predicted_value: Number(lifetimePrediction),
-        },
-      ]);
+      await supabase.from("movie_predictions").upsert(
+  {
+    user_id: user.id,
+    movie_id: slug,
+    prediction_type: "lifetime",
+    predicted_value: Number(lifetimePrediction),
+  },
+  {
+    onConflict: "user_id,movie_id,prediction_type",
+  }
+);
     }
 
     alert("Prediction submitted!");
