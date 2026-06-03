@@ -8,7 +8,7 @@ export default function UserProfilePage() {
   const params = useParams();
   const username = params.username as string;
   
-  console.log("URL Username:", username);
+  
 
   const [predictionCount, setPredictionCount] = useState(0);
   useEffect(() => {
@@ -19,9 +19,7 @@ export default function UserProfilePage() {
   .ilike("username", username)
   .maybeSingle();
 
-console.log("USERNAME:", username);
-console.log("PROFILE:", profile);
-console.log("ERROR:", error);
+
 
 if (!profile) return;
 
@@ -30,8 +28,7 @@ if (!profile) return;
   .select("*")
   .eq("user_id", profile.id);
 
-console.log("PREDICTIONS:", predictions);
-console.log("PREDICTION ERROR:", predictionError);
+
 
 setPredictionCount(predictions?.length || 0);
   };
@@ -49,9 +46,9 @@ setPredictionCount(predictions?.length || 0);
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
-    <p className="text-neutral-400 text-sm">Predictions</p>
-    <p className="text-3xl font-black">0</p>
-  </div>
+  <p className="text-neutral-400 text-sm">Predictions</p>
+  <p className="text-3xl font-black">{predictionCount}</p>
+</div>
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
     <p className="text-neutral-400 text-sm">Accuracy</p>
