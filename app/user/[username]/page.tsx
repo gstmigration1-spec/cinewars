@@ -11,6 +11,8 @@ export default function UserProfilePage() {
   
 
   const [predictionCount, setPredictionCount] = useState(0);
+const [trustScore, setTrustScore] = useState(0);
+const [avgAccuracy, setAvgAccuracy] = useState(0);
   useEffect(() => {
   const loadProfile = async () => {
   const { data: profile, error } = await supabase
@@ -31,6 +33,29 @@ if (!profile) return;
 
 
 setPredictionCount(predictions?.length || 0);
+const totalPoints =
+  predictions?.reduce(
+    (sum, prediction) => sum + (prediction.points || 0),
+    0
+  ) || 0;
+
+setTrustScore(totalPoints);
+
+const scoredPredictions =
+  predictions?.filter(
+    (prediction) => prediction.accuracy !== null
+  ) || [];
+
+const averageAccuracy =
+  scoredPredictions.length > 0
+    ? scoredPredictions.reduce(
+        (sum, prediction) =>
+          sum + Number(prediction.accuracy),
+        0
+      ) / scoredPredictions.length
+    : 0;
+
+setAvgAccuracy(Number(averageAccuracy.toFixed(2)));
   };
 
   loadProfile();
@@ -52,12 +77,16 @@ setPredictionCount(predictions?.length || 0);
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
     <p className="text-neutral-400 text-sm">Accuracy</p>
-    <p className="text-3xl font-black">0%</p>
+    <p className="text-3xl font-black">
+  {avgAccuracy}%
+</p>
   </div>
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
     <p className="text-neutral-400 text-sm">Trust Score</p>
-    <p className="text-3xl font-black">0</p>
+    <p className="text-3xl font-black">
+  {trustScore}
+</p>
   </div>
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
