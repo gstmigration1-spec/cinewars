@@ -10,9 +10,10 @@ export default function UserProfilePage() {
   
   
 
-  const [predictionCount, setPredictionCount] = useState(0);
+ const [predictionCount, setPredictionCount] = useState(0);
 const [trustScore, setTrustScore] = useState(0);
 const [avgAccuracy, setAvgAccuracy] = useState(0);
+const [rank, setRank] = useState<number | null>(null);
   useEffect(() => {
   const loadProfile = async () => {
   const { data: profile, error } = await supabase
@@ -56,6 +57,44 @@ const averageAccuracy =
     : 0;
 
 setAvgAccuracy(Number(averageAccuracy.toFixed(2)));
+const { data: profiles } = await supabase
+  .from("profiles")
+  .select("*");
+
+if (profiles) {
+  const rankings = [];
+
+  for (const p of profiles) {
+    const { data: preds } = await supabase
+      .from("movie_predictions")
+      .select("points")
+      .eq("user_id", p.id);
+
+    const total =
+      preds?.reduce(
+        (sum, row) => sum + (row.points || 0),
+        0
+      ) || 0;
+
+    rankings.push({
+      username: p.username,
+      points: total,
+    });
+  }
+
+  rankings.sort(
+    (a, b) => b.points - a.points
+  );
+
+  const userRank =
+    rankings.findIndex(
+      (r) =>
+        r.username.toLowerCase() ===
+        profile.username.toLowerCase()
+    ) + 1;
+
+  setRank(userRank);
+}
   };
 
   loadProfile();
@@ -91,7 +130,9 @@ setAvgAccuracy(Number(averageAccuracy.toFixed(2)));
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
     <p className="text-neutral-400 text-sm">Rank</p>
-    <p className="text-3xl font-black">#-</p>
+    <p className="text-3xl font-black">
+  #{rank || "-"}
+</p>
   </div>
 
 </div>

@@ -101,13 +101,13 @@ const handleLogout = async () => {
 
       {showDropdown && (
         <div className="absolute right-0 top-12 w-44 rounded-xl border border-neutral-800 bg-neutral-950 shadow-lg">
-          <button
-            className="flex w-full items-center gap-2 px-4 py-3 hover:bg-neutral-900"
-          >
-            <User className="w-4 h-4" />
-            Profile
-          </button>
-
+          <Link
+  href={`/user/${currentUser.username}`}
+  className="flex w-full items-center gap-2 px-4 py-3 hover:bg-neutral-900"
+>
+  <User className="w-4 h-4" />
+  Profile
+</Link>
           <button
             onClick={handleLogout}
             className="flex w-full items-center gap-2 px-4 py-3 hover:bg-neutral-900 text-red-400"

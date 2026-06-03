@@ -1,15 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-
 export default function AdminPage() {
   const [movieId, setMovieId] = useState("");
   const [predictionType, setPredictionType] =
     useState("opening_day");
   const [actualValue, setActualValue] = useState("");
+  const [currentUser, setCurrentUser] = useState<any>(null);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const checkAdmin = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .single();
+
+    setCurrentUser(profile);
+    setLoading(false);
+  };
+
+  checkAdmin();
+}, []);
   const saveResult = async () => {
   const { error } = await supabase
+  
+  
   .from("movie_results")
   .upsert(
     {
@@ -25,6 +51,9 @@ export default function AdminPage() {
     alert(error.message);
     return;
   }
+  console.log("MOVIE ID:", movieId);
+console.log("TYPE:", predictionType);
+console.log("ACTUAL:", Number(actualValue));
 const { data, error: rpcError } = await supabase.rpc(
   "score_predictions",
   {
@@ -33,14 +62,42 @@ const { data, error: rpcError } = await supabase.rpc(
     p_actual_value: Number(actualValue),
   }
 );
+if (rpcError) {
+  alert(rpcError.message);
+  console.error(rpcError);
+  return;
+}
 
 console.log("RPC DATA:", data);
-console.log("RPC ERROR:", rpcError);  alert("Result saved successfully");
+console.log("RPC ERROR:", rpcError);
+
+
+
+alert("Result saved successfully");
 
   setMovieId("");
   setActualValue("");
 };
+if (loading) {
+  return (
+    <div className="min-h-screen bg-black text-white p-8">
+      Loading...
+    </div>
+  );
+}
 
+if (
+  !currentUser ||
+  currentUser.username?.toLowerCase() !== "mafiamovie"
+) {
+  return (
+    <div className="min-h-screen bg-black text-white p-8">
+      <h1 className="text-3xl font-bold text-red-500">
+        Access Denied
+      </h1>
+    </div>
+  );
+}
   return (
     <main className="min-h-screen bg-[#050303] text-white p-8">
       <div className="max-w-4xl mx-auto">
