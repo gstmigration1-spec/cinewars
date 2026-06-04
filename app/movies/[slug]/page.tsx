@@ -24,6 +24,8 @@ export default function MovieDebatePage() {
   const [openingPrediction, setOpeningPrediction] = useState("");
 const [lifetimePrediction, setLifetimePrediction] = useState("");
 const [predictionLoading, setPredictionLoading] = useState(false);
+const [openingResult, setOpeningResult] = useState<any>(null);
+const [openingPredictors, setOpeningPredictors] = useState(0);
 
   const fetchDebates = async () => {
     const { data } = await supabase
@@ -52,11 +54,31 @@ const [predictionLoading, setPredictionLoading] = useState(false);
 
   setReactionCounts(grouped);
 };
+const fetchResults = async () => {
+  const { data: result } = await supabase
+    .from("movie_results")
+    .select("*")
+    .eq("movie_id", slug)
+    .eq("prediction_type", "opening_day")
+    .maybeSingle();
 
+  setOpeningResult(result);
+
+  const { count } = await supabase
+    .from("movie_predictions")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("movie_id", slug)
+    .eq("prediction_type", "opening_day");
+
+  setOpeningPredictors(count || 0);
+};
  useEffect(() => {
   fetchDebates();
-  fetchReactions();
-
+fetchReactions();
+fetchResults();
   const channel = supabase
   .channel("movie-debates-realtime")
 
@@ -236,6 +258,21 @@ setLikedDebates((prev: any) => ({
             Fans are actively debating this movie’s hype,
             box office potential, and trailer impact.
           </p>
+          {openingResult && (
+  <div className="bg-[#120908] border border-green-700 rounded-2xl p-5 mt-6">
+    <div className="text-green-400 font-black uppercase text-sm mb-2">
+      Official Opening Day Result
+    </div>
+
+    <div className="text-4xl font-black">
+      ₹{openingResult.actual_value} Cr
+    </div>
+
+    <div className="text-neutral-400 mt-2">
+      {openingPredictors} Predictors
+    </div>
+  </div>
+)}
         </div>
 
         <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-4 space-y-4">

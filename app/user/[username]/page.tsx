@@ -7,13 +7,45 @@ import { supabase } from "@/lib/supabase";
 export default function UserProfilePage() {
   const params = useParams();
   const username = params.username as string;
+  const [recentPredictions, setRecentPredictions] = useState<any[]>([]);
   
-  
+  const getBadges = (
+  trustScore: number,
+  accuracy: number,
+  predictionCount: number,
+  rank?: number
+) => {
+  const badges = [];
+
+  if (accuracy >= 90 && predictionCount >= 5)
+    badges.push("🎯 Oracle");
+
+  if (trustScore >= 50)
+    badges.push("🦈 Box Office Shark");
+
+  if (predictionCount >= 10)
+    badges.push("🎬 Veteran");
+
+  if (rank === 1)
+    badges.push("👑 Top Predictor");
+
+  if (predictionCount >= 25)
+    badges.push("🏆 Prediction Master");
+
+  return badges;
+};
+
 
  const [predictionCount, setPredictionCount] = useState(0);
 const [trustScore, setTrustScore] = useState(0);
 const [avgAccuracy, setAvgAccuracy] = useState(0);
 const [rank, setRank] = useState<number | null>(null);
+const badges = getBadges(
+  trustScore,
+  avgAccuracy,
+  predictionCount,
+  rank || undefined
+);
   useEffect(() => {
   const loadProfile = async () => {
   const { data: profile, error } = await supabase
@@ -94,6 +126,20 @@ if (profiles) {
     ) + 1;
 
   setRank(userRank);
+  const scoredPredictions =
+  predictions?.filter(
+    (p) => p.status === "scored"
+  ) || [];
+
+setRecentPredictions(
+  scoredPredictions
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() -
+        new Date(a.created_at).getTime()
+    )
+    .slice(0, 5)
+);
 }
   };
 
@@ -107,6 +153,16 @@ if (profiles) {
         <h1 className="text-5xl font-black">
           @{username}
         </h1>
+        <div className="flex flex-wrap gap-2 mt-4">
+  {badges.map((badge) => (
+    <div
+      key={badge}
+      className="px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-300 text-sm"
+    >
+      {badge}
+    </div>
+  ))}
+</div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
@@ -135,6 +191,73 @@ if (profiles) {
 </p>
   </div>
 
+</div>
+<div className="mt-10">
+  <h2 className="text-2xl font-black mb-4">
+    Recent Scored Predictions
+  </h2>
+
+  {recentPredictions.length === 0 ? (
+    <div className="text-neutral-500">
+      No scored predictions yet.
+    </div>
+  ) : (
+    <div className="grid md:grid-cols-2 gap-4">
+      {recentPredictions.map((prediction) => (
+        <div
+          key={prediction.id}
+          className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-5"
+        >
+          <div className="font-bold text-lg">
+            {prediction.movie_id
+  .split("-")
+  .map(
+  (word: string) =>
+    word.charAt(0).toUpperCase() +
+    word.slice(1)
+)
+  .join(" ")}
+          </div>
+
+          <div className="text-neutral-400 text-sm mb-3">
+            {prediction.prediction_type === "opening_day"
+  ? "Opening Day"
+  : "Lifetime"}
+          </div>
+
+          <div className="grid grid-cols-4 gap-4 mt-4">
+            <div>
+              <div className="text-neutral-500 text-xs">
+                Predicted
+              </div>
+              <div>{prediction.predicted_value}</div>
+            </div>
+
+            <div>
+              <div className="text-neutral-500 text-xs">
+                Actual
+              </div>
+              <div>{prediction.actual_value}</div>
+            </div>
+
+            <div>
+              <div className="text-neutral-500 text-xs">
+                Accuracy
+              </div>
+              <div>{prediction.accuracy}%</div>
+            </div>
+
+            <div>
+              <div className="text-neutral-500 text-xs">
+                Points
+              </div>
+              <div>{prediction.points}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
 </div>
       </div>
     </main>
