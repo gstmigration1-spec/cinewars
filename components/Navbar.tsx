@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Menu, X, Home, Trophy, Ticket, Sparkles, LogIn } from "lucide-react";
+import { Flame, Menu, X, Home, Trophy, Ticket, Sparkles, LogIn,Film } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ChevronDown, LogOut, User } from "lucide-react";
 export default function Navbar() {
@@ -44,6 +44,7 @@ const handleLogout = async () => {
     { name: "Receipts", href: "/receipts", icon: Ticket },
     { name: "AI Analyst", href: "/ai-analyst", icon: Sparkles },
     { name: "Debates", href: "/debates", icon: Flame },
+    { name: "Archive", href: "/archive", icon: Film },
     
   ];
 

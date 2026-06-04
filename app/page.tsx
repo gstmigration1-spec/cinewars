@@ -97,54 +97,6 @@ communityConfidence: "Very High",
   }
 ];
 
-const mockBoxOfficeCalls = [
-  {
-    id: "call-1",
-    username: "ReviewRaja",
-    avatar: "👑",
-    userType: "Critic Hunter",
-    movieTitle: "King",
-    predictionType: "Opening Day",
-    predictedValue: "₹76.5 Cr",
-    actualValue: "₹78.0 Cr",
-    accuracy: 98.1,
-    status: "AGED WELL",
-    timestamp: "2 hours ago",
-    trustScore: 890,
-    badgeType: "critic-killer",
-    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&q=80"
-  },
-  {
-    id: "call-2",
-    username: "HypeMerchant",
-    avatar: "🔥",
-    userType: "Hype Detector",
-    movieTitle: "Awarapan 2",
-    predictionType: "Lifetime India",
-    predictedValue: "₹150 Cr",
-    actualValue: "₹45 Cr",
-    accuracy: 30.0,
-    status: "AGED BADLY",
-    timestamp: "2 days ago",
-    trustScore: 610,
-    badgeType: "general",
-    backdrop: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80"
-  },
-  {
-    id: "call-3",
-    username: "BoxOfficeSniper",
-    avatar: "🎯",
-    userType: "Weekend Sniper",
-    movieTitle: "Batwara 1947",
-    predictionType: "Opening Weekend",
-    predictedValue: "₹120 Cr",
-    status: "PENDING",
-    timestamp: "Just now",
-    trustScore: 945,
-    badgeType: "oracle",
-    backdrop: "https://images.unsplash.com/photo-1514539079130-25950c84af65?w=600&q=80"
-  }
-];
 
 const mockRealityChecks = [
   {
@@ -272,6 +224,7 @@ export default function CineWarsHomepage() {
   const [loadingAi, setLoadingAi] = useState(false);
   const [liveFeed, setLiveFeed] = useState(mockLiveFeed);
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -396,48 +349,50 @@ setTrendingMovies(sortedMovies);
 
 useEffect(() => {
   fetchMovies();
-}, []);  useEffect(() => {
-    const interval = setInterval(() => {
-      setLiveFeed((prev) => {
-        const copy = [...prev];
-        const first = copy.shift();
-        if (first) copy.push(first);
-        return copy;
-      });
-    }, 3500);
-    return () => clearInterval(interval);
-  }, []);
-  useEffect(() => {
-  const loadUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", user.id)
-        .maybeSingle();
+  const loadProvenPredictions = async () => {
+  const { data: predictions } = await supabase
+    .from("movie_predictions")
+    .select("*")
+    .eq("status", "scored")
+    .order("accuracy", {
+      ascending: false,
+    })
+    .limit(6);
 
-      setCurrentUser(profile);
-      return;
-    }
+  if (!predictions) return;
 
-    const guestUsername =
-      localStorage.getItem("guestUsername");
+  const userIds = predictions.map((p) => p.user_id);
+  const movieIds = predictions.map((p) => p.movie_id);
 
-    if (guestUsername) {
-      setCurrentUser({
-        username: guestUsername,
-        guest: true,
-      });
-    }
-  };
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, username")
+    .in("id", userIds);
 
-  loadUser();
+  const { data: movies } = await supabase
+  .from("movies")
+  .select("movie_id, title")
+  .in("movie_id", movieIds);
+
+  const merged = predictions.map((prediction) => ({
+    ...prediction,
+    username:
+      profiles?.find(
+        (profile) => profile.id === prediction.user_id
+      )?.username || "Anonymous",
+
+    movieTitle:
+  movies?.find(
+    (movie) => movie.movie_id === prediction.movie_id
+  )?.title || prediction.movie_id,
+  }));
+
+  setProvenPredictions(merged);
+};
+
+  loadProvenPredictions();
 }, []);
-
 const handlePulseVote = async (movieId: string, option: string) => {
   setPredictionPulse(prev => ({
     ...prev,
@@ -557,10 +512,11 @@ await fetchMovies();
 
           <div className="hidden md:flex items-center space-x-2 text-xs font-black uppercase tracking-wider text-neutral-400">
             {[
-              { label: "Predictions", href: "#trending" },
-              { label: "Rankings", href: "/leaderboard" },
-              { label: "Debates", href: "/debates" }
-            ].map((item, idx) => (
+  { label: "Predictions", href: "#trending" },
+  { label: "Rankings", href: "/leaderboard" },
+  { label: "Debates", href: "/debates" },
+  { label: "Archive", href: "/archive" },
+].map((item, idx) => (
               <a
                 key={idx}
                 href={item.href}
@@ -1329,64 +1285,69 @@ window.location.reload();
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {mockBoxOfficeCalls.map((call) => {
+            {provenPredictions.map((call) => {
               const isAgedWell = call.status === "AGED WELL";
               const isAgedBadly = call.status === "AGED BADLY";
               const isPending = call.status === "PENDING";
 
               return (
                 <div key={call.id} className="glass-card relative rounded-2xl border border-[#3e2622] bg-neutral-950 overflow-hidden shadow-2xl flex flex-col justify-between group transition hover:translate-y-[-4px] hover:border-[#5d3933]">
-                  <div className="absolute inset-0 bg-cover bg-center opacity-[0.03] mix-blend-overlay pointer-events-none" style={{ backgroundImage: `url(${call.backdrop})` }} />
                   <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#f97316]/20 to-transparent" />
 
-                  <div className="p-5 space-y-5 relative z-10">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2.5">
-                        <span className="text-xl bg-[#0e0a09] p-1.5 rounded-lg border border-[#2d1b18]">{call.avatar}</span>
-                        <div>
-                          <Link href={`/user/${call.username.toLowerCase()}`}>
-                            <span className="text-xs font-black text-white block hover:text-orange-400 transition">
-                              @{call.username}
-                            </span>
-                          </Link>
-                          <span className={`text-[9px] border px-2 py-0.2 rounded font-black uppercase tracking-wider ${getBadgeStyle(call.badgeType)}`}>{call.userType}</span>
-                        </div>
-                      </div>
+                                      <div className="p-5 space-y-5 relative z-10">
+  <div className="flex items-center justify-between">
+    <div>
+      <span className="text-xs font-black text-white block">
+  @{call.username}
+</span>
+      <span className="text-[9px] border px-2 py-0.5 rounded font-black uppercase tracking-wider text-orange-400 border-orange-500/30">
+        {call.prediction_type}
+      </span>
+    </div>
 
-                      <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border bg-neutral-900 text-neutral-400 border-neutral-800">
-                        {isAgedWell && <ThumbsUp className="w-3 h-3 text-emerald-400" />}
-                        {isAgedBadly && <ThumbsDown className="w-3 h-3 text-red-500" />}
-                        {call.status}
-                      </span>
-                    </div>
+    <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border bg-neutral-900 text-neutral-400 border-neutral-800">
+      {call.status}
+    </span>
+  </div>
 
-                    <div>
-                      <span className="text-[8px] font-black uppercase tracking-widest text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/20 font-bold">
-                        {call.predictionType}
-                      </span>
-                      <h3 className="text-xl font-black uppercase text-white mt-1.5 truncate text-display">{call.movieTitle}</h3>
-                    </div>
+  <div>
+    <h3 className="text-xl font-black uppercase text-white mt-1.5 truncate text-display">
+      {call.movieTitle}
+    </h3>
+  </div>
 
-                    <div className="bg-[#0c0807]/90 border border-[#2d1b18] rounded-xl p-3 grid grid-cols-2 gap-2 text-center font-mono">
-                      <div className="border-r border-[#2d1b18] pr-1">
-                        <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Box Office Call</span>
-                        <span className="text-sm font-black text-white">{call.predictedValue}</span>
-                      </div>
-                      <div className="pl-1">
-                        <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Actual Result</span>
-                        <span className="text-sm font-black text-white">
-                          {isPending ? "Tracking..." : call.actualValue}
-                        </span>
-                      </div>
-                    </div>
+  <div className="bg-[#0c0807]/90 border border-[#2d1b18] rounded-xl p-3 grid grid-cols-2 gap-2 text-center font-mono">
+    <div className="border-r border-[#2d1b18] pr-1">
+      <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5">
+        Predicted
+      </span>
 
-                    {!isPending && call.accuracy && (
-                      <div className="flex items-center justify-between border-t border-[#2d1b18] pt-3">
-                        <span className="text-[9px] text-neutral-500 font-black uppercase tracking-wider font-bold">Audience Alignment Score</span>
-                        <span className="text-xl font-black font-mono text-emerald-400">{call.accuracy}%</span>
-                      </div>
-                    )}
-                  </div>
+      <span className="text-sm font-black text-white">
+        ₹{call.predicted_value}
+      </span>
+    </div>
+
+    <div className="pl-1">
+      <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5">
+        Actual
+      </span>
+
+      <span className="text-sm font-black text-white">
+        ₹{call.actual_value}
+      </span>
+    </div>
+  </div>
+
+  <div className="flex items-center justify-between border-t border-[#2d1b18] pt-3">
+    <span className="text-[9px] text-neutral-500 font-black uppercase tracking-wider">
+      Accuracy
+    </span>
+
+    <span className="text-xl font-black font-mono text-emerald-400">
+      {call.accuracy?.toFixed(2)}%
+    </span>
+  </div>
+</div>
 
                   <div className="relative h-4 w-full flex items-center justify-between pointer-events-none px-1 bg-transparent">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#0c0807] border-r border-[#2d1b18] -ml-2 z-20" />
@@ -1395,13 +1356,16 @@ window.location.reload();
                   </div>
 
                   <div className="bg-[#0e0a09] px-4 py-3 flex items-center justify-between border-t border-[#2d1b18] text-[10px] text-neutral-500 font-medium rounded-b-2xl">
-                    <span>Reliability Score: <strong className="text-white font-mono">{call.trustScore}</strong></span>
-                    <button className="flex items-center space-x-1 font-black uppercase text-neutral-300 hover:text-white transition group/share font-bold">
-                      <Share2 className="w-3 h-3 text-orange-500 group-hover/share:scale-110 transition" />
-                      <span>Share Call</span>
-                    </button>
+  <span>
+    Points: <strong className="text-white">{call.points}</strong>
+  </span>
+
+  <button className="flex items-center space-x-1 font-black uppercase text-neutral-300 hover:text-white transition group/share font-bold">
+    <Share2 className="w-3 h-3 text-orange-500 group-hover/share:scale-110 transition" />
+    <span>Share Call</span>
+  </button>
+</div>  
                   </div>
-                </div>
               );
             })}
           </div>
