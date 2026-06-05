@@ -1393,51 +1393,73 @@ window.location.reload();
           <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-orange-500/5 blur-[80px] rounded-full pointer-events-none" />
 
           <div className="max-w-3xl space-y-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-500 uppercase border border-orange-500/20 tracking-wider font-bold">
-              <Sparkles className="w-3.5 h-3.5" /> Predictive Credibility Intelligence Engine
-            </div>
-            <h2 className="text-4xl font-black uppercase tracking-tight text-white text-display">
-              Consult the AI Box Office Analyst
-            </h2>
-            <p className="text-sm text-neutral-400 font-medium leading-relaxed">
-              Verify trailing hypotheses against empirical parameters. Query deep tracking metrics, reviewer reliability profiles, and historical audience alignment scores to isolate accurate box office forecasts.
-            </p>
+  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-500 uppercase border border-orange-500/20 tracking-wider">
+    <Sparkles className="w-3.5 h-3.5" />
+    Future Feature
+  </div>
 
-            <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-wider font-bold">
-              <button onClick={() => setAiQuestion("Can King cross ₹1000 Cr?")} className="px-3 py-1.5 rounded-lg bg-neutral-900 border border-[#2d1b18] text-neutral-400 hover:text-white transition">“Can King cross ₹1000 Cr?”</button>
-              <button onClick={() => setAiQuestion("Is Coolie overhyped?")} className="px-3 py-1.5 rounded-lg bg-neutral-900 border border-[#2d1b18] text-neutral-400 hover:text-white transition">“Is Coolie overhyped?”</button>
-              <button onClick={() => setAiQuestion("Will WOM save Spirit?")} className="px-3 py-1.5 rounded-lg bg-neutral-900 border border-[#2d1b18] text-neutral-400 hover:text-white transition">“Will WOM save Spirit?”</button>
-            </div>
+  <h2 className="text-4xl font-black uppercase tracking-tight text-white text-display">
+    AI Box Office Analyst
+  </h2>
 
-            <form onSubmit={handleAiBanter} className="flex flex-col sm:flex-row gap-3 pt-2">
-              <input
-                type="text"
-                value={aiQuestion}
-                onChange={(e) => setAiQuestion(e.target.value)}
-                placeholder="Query data: 'Will word of mouth rescue Spirit at the box office?'"
-                className="flex-1 bg-neutral-950 rounded-xl px-4 py-3.5 text-sm text-white border border-[#2d1b18] focus:outline-none focus:border-orange-500 font-medium transition" />
-              <button
-                type="submit"
-                disabled={loadingAi}
-                className="px-6 py-3.5 bg-neutral-100 hover:bg-neutral-200 text-black font-black uppercase text-xs tracking-wider rounded-xl transition shrink-0 disabled:opacity-50 font-bold"
-              >
-                {loadingAi ? "Auditing parameters..." : "Analyze Track Records"}
-              </button>
-            </form>
+  <p className="text-sm text-neutral-400 leading-relaxed">
+    We're training the CineWars AI Analyst on real prediction history,
+    trust scores, community sentiment, and box office outcomes.
+  </p>
 
-            <AnimatePresence>
-              {aiResponse && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="bg-neutral-950/80 border border-[#2d1b18] rounded-xl p-4 mt-4 font-mono text-[11px] text-neutral-300 leading-relaxed border-l-2 border-l-orange-500 shadow-inner"
-                >
-                  {aiResponse}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+  <div className="bg-neutral-950/80 border border-[#2d1b18] rounded-2xl p-6 space-y-4">
+    <div className="flex items-center gap-3">
+      <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse" />
+
+      <span className="text-orange-400 font-black uppercase tracking-widest text-xs">
+        Coming Soon
+      </span>
+    </div>
+
+    <p className="text-sm text-neutral-300 leading-relaxed">
+      The AI Analyst will launch once CineWars has accumulated enough
+      prediction history and outcome data to generate reliable insights.
+    </p>
+
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
+        <div className="text-white font-black">
+          {heroStats.predictions}
+        </div>
+        <div className="text-[10px] text-neutral-500 uppercase">
+          Predictions
+        </div>
+      </div>
+
+      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
+        <div className="text-white font-black">
+          {heroStats.debates}
+        </div>
+        <div className="text-[10px] text-neutral-500 uppercase">
+          Debates
+        </div>
+      </div>
+
+      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
+        <div className="text-white font-black">
+          {heroStats.members}
+        </div>
+        <div className="text-[10px] text-neutral-500 uppercase">
+          Members
+        </div>
+      </div>
+
+      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
+        <div className="text-white font-black">
+          {heroStats.votes}
+        </div>
+        <div className="text-[10px] text-neutral-500 uppercase">
+          Votes
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
         </section>
 
       </div>
