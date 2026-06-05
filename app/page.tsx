@@ -222,10 +222,11 @@ export default function CineWarsHomepage() {
   const [aiQuestion, setAiQuestion] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
-  const [liveFeed, setLiveFeed] = useState(mockLiveFeed);
+  const [liveFeed, setLiveFeed] = useState<any[]>([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [bestCalls, setBestCalls] = useState<any[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -355,13 +356,16 @@ useEffect(() => {
   const { data: predictions } = await supabase
     .from("movie_predictions")
     .select("*")
+    
     .eq("status", "scored")
     .order("accuracy", {
       ascending: false,
     })
     .limit(6);
+    
 
   if (!predictions) return;
+  
 
   const userIds = predictions.map((p) => p.user_id);
   const movieIds = predictions.map((p) => p.movie_id);
@@ -390,6 +394,16 @@ useEffect(() => {
   }));
 
   setProvenPredictions(merged);
+
+setBestCalls(
+  [...merged]
+    .sort(
+      (a, b) =>
+        Number(b.accuracy) -
+        Number(a.accuracy)
+    )
+    .slice(0, 3)
+);
 };
 const loadLeaderboard = async () => {
   const { data: profiles } = await supabase
@@ -440,9 +454,55 @@ const loadLeaderboard = async () => {
     leaderboardData.slice(0, 6)
   );
 };
+const loadLiveFeed = async () => {
+  const { data: predictions } = await supabase
+    .from("movie_predictions")
+    .select("*")
+    .order("created_at", {
+      ascending: false,
+    })
+    .limit(6);
 
+  if (!predictions) return;
+
+  const userIds = predictions.map(
+    (p) => p.user_id
+  );
+
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, username")
+    .in("id", userIds);
+
+  const feed = predictions.map((prediction) => {
+    const username =
+      profiles?.find(
+        (profile) =>
+          profile.id === prediction.user_id
+      )?.username || "Anonymous";
+
+    return {
+      id: prediction.id,
+      text:
+        prediction.status === "scored"
+          ? `@${username} scored ${prediction.accuracy}% accuracy`
+          : `@${username} ${
+              prediction.prediction_type === "opening_day"
+                ? "Opening Day"
+                : "Lifetime"
+            } call: ₹${prediction.predicted_value} Cr for ${prediction.movie_id}`,
+      type:
+        prediction.status === "scored"
+          ? "scored"
+          : "prediction",
+    };
+  });
+
+  setLiveFeed(feed);
+};
   loadProvenPredictions();
   loadLeaderboard();
+  loadLiveFeed();
 }, []);
 const handlePulseVote = async (movieId: string, option: string) => {
   setPredictionPulse(prev => ({
@@ -744,10 +804,16 @@ window.location.reload();
           </span>
 
           <span>
-            <strong className="text-orange-400">14,382 fans</strong> debating
-            <span className="text-white font-bold"> RAMAYANA </span>
-            right now
-          </span>
+  <strong className="text-orange-400">
+    {(trendingMovies as any)?.[0]?.debateCount || 0} fans
+  </strong>{" "}
+  debating
+  <span className="text-white font-bold">
+    {" "}
+    {(trendingMovies as any)?.[0]?.title?.toUpperCase() || "MOVIES"}{" "}
+  </span>
+  right now
+</span>
         </div>
         {/* 3. IMPROVED LIVE PULSE FEED SECTION WITH GLOW & PULSING DOT */}
         <section className="space-y-4 bg-gradient-to-r from-[#170e0d] to-[#0c0807] border border-[#341d19] rounded-2xl p-5 shadow-xl">
@@ -1364,15 +1430,18 @@ window.location.reload();
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
             <div>
               <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
-                CRITICS GOT IT WRONG
-              </h2>
-              <p className="text-xs text-neutral-500 font-medium">Moments where reviewer reliability index parameters completely collapsed under general audience tracking tracks.</p>
+  🏆 BEST CALLS OF THE MONTH
+</h2>
+              <p className="text-xs text-neutral-500 font-medium">
+  The most accurate box office predictions made by the CineWars community.
+</p>
             </div>
-            <span className="text-[10px] px-2 py-1 bg-red-500/10 text-red-500 rounded-lg border border-red-500/20 font-black uppercase tracking-widest font-bold">Pulse Arena 🔥</span>
-          </div>
+<span className="text-[10px] px-2 py-1 bg-orange-500/10 text-orange-400 rounded-lg border border-orange-500/20 font-black uppercase tracking-widest">
+  Hall Of Fame 🏆
+</span>          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {mockRealityChecks.map((item) => (
+            {bestCalls.map((item) => (
               <motion.div
                 key={item.id}
                 whileHover={{ y: -4, borderColor: "rgba(239, 68, 68, 0.35)" }}
@@ -1383,38 +1452,46 @@ window.location.reload();
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500 bg-neutral-900 px-2 py-0.5 rounded border border-[#2d1b18] font-bold">
-                      {item.type}
+                      @{item.username}
                     </span>
                     <span className="text-[9px] font-black bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20 uppercase tracking-wide font-bold">
-                      {item.status}
+                      {item.accuracy}%
                     </span>
                   </div>
                   <h3 className="text-xl font-black uppercase tracking-wide text-white group-hover:text-orange-400 transition-colors text-display">
-                    {item.movieTitle}
+                    {item.movieTitle || item.movie_id}
                   </h3>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 bg-[#0c0807]/80 rounded-xl p-3 border border-[#2d1b18] text-center items-center font-mono">
                   <div className="border-r border-neutral-800/80 pr-1">
-                    <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">{item.leftLabel}</span>
-                    <span className="text-xs font-black text-red-400 line-clamp-1">{item.leftValue}</span>
+                    <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Predicted</span>
+                    <span className="text-xs font-black text-red-400 line-clamp-1">₹{item.predicted_value} Cr</span>
                   </div>
                   <div className="pl-1">
-                    <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">{item.rightLabel}</span>
-                    <span className="text-xs font-black text-emerald-400 line-clamp-1 uppercase tracking-wider">{item.rightValue}</span>
+                    <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Actual</span>
+                    <span className="text-xs font-black text-emerald-400 line-clamp-1 uppercase tracking-wider">₹{item.actual_value} Cr</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-neutral-400 font-medium leading-relaxed bg-[#1c110e]/40 border border-[#2d1b18] p-3 rounded-xl italic">
-                  "{item.banterText}"
-                </p>
-
+                <div className="text-xs text-neutral-400 font-medium leading-relaxed bg-[#1c110e]/40 border border-[#2d1b18] p-3 rounded-xl">
+  Accuracy: <span className="text-emerald-400 font-black">
+    {Number(item.accuracy).toFixed(2)}%
+  </span>
+  {" • "}
+  Points Earned: <span className="text-orange-400 font-black">
+    {item.points}
+  </span>
+</div>
                 <div className="pt-2 border-t border-[#2d1b18] flex justify-between items-center text-[10px]">
-                  <span className="text-neutral-600 font-bold">14.5K Claims Disagreed</span>
-                  <button className="flex items-center gap-1 font-black uppercase text-orange-400 hover:text-orange-300 transition tracking-wider font-bold">
-                    Settle Debate <MessageSquare className="w-3 h-3" />
-                  </button>
-                </div>
+  <span className="text-neutral-500 font-bold">
+    Trust Score Impact
+  </span>
+
+  <span className="text-orange-400 font-black">
+    +{item.points} Points
+  </span>
+</div>
               </motion.div>
             ))}
           </div>
