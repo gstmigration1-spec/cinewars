@@ -98,113 +98,13 @@ communityConfidence: "Very High",
 ];
 
 
-const mockRealityChecks = [
-  {
-    id: "rc-1",
-    type: "CRITIC DISCONNECT",
-    movieTitle: "Action Dhamaka",
-    leftLabel: "CRITIC SCORE",
-    leftValue: "4.5 / 5 Stars",
-    rightLabel: "AUDIENCE RESPONSE",
-    rightValue: "REJECTED",
-    status: "CRITICS WRONG",
-    banterText: "Elite critics called it a 'nuanced artistic triumph'. Early audience reactions looked mixed despite strong advance bookings."
-  },
-  {
-    id: "rc-2",
-    type: "UNDERESTIMATED MASS",
-    movieTitle: "Nostalgia Returns",
-    leftLabel: "TRACK RECORD",
-    leftValue: "₹18 Cr Opening",
-    rightLabel: "ACTUAL OPENING",
-    rightValue: "₹47 Cr",
-    status: "TRACKERS WRONG",
-    banterText: "Industry trackers relied on standard spreadsheets. Fandom ground-swells triggered 4 AM historical crowds."
-  },
-  {
-    id: "rc-3",
-    type: "HYPE COLLAPSE",
-    movieTitle: "Mega Sequel 4",
-    leftLabel: "PRE-RELEASE TAG",
-    leftValue: "'Disaster Loading'",
-    rightLabel: "ACTUAL RESULT",
-    rightValue: "BLOCKBUSTER",
-    status: "AGED TERRIBLY",
-    banterText: "Viral cancel campaigns trended for months. Movie counters completely shattered historic tracking targets."
-  }
-];
 
-const mockDebates = [
-  {
-    id: "deb-1",
-    title: "Will Word of Mouth (WOM) save Spirit if the critic reviews are mixed?",
-    fandoms: "Prabhas Fans vs Elite Critics",
-    replies: 342,
-    agreeCount: 812,
-    hotTake: "SRK fans are underestimating WOM impact. Vanga's tracks don't need critics. The raw energy will carry it to ₹900 Cr single-handedly."
-  },
-  {
-    id: "deb-2",
-    title: "Can 'Coolie' beat the lifetime collection of 'Jailer' in Tamil Nadu?",
-    fandoms: "Thalaivar Army vs General Trackers",
-    replies: 512,
-    agreeCount: 1045,
-    hotTake: "Coolie will crush opening records. Lokesh's direction plus Rajini's swag means Jailer's records are getting shattered in week one."
-  },
-  {
-    id: "deb-3",
-    title: "This take aged badly: 'Sunny Deol won't replicate Gadar 2 hype with Batwara 1947'",
-    fandoms: "Nostalgia Believers vs Modernists",
-    replies: 189,
-    agreeCount: 423,
-    hotTake: "Critics missed what audience wanted. People completely underestimated the mass pull of Rajkumar Santoshi pairing with Sunny."
-  },
-  {
-    id: "deb-4",
-    title: "How animal changed mass cinema psychology and tracking behavior",
-    fandoms: "Cinema Cult vs Traditional Trackers",
-    replies: 294,
-    agreeCount: 651,
-    hotTake: "Animal changed mass cinema psychology. Post-Animal, dark grit has high target opening multipliers that systems can't predict."
-  }
-];
 
-// FILTERED TO ONLY SHOW HIGH CREDIBILITY 75%+ PROFILES
-const mockLeaderboard = [
-  { rank: 1, username: "CinemaSniper", avatar: "🎯", trustScore: 945, accuracy: 89.4, streak: 7, badge: "Opening Day Oracle", role: "Weekend Sniper", badgeType: "oracle", recentCall: "Coolie ₹65Cr Day 1" },
-  { rank: 2, username: "ReviewRaja", avatar: "👑", trustScore: 890, accuracy: 84.1, streak: 4, badge: "Verified Critic Killer", role: "Critic Hunter", badgeType: "critic-killer", recentCall: "King ₹78Cr Call" },
-  { rank: 3, username: "TrackerGuru", avatar: "📊", trustScore: 825, accuracy: 79.8, streak: 12, badge: "Data Tracker Elite", role: "Trade Tracker", badgeType: "tracker", recentCall: "Spirit ₹85Cr Pulse" },
-  { rank: 4, username: "MassOracle", avatar: "🎬", trustScore: 785, accuracy: 76.2, streak: 3, badge: "Fan Favorite Oracle", role: "Mass Predictor", badgeType: "fan-favorite", recentCall: "Batwara ₹45Cr Call" }
-];
 
-const trustSpotlight = {
-  topPredictors: [
-    { name: "CinemaSniper", role: "Opening Day Oracle", score: 945, metric: "89.4% Box Office Accuracy Index", avatar: "🎯" },
-    { name: "TrackerGuru", role: "Trade Tracker", score: 825, metric: "Near-perfect Box Office Accuracy Rating", avatar: "📊" }
-  ],
-  reviewerCredibility: [
-    { name: "ReviewRaja", role: "Critic Hunter", score: 890, metric: "High Audience Alignment Rating", avatar: "👑" },
-    { name: "FilmiFunda", role: "WOM Specialist", score: 780, metric: "Reviewer Reliability Index", avatar: "🍿" }
-  ]
-};
 
-const marqueeItems = [
-  "KING box office accuracy index surging to 95% 🔥",
-  "Coolie reviewer reliability index trending across communities 👥",
-  "Drishyam 3 prediction trust score rising exponentially 🎯",
-  "Spirit track record score exploding over tracking boundaries 💥",
-  "WAR 3 opening day audience alignment ratings locked by 12K creators 📈",
-  "Alpha critic credibility score tracking upwards 📉"
-];
 
-const mockLiveFeed = [
-  { id: 1, text: "@MassTracker locked ₹62 Cr for War 3", type: "lock" },
-  { id: 2, text: "@RajniEmpire box office accuracy rating upgraded to 91% 👍", type: "upgrade" },
-  { id: 3, text: "Coolie reviewer reliability index crossed 12K votes", type: "debate" },
-  { id: 4, text: "Spirit audience alignment score exploding 🔥", type: "war" },
-  { id: 5, text: "@BoxOfficeGuru hit 4 accurate box office calls in a row", type: "streak" },
-  { id: 6, text: "Reviewer reliability score shifting for King 🍿", type: "shift" }
-];
+
+
 
 const floatingReactions = [
   { emoji: "🔥", x: "12%", y: "25%", delay: 0 },
@@ -223,6 +123,9 @@ export default function CineWarsHomepage() {
   const [aiResponse, setAiResponse] = useState("");
   const [loadingAi, setLoadingAi] = useState(false);
   const [liveFeed, setLiveFeed] = useState<any[]>([]);
+  const marqueeItems = liveFeed.map(
+  (item) => item.text
+);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -230,6 +133,12 @@ export default function CineWarsHomepage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [heroStats, setHeroStats] = useState({
+  predictions: 0,
+  debates: 0,
+  members: 0,
+  votes: 0,
+});
 async function fetchMovies() {
   try {
     const movies = await getTrendingMovies();
@@ -500,6 +409,38 @@ const loadLiveFeed = async () => {
 
   setLiveFeed(feed);
 };
+const loadHeroStats = async () => {
+  const [
+    { count: predictions },
+    { count: debates },
+    { count: members },
+    { count: votes },
+  ] = await Promise.all([
+    supabase
+      .from("movie_predictions")
+      .select("*", { count: "exact", head: true }),
+
+    supabase
+      .from("movie_debates")
+      .select("*", { count: "exact", head: true }),
+
+    supabase
+      .from("profiles")
+      .select("*", { count: "exact", head: true }),
+
+    supabase
+      .from("movie_votes")
+      .select("*", { count: "exact", head: true }),
+  ]);
+
+  setHeroStats({
+    predictions: predictions || 0,
+    debates: debates || 0,
+    members: members || 0,
+    votes: votes || 0,
+  });
+};
+loadHeroStats();
   loadProvenPredictions();
   loadLeaderboard();
   loadLiveFeed();
@@ -762,12 +703,24 @@ window.location.reload();
 
               {/* 1. STATS BAR CARDS & 2. RE-STYLED SENTENCE CASE LABELS */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-8 border-t border-[#341d19]">
-                {[
-                  { count: "2.1M", label: "Predictions made" },
-                  { count: "480K", label: "Debates settled" },
-                  { count: "92K", label: "Active members" },
-                  { count: "14K", label: "Credibility reviews" }
-                ].map((stat, idx) => (
+               {[
+  {
+    count: heroStats.predictions.toLocaleString(),
+    label: "Predictions Made",
+  },
+  {
+    count: heroStats.debates.toLocaleString(),
+    label: "Debates Created",
+  },
+  {
+    count: heroStats.members.toLocaleString(),
+    label: "Community Members",
+  },
+  {
+    count: heroStats.votes.toLocaleString(),
+    label: "Votes Cast",
+  },
+].map((stat, idx) => (
                   <div key={idx} className="bg-[#1b100e] border-2 border-[#492822] rounded-2xl p-4 text-center relative overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.6)] group transition-all duration-300 hover:border-[#f97316]/50">
                     <div className="absolute inset-0 bg-gradient-to-b from-[#f97316]/0 to-[#f97316]/4 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="block text-3xl sm:text-4xl font-black text-white tracking-tight text-display">
