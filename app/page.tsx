@@ -71,6 +71,9 @@ export default function CineWarsHomepage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [movieSearch, setMovieSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  
   const [heroStats, setHeroStats] = useState({
   predictions: 0,
   debates: 0,
@@ -383,6 +386,26 @@ loadHeroStats();
   loadLeaderboard();
   loadLiveFeed();
 }, []);
+useEffect(() => {
+  const searchMovies = async () => {
+    if (movieSearch.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const { data } = await supabase
+      .from("movies")
+      .select("movie_id,title")
+      .ilike("title", `%${movieSearch}%`)
+      .limit(8);
+
+    setSearchResults(data || []);
+  };
+
+  const timer = setTimeout(searchMovies, 300);
+
+  return () => clearTimeout(timer);
+}, [movieSearch]);
 const handlePulseVote = async (movieId: string, option: string) => {
   setPredictionPulse(prev => ({
     ...prev,
@@ -425,6 +448,21 @@ await fetchMovies();
         return "bg-neutral-800 text-neutral-400 border-neutral-700"; // General Predictor
     }
   };
+  const getLevel = (trustScore: number) => {
+  if (trustScore >= 1000)
+    return { name: "Oracle", icon: "👑" };
+
+  if (trustScore >= 500)
+    return { name: "Expert", icon: "🦈" };
+
+  if (trustScore >= 250)
+    return { name: "Tracker", icon: "🎯" };
+
+  if (trustScore >= 100)
+    return { name: "Analyst", icon: "📈" };
+
+  return { name: "Rookie", icon: "🎬" };
+};
 
   const handleAiBanter = (e: React.FormEvent) => {
     e.preventDefault();
@@ -514,6 +552,30 @@ await fetchMovies();
               </a>
             ))}
           </div>
+          <div className="hidden md:block relative">
+  <input
+    type="text"
+    value={movieSearch}
+    onChange={(e) => setMovieSearch(e.target.value)}
+    placeholder="Search movies..."
+    className="w-56 rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-white focus:outline-none focus:border-orange-500"
+  />
+
+  {searchResults.length > 0 && (
+    <div className="absolute top-12 left-0 w-72 rounded-xl border border-neutral-800 bg-neutral-950 shadow-xl overflow-hidden z-50">
+      {searchResults.map((movie: any) => (
+        <Link
+          key={movie.movie_id}
+          href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+          onClick={() => setMovieSearch("")}
+          className="block px-4 py-3 text-sm text-white hover:bg-neutral-900 border-b border-neutral-900 last:border-0"
+        >
+          {movie.title}
+        </Link>
+      ))}
+    </div>
+  )}
+</div>
 
           
             <div className="relative">
@@ -843,11 +905,14 @@ window.location.reload();
   {index + 1}
 </div>
                     <div>
-                      <h4 className="text-sm font-black text-white">@{user.username}</h4>
-                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#f97316] block mt-0.5">
-  Predictor
-</span>
-                    </div>
+  <h4 className="text-sm font-black text-white">
+    @{user.username}
+  </h4>
+
+  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#f97316] block mt-0.5">
+    {getLevel(user.trustScore).icon} {getLevel(user.trustScore).name}
+  </span>
+</div>
                   </div>
 <span className="text-xs font-mono font-black text-neutral-500 bg-neutral-900/60 px-2 py-0.5 rounded border border-neutral-800">
   Rank #{index + 1}

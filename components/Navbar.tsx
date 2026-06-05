@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Menu, X, Home, Trophy, Ticket, Sparkles, LogIn,Film } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { Flame, Menu, X, Home, Trophy, Ticket, Sparkles, LogIn, Film, Search } from "lucide-react";import { supabase } from "@/lib/supabase";
 import { ChevronDown, LogOut, User } from "lucide-react";
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+const [movieSearch, setMovieSearch] = useState("");
+const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 const [currentUser, setCurrentUser] = useState<any>(null);
 const [showDropdown, setShowDropdown] = useState(false);
@@ -33,6 +36,26 @@ useEffect(() => {
 
   loadUser();
 }, []);
+useEffect(() => {
+  const searchMovies = async () => {
+    if (movieSearch.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const { data } = await supabase
+      .from("movies")
+      .select("title")
+      .ilike("title", `%${movieSearch}%`)
+      .limit(6);
+
+    setSearchResults(data || []);
+  };
+
+  const timer = setTimeout(searchMovies, 300);
+
+  return () => clearTimeout(timer);
+}, [movieSearch]);
 const handleLogout = async () => {
   await supabase.auth.signOut();
   window.location.reload();
@@ -87,7 +110,36 @@ const handleLogout = async () => {
               );
             })}
           </div>
+<div className="flex relative mx-4">
+  <div className="relative">
+    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
 
+    <input
+      type="text"
+      value={movieSearch}
+      onChange={(e) => setMovieSearch(e.target.value)}
+      placeholder="Search movies..."
+className="w-40 md:w-64 bg-neutral-900 border border-neutral-800 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-orange-500"    />
+
+    {searchResults.length > 0 && (
+      <div className="absolute top-12 left-0 w-full bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden shadow-xl z-50">
+        {searchResults.map((movie) => (
+  <button
+    key={movie.title}
+    onClick={() => {
+      router.push(`/movies/${movie.title}`);
+      setMovieSearch("");
+      setSearchResults([]);
+    }}
+            className="w-full text-left px-4 py-3 hover:bg-neutral-900 text-white border-b border-neutral-900 last:border-0"
+          >
+            {movie.title}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
          <div className="hidden md:flex items-center relative">
   {currentUser ? (
     <>
