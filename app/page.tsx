@@ -225,6 +225,7 @@ export default function CineWarsHomepage() {
   const [liveFeed, setLiveFeed] = useState(mockLiveFeed);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -390,8 +391,58 @@ useEffect(() => {
 
   setProvenPredictions(merged);
 };
+const loadLeaderboard = async () => {
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("*");
+
+  if (!profiles) return;
+
+  const leaderboardData = [];
+
+  for (const profile of profiles) {
+    const { data: predictions } = await supabase
+      .from("movie_predictions")
+      .select("points, accuracy")
+      .eq("user_id", profile.id);
+
+    const trustScore =
+      predictions?.reduce(
+        (sum, p) => sum + (p.points || 0),
+        0
+      ) || 0;
+
+    const scored =
+      predictions?.filter(
+        (p) => p.accuracy !== null
+      ) || [];
+
+    const accuracy =
+      scored.length > 0
+        ? scored.reduce(
+            (sum, p) => sum + Number(p.accuracy),
+            0
+          ) / scored.length
+        : 0;
+
+    leaderboardData.push({
+      username: profile.username,
+      trustScore,
+      accuracy: Number(accuracy.toFixed(2)),
+    });
+  }
+
+  leaderboardData.sort(
+    (a, b) => b.trustScore - a.trustScore
+  );
+
+  setLeaderboard(
+    leaderboardData.slice(0, 6)
+  );
+};
 
   loadProvenPredictions();
+  loadLeaderboard();
 }, []);
 const handlePulseVote = async (movieId: string, option: string) => {
   setPredictionPulse(prev => ({
@@ -828,26 +879,27 @@ window.location.reload();
 
           {/* Expanded Card spacing to reduce layout congestion */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-            {mockLeaderboard.map((user) => (
+            {leaderboard.map((user, index) => (
               <motion.div
                 whileHover={{ y: -4, borderColor: "rgba(249,115,22,0.35)" }}
-                key={user.rank}
+                key={index + 1}
                 className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-5 relative overflow-hidden group shadow-2xl"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3.5">
-                    <span className="text-2xl bg-[#0e0a09] p-2.5 rounded-xl border border-[#2d1b18] shadow-inner group-hover:scale-105 transition">
-                      {user.avatar}
-                    </span>
+                    <div className="w-10 h-10 rounded-xl border border-[#2d1b18] bg-[#0e0a09] flex items-center justify-center text-orange-400 font-black">
+  {index + 1}
+</div>
                     <div>
                       <h4 className="text-sm font-black text-white">@{user.username}</h4>
-                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#f97316] block mt-0.5 font-bold">
-                        {user.role}
-                      </span>
+                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#f97316] block mt-0.5">
+  Predictor
+</span>
                     </div>
                   </div>
-                  <span className="text-xs font-mono font-black text-neutral-500 bg-neutral-900/60 px-2 py-0.5 rounded border border-neutral-800">Rank #{user.rank}</span>
-                </div>
+<span className="text-xs font-mono font-black text-neutral-500 bg-neutral-900/60 px-2 py-0.5 rounded border border-neutral-800">
+  Rank #{index + 1}
+</span>                </div>
 
                 <div className="grid grid-cols-2 gap-3 bg-[#0a0605]/80 border border-[#2d1b18] p-3 rounded-xl text-center">
                   <div>
@@ -862,11 +914,20 @@ window.location.reload();
 
                 {/* 5. MULTI-CATEGORY DECORATED SPECIFIC ACCLAIM BADGES */}
                 <div className="text-[11px] border-t border-[#2d1b18] pt-3 flex items-center justify-between text-neutral-400 gap-2">
-                  <span className="truncate">Recent: <strong className="text-neutral-200 font-medium">{user.recentCall}</strong></span>
-                  <span className={`text-[9px] uppercase tracking-wider border px-2.5 py-1 rounded-lg font-black shrink-0 ${getBadgeStyle(user.badgeType)}`}>
-                    {user.badge}
-                  </span>
-                </div>
+  <span>
+    {user.trustScore >= 50
+      ? "🦈 Box Office Shark"
+      : "🎬 Rising Predictor"}
+  </span>
+
+  <span className="text-[9px] uppercase tracking-wider border px-2.5 py-1 rounded-lg font-black shrink-0 border-orange-500/30 text-orange-400">
+    {user.accuracy >= 90
+      ? "Oracle"
+      : user.accuracy >= 75
+      ? "Verified"
+      : "Active"}
+  </span>
+</div>
               </motion.div>
             ))}
           </div>
@@ -1199,81 +1260,8 @@ window.location.reload();
           </div>
         </section>
 
-        {/* TRUST SCORE SECTION */}
-        <section id="trust" className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-          <div className="lg:col-span-1 space-y-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-500 uppercase tracking-widest border border-orange-500/20 font-bold">
-              <ShieldCheck className="w-3.5 h-3.5" /> Track Record Score
-            </div>
-            <h2 className="text-4xl font-black uppercase tracking-wide text-white text-display">Prediction Trust Scores</h2>
-            <p className="text-sm text-neutral-400 font-medium leading-relaxed">
-              “Prediction Trust Score reflects how accurate and reliable a critic, reviewer, analyst, tracker, or creator has been over time.”
-            </p>
-            <p className="text-xs text-neutral-500 leading-relaxed">
-              Baseless claims and extreme bias drop individual tracking ratings instantly. Trackers and prediction creators preserve their verified scores by keeping their calls closely aligned with actual results.
-            </p>
-          </div>
-
-          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-neutral-950 border border-[#2d1b18] rounded-2xl p-5 space-y-4 shadow-xl">
-              <h3 className="text-sm font-black uppercase tracking-wider text-orange-400 flex items-center gap-2 font-bold">
-                🎯 Critic Credibility Score
-              </h3>
-              <div className="space-y-3">
-                {trustSpotlight.topPredictors.map((p, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-3 rounded-xl bg-[#1c1210]/50 border border-[#38231f]">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-base">{p.avatar}</span>
-                      <div>
-                        <Link href={`/user/${p.name.toLowerCase()}`}>
-                          <span className="text-xs font-bold text-white block hover:text-orange-400 transition">
-                            @{p.name}
-                          </span>
-                        </Link>
-                        <span className="text-[10px] text-orange-500 font-black uppercase tracking-wider font-bold">{p.role}</span>
-                      </div>
-                    </div>
-                    <span className="text-xs font-black bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-1 rounded-lg font-mono">{p.score} IQ</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-neutral-950 border border-[#2d1b18] rounded-2xl p-5 space-y-4 shadow-xl">
-              <h3 className="text-sm font-black uppercase tracking-wider text-[#e63917] flex items-center gap-2 font-bold">
-                ✍️ Reviewer Reliability Index
-              </h3>
-              <div className="space-y-3">
-                {trustSpotlight.reviewerCredibility.map((p, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center p-3 rounded-xl border border-[#2a1208] bg-[#120908]"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <span className="text-base">{p.avatar}</span>
-
-                      <div>
-                        <Link href={`/user/${p.name.toLowerCase()}`}>
-                          <span className="text-xs font-bold text-white block hover:text-orange-400 transition">
-                            @{p.name}
-                          </span>
-                        </Link>
-
-                        <span className="text-[10px] text-[#f97316] font-black uppercase tracking-wide">
-                          {p.role}
-                        </span>
-                      </div>
-                    </div>
-
-                    <span className="text-xs font-black bg-red-500/10 border border-red-500/20 px-2 py-1 rounded-full text-red-400">
-                      {p.score}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+      
+        
 
         {/* PROVEN PREDICTIONS SECTION */}
         <section id="calls" className="space-y-6">
