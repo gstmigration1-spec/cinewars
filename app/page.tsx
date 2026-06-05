@@ -34,68 +34,6 @@ import {
 // 1. DATA LAYERS REFINE: HIGH-ACCURACY PROFILES (75%+)
 // ==========================================
 
-const mockMovies = [
-  {
-    id: "cw-1",
-    title: "King",
-    poster: "/posters/king.png",
-    backdrop: "/posters/king.png",
-    releaseDate: "Dec 24, 2026",
-    genre: "Action Thriller",
-    synopsis: "The massive action-packed gangster return of Shah Rukh Khan alongside Suhana Khan, directed by Sujoy Ghosh.",
-    expectedOpening: "₹78.0 Cr",
-    expectedLifetime: "₹850 Cr",
-    hypeScore: 95,
-    totalPredictions: 64200,
-    fanSentiment: "Overwhelming Hype",
-    communityConfidence: "High"
-  },
-  {
-    id: "cw-2",
-    title: "Batwara 1947",
-    poster: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=500&q=80",
-    backdrop: "https://images.unsplash.com/photo-1514539079130-25950c84af65?w=1200&q=80",
-    releaseDate: "Aug 13, 2026",
-    genre: "Period Drama",
-    synopsis: "An intense Partition-era historical epic starring Sunny Deol, tracking a family caught across fracturing borders.",
-    expectedOpening: "₹42.5 Cr",
-    expectedLifetime: "₹380 Cr",
-    hypeScore: 79,
-    totalPredictions: 28415,
-    fanSentiment: "Highly Anticipated",
-    communityConfidence: "Moderate"
-  },
-  {
-    id: "cw-3",
-title: "Ramayana",
-poster: "/posters/Ramayana.png",
-backdrop: "/posters/Ramayana.png",
-releaseDate: "Diwali 2026",
-genre: "Mythological Epic",
-synopsis: "An ambitious large-scale cinematic retelling of the Ramayana with war, emotion, and mythology at massive scale.",
-expectedOpening: "₹90.0 Cr",
-expectedLifetime: "₹1200 Cr",
-hypeScore: 98,
-totalPredictions: 118200,
-fanSentiment: "Historic Hype",
-communityConfidence: "Very High",
-  },
-  {
-    id: "cw-4",
-    title: "Spirit",
-    poster: "/posters/Spirit.png",
-    backdrop: "/posters/Spirit.png",
-    releaseDate: "Nov 12, 2026",
-    genre: "Cop Action Noir",
-    synopsis: "Prabhas portrays a fierce, no-nonsense cop in Sandeep Reddy Vanga's dark, gritty action saga.",
-    expectedOpening: "₹85.0 Cr",
-    expectedLifetime: "₹900 Cr",
-    hypeScore: 88,
-    totalPredictions: 53100,
-    fanSentiment: "Dark & Edgy Hype",
-    communityConfidence: "High"
-  }
-];
 
 
 
@@ -459,9 +397,6 @@ const handlePulseVote = async (movieId: string, option: string) => {
 
   await supabase
   .from("movie_votes")
-  .insert
-    await supabase
-  .from("movie_votes")
   .insert([
     {
       movie_id: movieId,
@@ -818,9 +753,7 @@ window.location.reload();
 
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
 
-            {(trendingMovies.length > 0
-              ? trendingMovies.slice(0, 8)
-              : mockMovies).map((movie: any) => (
+            {trendingMovies.slice(0, 8).map((movie: any) => (
 
                 <Link
                   key={movie.id}
@@ -1041,7 +974,7 @@ window.location.reload();
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {(trendingMovies.length > 0 ? trendingMovies.slice(0, 4) : mockMovies).map((movie: any, index) => (
+            {trendingMovies.slice(0, 4).map((movie: any, index) => (
               <div key={movie.id} className="glass-card rounded-2xl overflow-hidden border border-[#1f2c3d] bg-neutral-950 flex flex-col h-full group shadow-xl transition-all duration-500 hover:border-sky-400/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(56,189,248,0.10)]">
                 {/* Backdrop Layer */}
                 <div className="relative min-h-[320px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
