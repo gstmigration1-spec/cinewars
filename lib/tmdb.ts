@@ -1,18 +1,9 @@
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 export async function getTrendingMovies() {
-  // 1. Remove the api_key parameter from the URL string entirely
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&region=IN`,
-    {
-      cache: 'no-store', // Forces fresh data on Vercel
-      headers: {
-        accept: 'application/json',
-        // 2. Pass your Vercel token securely here
-        Authorization: `Bearer ${API_KEY}` 
-      }
-    }
-  );
+  `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1&region=IN`
+);
 
   if (!res.ok) {
     console.log(await res.text());
@@ -20,15 +11,16 @@ export async function getTrendingMovies() {
   }
 
   const data = await res.json();
-  
   const filtered = data.results.filter(
-    (movie: any) =>
-      movie.original_language === "hi" ||
-      movie.original_language === "ta" ||
-      movie.original_language === "te" ||
-      movie.original_language === "ml" ||
-      movie.original_language === "kn"
-  );
+  (movie: any) =>
+    movie.original_language === "hi" ||
+    movie.original_language === "ta" ||
+    movie.original_language === "te" ||
+    movie.original_language === "ml" ||
+    movie.original_language === "kn"
+);
 
-  return filtered;
+return filtered;
+
 }
+

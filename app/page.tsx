@@ -83,6 +83,7 @@ export default function CineWarsHomepage() {
 async function fetchMovies() {
   try {
     const movies = await getTrendingMovies();
+    console.log("TMDB loaded:", movies.length);
 
     const { data: votes } = await supabase
       .from("movie_votes")
@@ -91,7 +92,7 @@ async function fetchMovies() {
   .from("movie_debates")
   .select("movie_id");
 
-    const enhancedMovies = (movies || []).map((movie: any) => {
+    const enhancedMovies = movies.map((movie: any) => {
       const movieVotes =
         votes?.filter(
           (vote) =>
@@ -192,7 +193,10 @@ const scoreB =
     return scoreB - scoreA;
   }
 );
-
+console.log(
+  "Final movies after enhancement:",
+  sortedMovies.length
+);
 setTrendingMovies(sortedMovies);
   } catch (error) {
     console.error("TMDB fetch failed:", error);
