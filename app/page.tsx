@@ -72,6 +72,31 @@ export default function CineWarsHomepage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  useEffect(() => {
+  const loadCurrentUser = async () => {
+    const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+console.log("AUTH USER ID:", user?.id);
+
+if (!user) return;
+
+const { data, error } = await supabase
+  .from("profiles")
+  .select("id, username")
+  .eq("id", user.id)
+  .single();
+
+console.log("PROFILE:", data);
+console.log("PROFILE ERROR:", error);
+    if (data) {
+      setCurrentUser(data);
+    }
+  };
+
+  loadCurrentUser();
+}, []);
   const [movieSearch, setMovieSearch] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showSearch, setShowSearch] = useState(false);
@@ -434,6 +459,7 @@ const handlePulseVote = async (movieId: string, option: string) => {
     ...prev,
     [movieId]: option
   }));
+  
 
   const sessionId =
     localStorage.getItem("cinewars_session") ||
@@ -929,9 +955,13 @@ window.location.reload();
 </div>
                     <div>
   <h4 className="text-sm font-black text-white">
+  <Link
+    href={`/user/${user.username}`}
+    className="hover:text-orange-400 transition-colors"
+  >
     @{user.username}
-  </h4>
-
+  </Link>
+</h4>
   <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#f97316] block mt-0.5">
     {getLevel(user.trustScore).icon} {getLevel(user.trustScore).name}
   </span>

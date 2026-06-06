@@ -20,17 +20,21 @@ useEffect(() => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
+    throw new Error("NAVBAR TEST");
     if (!user) return;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select("username")
       .eq("id", user.id)
       .single();
 
+    console.log("PROFILE DATA:", data);
+    console.log("PROFILE ERROR:", error);
+
     if (data) {
       setCurrentUser(data);
+
     }
   };
 
@@ -82,7 +86,7 @@ const handleLogout = async () => {
             className="group flex items-center space-x-2 text-2xl font-black uppercase tracking-wider bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-transparent bg-clip-text drop-shadow-[0_2px_15px_rgba(239,68,68,0.3)]"
           >
             <Flame className="w-7 h-7 text-red-500 fill-red-500 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
-            <span>CineWars</span>
+            <span>CineWars TEST123</span>
           </Link>
 
           {/* Desktop Navigation */}
