@@ -125,12 +125,12 @@ className="w-40 md:w-64 bg-neutral-900 border border-neutral-800 rounded-xl pl-1
       <div className="absolute top-12 left-0 w-full bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden shadow-xl z-50">
         {searchResults.map((movie) => (
   <button
-    key={movie.title}
-    onClick={() => {
-      router.push(`/movies/${movie.title}`);
-      setMovieSearch("");
-      setSearchResults([]);
-    }}
+    key={movie.movie_id}
+onClick={() => {
+  router.push(`/movies/${movie.movie_id}`);
+  setMovieSearch("");
+  setSearchResults([]);
+}}
             className="w-full text-left px-4 py-3 hover:bg-neutral-900 text-white border-b border-neutral-900 last:border-0"
           >
             {movie.title}

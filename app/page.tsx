@@ -83,7 +83,27 @@ export default function CineWarsHomepage() {
 async function fetchMovies() {
   try {
     const movies = await getTrendingMovies();
-    console.log("TMDB loaded:", movies.length);
+
+
+    const { data, error } = await supabase
+  .from("movies")
+  .upsert(
+    movies.map((movie: any) => ({
+      movie_id: movie.title
+        .toLowerCase()
+        .replace(/\s+/g, "-"),
+      tmdb_id: movie.id,
+      title: movie.title,
+      poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+      release_date: movie.release_date,
+      status: "active",
+    })),
+    {
+      onConflict: "movie_id",
+    }
+  );
+
+
 
     const { data: votes } = await supabase
       .from("movie_votes")
@@ -193,10 +213,7 @@ const scoreB =
     return scoreB - scoreA;
   }
 );
-console.log(
-  "Final movies after enhancement:",
-  sortedMovies.length
-);
+
 setTrendingMovies(sortedMovies);
   } catch (error) {
     console.error("TMDB fetch failed:", error);
