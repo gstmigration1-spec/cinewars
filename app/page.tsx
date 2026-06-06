@@ -91,7 +91,7 @@ async function fetchMovies() {
   .from("movie_debates")
   .select("movie_id");
 
-    const enhancedMovies = movies.map((movie: any) => {
+    const enhancedMovies = (movies || []).map((movie: any) => {
       const movieVotes =
         votes?.filter(
           (vote) =>
