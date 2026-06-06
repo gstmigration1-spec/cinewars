@@ -28,6 +28,7 @@ import {
   Activity,
   MessageCircle,
   Trophy,
+  Search,
 } from "lucide-react";
 
 // ==========================================
@@ -73,6 +74,7 @@ export default function CineWarsHomepage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [movieSearch, setMovieSearch] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [showSearch, setShowSearch] = useState(false);
   
   const [heroStats, setHeroStats] = useState({
   predictions: 0,
@@ -1581,15 +1583,63 @@ window.location.reload();
             <span className="text-[10px] font-bold uppercase">Debates</span>
           </a>
 
-          <a href="#ai-analyst" className="flex flex-col items-center text-neutral-300">
-            <Sparkles className="w-5 h-5" />
-            <span className="text-[10px] font-bold uppercase">AI</span>
-          </a>
+          <a
+  href="#"
+  onClick={() => setShowSearch(true)}
+  className="flex flex-col items-center text-neutral-300"
+>
+  <Search className="w-5 h-5" />
+  <span className="text-[10px] font-bold uppercase">Search</span>
+</a>
 
         </div>
       </div>
 
     </div><AnimatePresence>
+  {showSearch && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[110] bg-black/80 flex items-start justify-center p-4"
+      onClick={() => setShowSearch(false)}
+    >
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -20, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md mt-20 rounded-2xl border border-neutral-800 bg-neutral-950 p-4"
+      >
+        <input
+          type="text"
+          value={movieSearch}
+          onChange={(e) => setMovieSearch(e.target.value)}
+          placeholder="Search movies..."
+          className="w-full rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-white focus:outline-none"
+        />
+
+        <div className="mt-3 max-h-80 overflow-y-auto">
+          {searchResults.map((movie: any) => (
+            <Link
+              key={movie.movie_id}
+              href={`/movies/${movie.title
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`}
+              onClick={() => {
+                setShowSearch(false);
+                setMovieSearch("");
+              }}
+              className="block px-4 py-3 text-white border-b border-neutral-800 hover:bg-neutral-900"
+            >
+              {movie.title}
+            </Link>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence><AnimatePresence>
         {showLoginModal && (
           <motion.div
             initial={{ opacity: 0 }}
