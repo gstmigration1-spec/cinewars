@@ -20,13 +20,13 @@ useEffect(() => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    throw new Error("NAVBAR TEST");
+    console.log("AUTH USER:", user);
     if (!user) return;
 
     const { data, error } = await supabase
       .from("profiles")
       .select("username")
-      .eq("id", user.id)
+      .eq("id", user!.id)
       .single();
 
     console.log("PROFILE DATA:", data);
