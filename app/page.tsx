@@ -1388,10 +1388,34 @@ window.location.reload();
     Points: <strong className="text-white">{call.points}</strong>
   </span>
 
-  <button className="flex items-center space-x-1 font-black uppercase text-neutral-300 hover:text-white transition group/share font-bold">
-    <Share2 className="w-3 h-3 text-orange-500 group-hover/share:scale-110 transition" />
-    <span>Share Call</span>
-  </button>
+  <button
+  onClick={async () => {
+    const shareText = `🎯 CineWars Best Call
+
+@${call.username}
+Movie: ${call.movieTitle || call.movie_id}
+
+Accuracy: ${call.accuracy}%
+Prediction: ₹${call.predicted_value} Cr
+Actual: ₹${call.actual_value} Cr
+
+https://cinewars.vercel.app`;
+
+    if (navigator.share) {
+      await navigator.share({
+        title: "CineWars Best Call",
+        text: shareText,
+      });
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      alert("Copied to clipboard!");
+    }
+  }}
+  className="flex items-center space-x-1 font-black uppercase text-neutral-300 hover:text-white transition group/share font-bold"
+>
+  <Share2 className="w-3 h-3 text-orange-500 group-hover/share:scale-110 transition" />
+  <span>Share Call</span>
+</button>
 </div>  
                   </div>
               );
@@ -1425,9 +1449,12 @@ window.location.reload();
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500 bg-neutral-900 px-2 py-0.5 rounded border border-[#2d1b18] font-bold">
-                      @{item.username}
-                    </span>
+                    <Link
+  href={`/user/${item.username}`}
+  className="text-[9px] font-black uppercase tracking-widest text-neutral-500 bg-neutral-900 px-2 py-0.5 rounded border border-[#2d1b18] font-bold hover:text-orange-400 transition-colors"
+>
+  @{item.username}
+</Link>
                     <span className="text-[9px] font-black bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20 uppercase tracking-wide font-bold">
                       {item.accuracy}%
                     </span>
