@@ -652,11 +652,14 @@ await fetchMovies();
 
   {showDropdown && currentUser?.username && (
     <div className="absolute right-0 mt-2 w-40 rounded-xl bg-neutral-900 border border-neutral-800 shadow-lg overflow-hidden">
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-neutral-800"
-      >
-        Profile
-      </button>
+     <button
+  onClick={() => {
+    window.location.href = `/user/${currentUser.username}`;
+  }}
+  className="block w-full text-left px-4 py-3 hover:bg-neutral-800"
+>
+  Profile
+</button>
 
       <button
         onClick={async () => {
