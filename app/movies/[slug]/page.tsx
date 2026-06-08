@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 export default function MovieDebatePage() {
   const params = useParams();
@@ -128,26 +129,40 @@ fetchResults();
 }, []);
 
   const handlePost = async () => {
-    if (!message.trim()) return;
+  if (!message.trim()) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    await supabase.from("movie_debates").insert([
-      {
-        movie_id: slug,
-        username:
-  "Fan#" +
-  Math.floor(Math.random() * 10000),
-        message,
-      },
-    ]);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    setMessage("");
-
-    await fetchDebates();
-
+  if (!user) {
+    alert("Please login to post a debate");
     setLoading(false);
-  };
+    return;
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user.id)
+    .single();
+
+  await supabase.from("movie_debates").insert([
+    {
+      movie_id: slug,
+      username: profile?.username || "Anonymous",
+      message,
+    },
+  ]);
+
+  setMessage("");
+
+  await fetchDebates();
+
+  setLoading(false);
+};
 const handleReaction = async (debateId: string) => {
   console.log("reaction clicked");
   if (likedDebates[debateId]) return;
@@ -243,12 +258,19 @@ setLikedDebates((prev: any) => ({
 }; return (
     <main className="min-h-screen bg-[#050303] text-white px-4 py-10">
 
-      <div className="max-w-3xl mx-auto space-y-8">
+  <div className="max-w-3xl mx-auto space-y-8">
 
-        <div className="space-y-3">
-          <p className="text-xs uppercase tracking-[0.3em] text-orange-400 font-black">
-            CineWars Debate Arena
-          </p>
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-[#2d1b18] bg-[#120908] text-sm font-black text-orange-400 hover:border-orange-500/40 hover:bg-[#1a0f0d] transition-all"
+      >
+        ← Back to CineWars
+      </Link>
+
+      <div className="space-y-3">
+            <p className="text-xs uppercase tracking-[0.3em] text-orange-400 font-black">
+              CineWars Debate Arena
+            </p>
 
           <h1 className="text-4xl md:text-6xl font-black uppercase leading-none">
             {movieTitle}
@@ -278,9 +300,9 @@ setLikedDebates((prev: any) => ({
         <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-4 space-y-4">
 <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-4 space-y-4">
 
-  <h2 className="text-xl font-black uppercase text-orange-400">
-    Box Office Predictions
-  </h2>
+  <h2 className="text-2xl font-black uppercase text-orange-400 text-center">
+  🎯 Box Office Predictions
+</h2>
 
   <input
     type="number"
@@ -299,14 +321,14 @@ setLikedDebates((prev: any) => ({
   />
 
   <button
-    onClick={handlePredictionSubmit}
-    disabled={predictionLoading}
-    className="bg-orange-500 hover:bg-orange-400 transition-colors px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-white"
-  >
-    {predictionLoading
-      ? "Submitting..."
-      : "Submit Prediction"}
-  </button>
+  onClick={handlePredictionSubmit}
+  disabled={predictionLoading}
+  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 transition-all duration-300 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-white shadow-md shadow-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {predictionLoading
+    ? "Submitting..."
+    : "🚀 Submit Prediction"}
+</button>
 
 </div>
           <textarea
@@ -350,7 +372,7 @@ setLikedDebates((prev: any) => ({
               <div className="flex items-center justify-between mb-3">
 
                 <span className="text-xs uppercase tracking-wider text-orange-300 font-black">
-                  {debate.username}
+                  @{debate.username}
                 </span>
 
                 <span className="text-[10px] text-neutral-500">

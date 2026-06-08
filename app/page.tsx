@@ -689,10 +689,10 @@ window.location.reload();
       </nav>
 
       {/* CORE WRAPPER HUB */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-20 md:space-y-28 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 md:space-y-20 relative z-10">
 
         {/* HERO AREA WITH HIGH-FIDELITY LUXURY LIGHTING */}
-        <div className="pt-24 md:pt-4">
+        <div className="pt-6 md:pt-4">
           <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#160f0e] via-[#050303] to-[#050303] border border-[#2d1a17] p-6 sm:p-8 md:p-16 text-center shadow-2xl cinema-glow-container">
 
             {/* Animated Projector Flares */}
@@ -953,7 +953,7 @@ window.location.reload();
 
           {/* Expanded Card spacing to reduce layout congestion */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-            {leaderboard.map((user, index) => (
+            {leaderboard.slice(0,3).map((user, index) => (
               <motion.div
                 whileHover={{ y: -4, borderColor: "rgba(249,115,22,0.35)" }}
                 key={index + 1}
@@ -1012,7 +1012,17 @@ window.location.reload();
               </motion.div>
             ))}
           </div>
+          <div className="flex justify-center pt-6">
+            <Link
+              href="/leaderboard"
+              className="px-6 py-3 rounded-xl border border-orange-500/30 text-orange-400 font-black uppercase tracking-widest hover:bg-orange-500/10 transition"
+            >
+              View Full Rankings →
+            </Link>
+          </div>
+
         </section>
+        
         <section className="space-y-5">
 
           <div className="flex items-end justify-between">
@@ -1106,7 +1116,7 @@ window.location.reload();
             {trendingMovies.slice(0, 4).map((movie: any, index) => (
               <div key={movie.id} className="glass-card rounded-2xl overflow-hidden border border-[#1f2c3d] bg-neutral-950 flex flex-col h-full group shadow-xl transition-all duration-500 hover:border-sky-400/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(56,189,248,0.10)]">
                 {/* Backdrop Layer */}
-                <div className="relative min-h-[320px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
+                <div className="relative min-h-[240px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
                   <img
                     src={movie.poster}
                     alt={movie.title}
@@ -1235,11 +1245,21 @@ window.location.reload();
                     </div>
 
                   </div>
-                  <Link
-                    href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.01] transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.18)] hover:shadow-[0_12px_35px_rgba(56,189,248,0.14)]">
-                    View Debate <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+  <Link
+    href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+    className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.15em] hover:scale-[1.01] transition-all duration-300"
+  >
+    Debate
+  </Link>
+
+  <Link
+    href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+    className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-sky-500 text-white text-[10px] font-black uppercase tracking-[0.15em] hover:scale-[1.01] transition-all duration-300"
+  >
+    🎯 Predict
+  </Link>
+</div>
                   <div className="space-y-2 bg-[#120908]/50 border border-[#2d1b18] rounded-xl p-3">
 
                     <div className="flex items-center justify-between text-[9px] uppercase tracking-widest font-black text-neutral-500">
