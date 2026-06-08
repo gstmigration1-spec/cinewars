@@ -878,11 +878,10 @@ window.location.reload();
                   <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-1">
 
                     <img
-                      src={movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                        : movie.poster}
-                      alt={movie.title}
-                      className="w-full h-[260px] object-cover transition-transform duration-500 group-hover:scale-105" />
+  src={movie.poster}
+  alt={movie.title}
+  className="w-full h-[260px] object-cover transition-transform duration-500 group-hover:scale-105"
+/>
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
 
