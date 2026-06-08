@@ -212,10 +212,9 @@ console.log(movie.title, hypeScore);
       return {
   ...movie,
   poster:
-    dbMovies?.find(
-      (m: any) => m.tmdb_id === movie.id
-    )?.poster ||
-    `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+  dbMovies?.find(
+    (m: any) => m.tmdb_id === movie.id
+  )?.poster || "",
 
   hypeScore,
   fanSentiment,
@@ -1109,9 +1108,7 @@ window.location.reload();
                 {/* Backdrop Layer */}
                 <div className="relative min-h-[320px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
                   <img
-                    src={movie.backdrop
-                      ? movie.backdrop
-                      : `https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                    src={movie.poster}
                     alt={movie.title}
                     className="object-contain w-full h-full max-h-[300px] md:max-h-full transition-all duration-700 ease-out" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/65 via-[#050303]/20 to-transparent" />
