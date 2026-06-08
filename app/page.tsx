@@ -110,8 +110,11 @@ console.log("PROFILE ERROR:", error);
 async function fetchMovies() {
   try {
     const movies = await getTrendingMovies();
+    const { data: dbMovies } = await supabase
+  .from("movies")
+  .select("*");
 
-
+/*
     const { data, error } = await supabase
   .from("movies")
   .upsert(
@@ -129,6 +132,7 @@ async function fetchMovies() {
       onConflict: "movie_id",
     }
   );
+  */
 
 
 
@@ -206,10 +210,16 @@ const recordsPercent =
 console.log(movie.title, hypeScore);
 
       return {
-        ...movie,
-        hypeScore,
-        fanSentiment,
-        totalPredictions: movieVotes.length,
+  ...movie,
+  poster:
+    dbMovies?.find(
+      (m: any) => m.tmdb_id === movie.id
+    )?.poster ||
+    `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+
+  hypeScore,
+  fanSentiment,
+  totalPredictions: movieVotes.length,
         debateCount,
         voteBreakdown: {
   flop: flopPercent,
