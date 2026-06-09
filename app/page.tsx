@@ -1,10 +1,10 @@
 "use client";
-import { calculateHype } from "@/lib/hype";
+
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getTrendingMovies } from "@/lib/tmdb";
+
 import { 
   Flame, 
   ShieldCheck, 
@@ -78,7 +78,7 @@ export default function CineWarsHomepage() {
   data: { user },
 } = await supabase.auth.getUser();
 
-console.log("AUTH USER ID:", user?.id);
+
 
 if (!user) return;
 
@@ -88,8 +88,6 @@ const { data, error } = await supabase
   .eq("id", user.id)
   .single();
 
-console.log("PROFILE:", data);
-console.log("PROFILE ERROR:", error);
     if (data) {
       setCurrentUser(data);
     }
@@ -221,7 +219,7 @@ const recordsPercent =
   Math.min(98, score)
 );
 
-console.log(movie.title, hypeScore);
+
 
       return {
   ...movie,
@@ -1115,9 +1113,7 @@ window.location.reload();
         </section>
         {/* MOVIE PREDICTIONS GRID */}
         <section id="trending" className="space-y-6">
-          <div className="text-green-500 font-black">
-  Movies Loaded: {trendingMovies.length}
-</div>
+          
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
               <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
@@ -1130,6 +1126,8 @@ window.location.reload();
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {trendingMovies.slice(0, 4).map((movie: any, index) => (
+              
+              
               <div key={movie.id} className="glass-card rounded-2xl overflow-hidden border border-[#1f2c3d] bg-neutral-950 flex flex-col h-full group shadow-xl transition-all duration-500 hover:border-sky-400/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(56,189,248,0.10)]">
                 {/* Backdrop Layer */}
                 <div className="relative min-h-[240px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
