@@ -72,6 +72,7 @@ export default function CineWarsHomepage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   useEffect(() => {
   const loadCurrentUser = async () => {
     const {
@@ -81,16 +82,21 @@ export default function CineWarsHomepage() {
 
 
 if (!user) return;
-
 const { data, error } = await supabase
   .from("profiles")
-  .select("id, username")
+  .select("id, username, welcome_seen")
   .eq("id", user.id)
   .single();
-
     if (data) {
-      setCurrentUser(data);
-    }
+      console.log("PROFILE:", data);
+console.log("WELCOME:", data.welcome_seen);
+  setCurrentUser(data);
+
+  if (!data.welcome_seen) {
+    setShowWelcomeModal(true);
+  }
+}
+
   };
 
   loadCurrentUser();
@@ -1739,8 +1745,50 @@ https://cinewars.vercel.app`;
       </motion.div>
     </motion.div>
   )}
-</AnimatePresence><AnimatePresence>
-        {showLoginModal && (
+ </AnimatePresence>
+
+<AnimatePresence>
+  {showWelcomeModal && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+    <div className="max-w-md w-full bg-[#120908] border border-[#2d1b18] rounded-3xl p-8 text-center">
+
+      <div className="text-5xl mb-4">🎬</div>
+
+      <h2 className="text-2xl font-black text-white mb-4">
+        Welcome to CineWars
+      </h2>
+
+      <div className="space-y-3 text-neutral-300 text-sm">
+        <p>🔥 Predict box office collections</p>
+        <p>💬 Join fan wars & debates</p>
+        <p>🏆 Build your Trust Score</p>
+        <p>📈 Climb the rankings</p>
+      </div>
+
+      <button
+        onClick={async () => {
+          if (currentUser) {
+            await supabase
+              .from("profiles")
+              .update({
+                welcome_seen: true,
+              })
+              .eq("id", currentUser.id);
+          }
+
+          setShowWelcomeModal(false);
+        }}
+        className="mt-6 w-full bg-orange-500 hover:bg-orange-400 transition-colors rounded-xl py-3 font-black uppercase tracking-wider text-white"
+      >
+        Start Predicting
+      </button>
+
+    </div>
+  </div>
+)}
+  
+
+  {showLoginModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
