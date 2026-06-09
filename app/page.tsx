@@ -65,7 +65,7 @@ export default function CineWarsHomepage() {
   const marqueeItems = liveFeed.map(
   (item) => item.text
 );
-  const [trendingMovies, setTrendingMovies] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [bestCalls, setBestCalls] = useState<any[]>([]);
@@ -109,31 +109,45 @@ console.log("PROFILE ERROR:", error);
 });
 async function fetchMovies() {
   try {
-    const movies = await getTrendingMovies();
-    const { data: dbMovies } = await supabase
+    const { data: movies } = await supabase
   .from("movies")
-  .select("*");
+  .select("*")
+  .eq("status", "active");
+
+const dbMovies = movies;
+
 
 /*
-    const { data, error } = await supabase
+const { data, error } = await supabase
   .from("movies")
   .upsert(
     movies.map((movie: any) => ({
       movie_id: movie.title
         .toLowerCase()
         .replace(/\s+/g, "-"),
+
       tmdb_id: movie.id,
+
       title: movie.title,
-      poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+
+      overview: movie.overview,
+
+      backdrop: movie.backdrop_path
+        ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
+        : null,
+
+      language: movie.original_language,
+
       release_date: movie.release_date,
+
       status: "active",
     })),
     {
       onConflict: "movie_id",
     }
   );
-  */
 
+*/
 
 
     const { data: votes } = await supabase
@@ -143,12 +157,12 @@ async function fetchMovies() {
   .from("movie_debates")
   .select("movie_id");
 
-    const enhancedMovies = movies.map((movie: any) => {
+    const enhancedMovies = (movies || []).map((movie: any) => {
       const movieVotes =
-        votes?.filter(
-          (vote) =>
-            String(vote.movie_id) === String(movie.id)
-        ) || [];
+  votes?.filter(
+    (vote) =>
+      String(vote.movie_id) === String(movie.tmdb_id)
+  ) || [];
 
       const flop = movieVotes.filter(
         (v) => v.vote_type === "Will Flop"
@@ -212,9 +226,7 @@ console.log(movie.title, hypeScore);
       return {
   ...movie,
   poster:
-  dbMovies?.find(
-    (m: any) => m.tmdb_id === movie.id
-  )?.poster || "",
+  movie.poster || "",
 
   hypeScore,
   fanSentiment,
@@ -1103,12 +1115,13 @@ window.location.reload();
         </section>
         {/* MOVIE PREDICTIONS GRID */}
         <section id="trending" className="space-y-6">
+          <div className="text-green-500 font-black">
+  Movies Loaded: {trendingMovies.length}
+</div>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
               <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
-                <div className="text-red-500 text-xl font-black">
-  Movies Loaded: {trendingMovies.length}
-</div>
+                
                 🔥 Hot Box Office Calls
               </h2>
               <p className="text-xs text-neutral-500 font-medium">Fandoms are fiercely debating these upcoming titles. Where do you stand?</p>
