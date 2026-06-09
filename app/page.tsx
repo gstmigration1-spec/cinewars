@@ -248,8 +248,8 @@ const recordsPercent =
   (a: any, b: any) => {
     const scoreA =
   a.hypeScore * 2 +
-  a.totalPredictions * 1.5 +
-  a.debateCount * 4;
+  a.totalPredictions * 3 +
+  a.debateCount * 3;
 
 const scoreB =
   b.hypeScore * 2 +
