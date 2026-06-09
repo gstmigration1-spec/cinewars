@@ -1106,6 +1106,9 @@ window.location.reload();
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
               <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
+                <div className="text-red-500 text-xl font-black">
+  Movies Loaded: {trendingMovies.length}
+</div>
                 🔥 Hot Box Office Calls
               </h2>
               <p className="text-xs text-neutral-500 font-medium">Fandoms are fiercely debating these upcoming titles. Where do you stand?</p>
