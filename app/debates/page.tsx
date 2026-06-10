@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function DebatesPage() {
   const [debates, setDebates] = useState<any[]>([]);
@@ -76,9 +77,13 @@ setGroupedDebates(grouped);
       key={movieTitle}
       className="lg:col-span-2 bg-[#0c0807] border border-[#2d1b18] rounded-2xl p-6"
     >
-      <h3 className="text-2xl font-black text-orange-400 mb-5">
-        🎬 {movieTitle}
-      </h3>
+      <Link
+  href={`/movies/${movieDebates[0].movie_id}`}
+>
+  <h3 className="text-2xl font-black text-orange-400 mb-5 hover:text-orange-300 cursor-pointer transition">
+    🎬 {movieTitle}
+  </h3>
+</Link>
 
       <div className="space-y-4">
         {movieDebates.map((debate: any) => (
@@ -87,7 +92,12 @@ setGroupedDebates(grouped);
             className="bg-neutral-950 border border-[#38231e] rounded-xl p-4"
           >
             <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-orange-400">
-              <span>@{debate.username}</span>
+              <Link
+  href={`/movies/${debate.movie_id}`}
+  className="text-orange-400 hover:text-orange-300 cursor-pointer underline"
+>
+  @{debate.username}
+</Link>
 
               <span className="bg-[#0c0807] px-2 py-1 rounded border border-[#2d1b18] text-neutral-400">
                 {new Date(

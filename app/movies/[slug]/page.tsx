@@ -20,6 +20,8 @@ export default function MovieDebatePage() {
   const [message, setMessage] = useState("");
   const [debates, setDebates] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [replyText, setReplyText] = useState<Record<string, string>>({});
+const [replies, setReplies] = useState<Record<string, any[]>>({});
   const [reactionCounts, setReactionCounts] =
   useState<Record<
     string,
@@ -40,8 +42,25 @@ const [openingPredictors, setOpeningPredictors] = useState(0);
       .order("created_at", { ascending: false });
 
     if (data) {
-      setDebates(data);
+  setDebates(data);
+
+  const { data: replyData } = await supabase
+    .from("debate_replies")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  const groupedReplies: Record<string, any[]> = {};
+
+  (replyData || []).forEach((reply) => {
+    if (!groupedReplies[reply.debate_id]) {
+      groupedReplies[reply.debate_id] = [];
     }
+
+    groupedReplies[reply.debate_id].push(reply);
+  });
+
+  setReplies(groupedReplies);
+}
   };
   const fetchReactions = async () => {
   const { data } = await supabase
@@ -90,6 +109,7 @@ const fetchResults = async () => {
 
   setOpeningPredictors(count || 0);
 };
+
  useEffect(() => {
   fetchDebates();
 fetchReactions();
@@ -177,6 +197,31 @@ fetchResults();
 
   setLoading(false);
 };
+const handleReplySubmit = async (
+  debateId: string
+) => {
+  const message =
+    replyText[debateId]?.trim();
+
+  if (!message) return;
+
+  await supabase
+    .from("debate_replies")
+    .insert([
+      {
+        debate_id: debateId,
+        username: "Anonymous",
+        message,
+      },
+    ]);
+
+  setReplyText((prev) => ({
+    ...prev,
+    [debateId]: "",
+  }));
+
+  await fetchDebates();
+};
 const handleReaction = async (
   debateId: string,
   reactionType: "agree" | "disagree"
@@ -197,6 +242,7 @@ const handleReaction = async (
       sessionId
     );
   }
+    
 const { error } = await supabase
   .from("debate_reactions")
   .insert([
@@ -208,7 +254,9 @@ const { error } = await supabase
   ]);
 
 console.log("AFTER INSERT");
-console.log("INSERT ERROR:", error);  if (error) {
+console.log("INSERT ERROR:", error);
+
+if (error) {
     // duplicate like ignored
     if (error.code === "23505") {
       return;
@@ -394,9 +442,12 @@ setLikedDebates((prev: any) => ({
 
               <div className="flex items-center justify-between mb-3">
 
-                <span className="text-xs uppercase tracking-wider text-orange-300 font-black">
-                  @{debate.username}
-                </span>
+                <Link
+  href="/debates"
+  className="text-xs uppercase tracking-wider text-orange-300 font-black hover:text-orange-200 underline"
+>
+  @{debate.username}
+</Link>
 
                 <span className="text-[10px] text-neutral-500">
                   {new Date(
@@ -431,7 +482,42 @@ setLikedDebates((prev: any) => ({
   </button>
 
 </div>
+<div className="mt-4 space-y-2">
+  {(replies[debate.id] || []).map((reply) => (
+    <div
+      key={reply.id}
+      className="ml-4 border-l border-[#38231e] pl-3 text-sm text-neutral-300"
+    >
+      <div className="text-orange-400 text-xs font-bold">
+        @{reply.username}
+      </div>
+      <div>{reply.message}</div>
+    </div>
+  ))}
 
+  <div className="flex gap-2 mt-2">
+    <input
+      value={replyText[debate.id] || ""}
+      onChange={(e) =>
+        setReplyText((prev) => ({
+          ...prev,
+          [debate.id]: e.target.value,
+        }))
+      }
+      placeholder="Reply..."
+      className="flex-1 bg-black border border-[#38231e] rounded px-3 py-2 text-sm"
+    />
+
+    <button
+      onClick={() =>
+        handleReplySubmit(debate.id)
+      }
+      className="px-3 py-2 rounded bg-orange-600 text-white text-sm font-bold"
+    >
+      Reply
+    </button>
+  </div>
+</div>
 </div>
           ))}
 
