@@ -20,7 +20,11 @@ export default function MovieDebatePage() {
   const [message, setMessage] = useState("");
   const [debates, setDebates] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [reactionCounts, setReactionCounts] = useState<any>({});
+  const [reactionCounts, setReactionCounts] =
+  useState<Record<
+    string,
+    { agree: number; disagree: number }
+  >>({});
   const [likedDebates, setLikedDebates] = useState<any>({});
   const [openingPrediction, setOpeningPrediction] = useState("");
 const [lifetimePrediction, setLifetimePrediction] = useState("");
@@ -48,12 +52,22 @@ const [openingPredictors, setOpeningPredictors] = useState(0);
 
   const grouped: any = {};
 
-  data.forEach((reaction) => {
-    grouped[reaction.debate_id] =
-      (grouped[reaction.debate_id] || 0) + 1;
-  });
+data.forEach((reaction) => {
+  if (!grouped[reaction.debate_id]) {
+    grouped[reaction.debate_id] = {
+      agree: 0,
+      disagree: 0,
+    };
+  }
 
-  setReactionCounts(grouped);
+  if (reaction.reaction_type === "disagree") {
+    grouped[reaction.debate_id].disagree++;
+  } else {
+    grouped[reaction.debate_id].agree++;
+  }
+});
+
+setReactionCounts(grouped);
 };
 const fetchResults = async () => {
   const { data: result } = await supabase
@@ -163,8 +177,13 @@ fetchResults();
 
   setLoading(false);
 };
-const handleReaction = async (debateId: string) => {
+const handleReaction = async (
+  debateId: string,
+  reactionType: "agree" | "disagree"
+) => {
   console.log("reaction clicked");
+  console.log(debateId, reactionType);
+  console.log("BEFORE INSERT");
   if (likedDebates[debateId]) return;
 
   let sessionId =
@@ -178,22 +197,23 @@ const handleReaction = async (debateId: string) => {
       sessionId
     );
   }
+const { error } = await supabase
+  .from("debate_reactions")
+  .insert([
+    {
+      debate_id: debateId,
+      session_id: sessionId,
+      reaction_type: reactionType,
+    },
+  ]);
 
-  const { error } = await supabase
-    .from("debate_reactions")
-    .insert([
-      {
-        debate_id: debateId,
-        session_id: sessionId,
-      },
-    ]);
-
-  if (error) {
+console.log("AFTER INSERT");
+console.log("INSERT ERROR:", error);  if (error) {
     // duplicate like ignored
     if (error.code === "23505") {
       return;
     }
-
+await fetchReactions();
     console.log(error);
     return;
   }
@@ -359,8 +379,11 @@ setLikedDebates((prev: any) => ({
           {[...debates]
   .sort(
     (a, b) =>
-      (reactionCounts[b.id] || 0) -
-      (reactionCounts[a.id] || 0)
+      ((reactionCounts[b.id]?.agree || 0) +
+ (reactionCounts[b.id]?.disagree || 0)) -
+
+((reactionCounts[a.id]?.agree || 0) +
+ (reactionCounts[a.id]?.disagree || 0))
   )
   .map((debate) => (
 
@@ -387,11 +410,26 @@ setLikedDebates((prev: any) => ({
   {debate.message}
 </p>
 
-<div
-  onClick={() => handleReaction(debate.id)}
-  className="mt-4 text-xs font-black uppercase tracking-wider text-orange-300 hover:text-orange-200 transition-colors cursor-pointer"
->
-  👍 Support Take ({reactionCounts[debate.id] || 0})
+<div className="mt-4 flex gap-3">
+
+  <button
+    onClick={() =>
+      handleReaction(debate.id, "agree")
+    }
+    className="px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-black uppercase"
+  >
+    👍 Agree ({reactionCounts[debate.id]?.agree || 0})
+  </button>
+
+  <button
+    onClick={() =>
+      handleReaction(debate.id, "disagree")
+    }
+    className="px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-black uppercase"
+  >
+    👎 Disagree ({reactionCounts[debate.id]?.disagree || 0})
+  </button>
+
 </div>
 
 </div>
