@@ -4,34 +4,41 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+
 export default function ArchiveMoviePage() {
   const params = useParams();
   const movieId = params.movieId as string;
 
   const [results, setResults] = useState<any[]>([]);
   const [predictions, setPredictions] = useState<any[]>([]);
+    const [profiles, setProfiles] = useState<any[]>([]);
   
 
   useEffect(() => {
     const loadData = async () => {
-      const { data: resultData } = await supabase
-        .from("movie_results")
-        .select("*")
-        .eq("movie_id", movieId);
+  const { data: resultData } = await supabase
+    .from("movie_results")
+    .select("*")
+    .eq("movie_id", movieId);
 
-      const { data: predictionData } = await supabase
-        .from("movie_predictions")
-        .select("*")
-        .eq("movie_id", movieId);
-         
+  const { data: predictionData } = await supabase
+    .from("movie_predictions")
+    .select("*")
+    .eq("movie_id", movieId);
 
-      setResults(resultData || []);
-      setPredictions(predictionData || []);
-    };
+  const { data: profileData } = await supabase
+    .from("profiles")
+    .select("id, username");
+
+  setResults(resultData || []);
+  setPredictions(predictionData || []);
+  setProfiles(profileData || []);
+};
     
 
     loadData();
   }, [movieId]);
+  
 
   const openingDay = results.find(
     (r) => r.prediction_type === "opening_day"
@@ -44,8 +51,26 @@ export default function ArchiveMoviePage() {
   const scoredPredictions = predictions.filter(
     (p) => p.accuracy !== null
   );
+const verifiedCalls = [...scoredPredictions]
+  .sort(
+    (a, b) =>
+      Number(b.accuracy) - Number(a.accuracy)
+  )
+  .slice(0, 5);
 
-  const averageAccuracy =
+const topPredictors = [...scoredPredictions]
+  .sort(
+    (a, b) =>
+      Number(b.accuracy) - Number(a.accuracy)
+  )
+  .slice(0, 10);
+
+const getUsername = (userId: string) => {
+  return (
+    profiles.find((p) => p.id === userId)
+      ?.username || "Unknown"
+  );
+};  const averageAccuracy =
     scoredPredictions.length > 0
       ? (
           scoredPredictions.reduce(
@@ -144,7 +169,69 @@ const avgLifetimePrediction =
           </div>
 
         </div>
+<div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 mb-6">
 
+  <h2 className="text-2xl font-black mb-4 text-orange-400">
+    🏆 Verified Calls
+  </h2>
+
+  <div className="space-y-4">
+
+    {verifiedCalls.map((call, index) => (
+      <div
+        key={call.id}
+        className="border border-[#2d1b18] rounded-xl p-4"
+      >
+        <div className="flex justify-between items-center">
+
+          <div className="font-black text-orange-400">
+            #{index + 1} @{getUsername(call.user_id)}
+          </div>
+
+          <div className="font-black text-emerald-400">
+            {Number(call.accuracy).toFixed(2)}%
+          </div>
+
+        </div>
+
+        <div className="mt-2 text-sm text-neutral-300">
+          Predicted:
+          <span className="ml-2 text-orange-400 font-bold">
+            ₹{call.predicted_value} Cr
+          </span>
+        </div>
+      </div>
+    ))}
+
+  </div>
+
+</div>
+<div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 mb-6">
+
+  <h2 className="text-2xl font-black mb-4 text-orange-400">
+    🥇 Top Predictors
+  </h2>
+
+  <div className="space-y-3">
+
+    {topPredictors.map((predictor, index) => (
+      <div
+        key={predictor.id}
+        className="flex justify-between border-b border-[#2d1b18] pb-2"
+      >
+        <div>
+          #{index + 1} @{getUsername(predictor.user_id)}
+        </div>
+
+        <div className="font-black text-emerald-400">
+          {Number(predictor.accuracy).toFixed(2)}%
+        </div>
+      </div>
+    ))}
+
+  </div>
+
+</div>
         <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
 
           <h2 className="text-2xl font-black mb-4">
