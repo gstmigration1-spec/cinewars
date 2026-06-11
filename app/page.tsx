@@ -1472,19 +1472,23 @@ window.location.reload();
 
   <button
   onClick={async () => {
-    const shareText = `🏆 VERIFIED CALL
+    const shareText = `🚨 BOX OFFICE ORACLE ALERT 🚨
 
-I predicted ${call.movieTitle || call.movie_id}
+🏆 VERIFIED CALL
 
-Prediction: ₹${call.predicted_value} Cr
-Actual: ₹${call.actual_value} Cr
+🎬 ${call.movieTitle || call.movie_id}
 
-Accuracy: ${call.accuracy?.toFixed(2)}%
+💰 Predicted: ₹${call.predicted_value} Cr
+🎯 Actual: ₹${call.actual_value} Cr
 
-Made on CineWars
+⚡ Accuracy: ${call.accuracy?.toFixed(2)}%
 
-https://www.thecinewars.com`;
+👤 @${call.username} nailed this prediction.
 
+Think you can predict better?
+
+🔥 Join CineWars:
+https://www.thecinewars.com/user/${call.username}`;
     if (navigator.share) {
       await navigator.share({
         title: "CineWars Best Call",
