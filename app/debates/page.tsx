@@ -92,8 +92,7 @@ setGroupedDebates(grouped);
             className="bg-neutral-950 border border-[#38231e] rounded-xl p-4"
           >
             <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-orange-400">
-              <Link
-  href={`/movies/${debate.movie_id}`}
+              <Link href={`/user/${debate.username}`}
   className="text-orange-400 hover:text-orange-300 cursor-pointer underline"
 >
   @{debate.username}

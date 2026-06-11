@@ -1404,9 +1404,12 @@ window.location.reload();
                                       <div className="p-5 space-y-5 relative z-10">
   <div className="flex items-center justify-between">
     <div>
-      <span className="text-xs font-black text-white block">
+      <Link
+  href={`/user/${call.username}`}
+  className="text-xs font-black text-white block hover:text-orange-400"
+>
   @{call.username}
-</span>
+</Link>
       <span className="text-[9px] border px-2 py-0.5 rounded font-black uppercase tracking-wider text-orange-400 border-orange-500/30">
         {call.prediction_type}
       </span>
@@ -1469,16 +1472,18 @@ window.location.reload();
 
   <button
   onClick={async () => {
-    const shareText = `🎯 CineWars Best Call
+    const shareText = `🏆 VERIFIED CALL
 
-@${call.username}
-Movie: ${call.movieTitle || call.movie_id}
+I predicted ${call.movieTitle || call.movie_id}
 
-Accuracy: ${call.accuracy}%
 Prediction: ₹${call.predicted_value} Cr
 Actual: ₹${call.actual_value} Cr
 
-https://cinewars.vercel.app`;
+Accuracy: ${call.accuracy?.toFixed(2)}%
+
+Made on CineWars
+
+https://www.thecinewars.com`;
 
     if (navigator.share) {
       await navigator.share({
@@ -1493,7 +1498,7 @@ https://cinewars.vercel.app`;
   className="flex items-center space-x-1 font-black uppercase text-neutral-300 hover:text-white transition group/share font-bold"
 >
   <Share2 className="w-3 h-3 text-orange-500 group-hover/share:scale-110 transition" />
-  <span>Share Call</span>
+  <span>Share Verified Call</span>
 </button>
 </div>  
                   </div>

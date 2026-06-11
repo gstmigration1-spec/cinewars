@@ -442,12 +442,14 @@ setLikedDebates((prev: any) => ({
 
               <div className="flex items-center justify-between mb-3">
 
-                <Link
-  href="/debates"
+                
+  <Link
+  href={`/user/${debate.username}`}
   className="text-xs uppercase tracking-wider text-orange-300 font-black hover:text-orange-200 underline"
 >
   @{debate.username}
 </Link>
+
 
                 <span className="text-[10px] text-neutral-500">
                   {new Date(
