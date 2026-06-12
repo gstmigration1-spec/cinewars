@@ -26,7 +26,8 @@ useEffect(() => {
       .eq("id", user.id)
       .single();
 
-    setCurrentUser(profile);
+    
+setCurrentUser(profile);
     setLoading(false);
   };
 

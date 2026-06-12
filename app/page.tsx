@@ -67,12 +67,27 @@ export default function CineWarsHomepage() {
 );
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
+  const [terribleMisses, setTerribleMisses] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [bestCalls, setBestCalls] = useState<any[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const now = new Date();
+
+const previousMonth = new Date(
+  now.getFullYear(),
+  now.getMonth() - 1,
+  1
+);
+
+const previousMonthName = previousMonth.toLocaleString(
+  "default",
+  {
+    month: "long",
+  }
+);
   useEffect(() => {
   const loadCurrentUser = async () => {
     const {
@@ -309,23 +324,60 @@ useEffect(() => {
       profiles?.find(
         (profile) => profile.id === prediction.user_id
       )?.username || "Anonymous",
+      
 
     movieTitle:
   movies?.find(
     (movie) => movie.movie_id === prediction.movie_id
   )?.title || prediction.movie_id,
   }));
+  const scoredCalls = merged.filter(
+  (call) =>
+    call.accuracy !== null &&
+    call.actual_value !== null
+);
 
-  setProvenPredictions(merged);
+const bullsEyeCalls = scoredCalls.filter(
+  (call) => Number(call.accuracy) >= 70
+);
 
+const terribleMissCalls = scoredCalls.filter(
+  (call) => Number(call.accuracy) < 40
+);
+
+  setProvenPredictions(bullsEyeCalls);
+
+setTerribleMisses(terribleMissCalls);
+const now = new Date();
+
+const previousMonth = new Date(
+  now.getFullYear(),
+  now.getMonth() - 1,
+  1
+);
+
+const previousMonthCalls = scoredCalls.filter(
+  (call) => {
+    if (!call.scored_at) return false;
+
+    const scored = new Date(call.scored_at);
+
+    return (
+      scored.getMonth() === previousMonth.getMonth() &&
+      scored.getFullYear() === previousMonth.getFullYear()
+    );
+  }
+);
+console.log("Previous Month Calls", previousMonthCalls);
+console.log("Count", previousMonthCalls.length);
 setBestCalls(
-  [...merged]
+  [...previousMonthCalls]
     .sort(
       (a, b) =>
         Number(b.accuracy) -
         Number(a.accuracy)
     )
-    .slice(0, 3)
+    .slice(0, 1)
 );
 };
 const loadLeaderboard = async () => {
@@ -1386,9 +1438,12 @@ window.location.reload();
         <section id="calls" className="space-y-6">
           <div>
             <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
-              🎬 Proven Predictions
-            </h2>
-            <p className="text-xs text-neutral-500 font-medium">Screenshot-ready performance sheets tracking who hit the mark and whose claims fell flat.</p>
+  🎯 Hit The Bull's Eye
+</h2>
+
+<p className="text-xs text-neutral-500 font-medium">
+  The community members who came closest to nailing the final box office outcome.
+</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1510,14 +1565,114 @@ https://www.thecinewars.com/user/${call.username}`;
             })}
           </div>
         </section>
+<section className="space-y-6">
+  <div>
+    <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
+      💀 Terrible Misses
+    </h2>
 
+    <p className="text-xs text-neutral-500 font-medium">
+      The predictions that missed the mark by a mile.
+    </p>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {terribleMisses.map((call) => {
+      return (
+        <div
+          key={call.id}
+          className="glass-card relative rounded-2xl border border-red-900/40 bg-neutral-950 overflow-hidden shadow-2xl flex flex-col justify-between group transition hover:translate-y-[-4px] hover:border-red-500/50"
+        >
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
+
+          <div className="p-5 space-y-5 relative z-10">
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Link
+                  href={`/user/${call.username}`}
+                  className="text-xs font-black text-white block hover:text-red-400"
+                >
+                  @{call.username}
+                </Link>
+
+                <span className="text-[9px] border px-2 py-0.5 rounded font-black uppercase tracking-wider text-red-400 border-red-500/30">
+                  {call.prediction_type}
+                </span>
+              </div>
+
+              <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border bg-neutral-900 text-red-400 border-red-500/20">
+                MISS
+              </span>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-black uppercase text-white mt-1.5 truncate text-display">
+                {call.movieTitle}
+              </h3>
+            </div>
+
+            <div className="bg-[#0c0807]/90 border border-[#2d1b18] rounded-xl p-3 grid grid-cols-2 gap-2 text-center font-mono">
+
+              <div className="border-r border-[#2d1b18] pr-1">
+                <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5">
+                  Predicted
+                </span>
+
+                <span className="text-sm font-black text-white">
+                  ₹{call.predicted_value}
+                </span>
+              </div>
+
+              <div className="pl-1">
+                <span className="text-[8px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5">
+                  Actual
+                </span>
+
+                <span className="text-sm font-black text-white">
+                  ₹{call.actual_value}
+                </span>
+              </div>
+
+            </div>
+
+            <div className="flex items-center justify-between border-t border-[#2d1b18] pt-3">
+              <span className="text-[9px] text-neutral-500 font-black uppercase tracking-wider">
+                Accuracy
+              </span>
+
+              <span className="text-xl font-black font-mono text-red-400">
+                {call.accuracy?.toFixed(2)}%
+              </span>
+            </div>
+
+          </div>
+
+          <div className="bg-[#0e0a09] px-4 py-3 flex items-center justify-between border-t border-[#2d1b18] text-[10px] text-neutral-500 font-medium rounded-b-2xl">
+            <span>
+              Points: <strong className="text-white">{call.points}</strong>
+            </span>
+
+            <span className="text-red-400 font-black uppercase tracking-wider">
+              💀 Terrible Miss
+            </span>
+          </div>
+
+        </div>
+      );
+    })}
+  </div>
+</section>
         {/* 4. CRITICS GOT IT WRONG PANEL */}
         <section id="reality-check" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
             <div>
               <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
-  🏆 BEST CALLS OF THE MONTH
+  🏆 {previousMonthName} Call Of The Month
 </h2>
+<p className="text-xs text-neutral-500 font-medium">
+  Updated during the first week of every month based on the highest-rated verified prediction from the previous month.
+</p>
               <p className="text-xs text-neutral-500 font-medium">
   The most accurate box office predictions made by the CineWars community.
 </p>
