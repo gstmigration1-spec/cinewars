@@ -360,11 +360,15 @@ const previousMonthCalls = scoredCalls.filter(
   (call) => {
     if (!call.scored_at) return false;
 
+    if (Number(call.accuracy) < 70)
+      return false;
+
     const scored = new Date(call.scored_at);
 
     return (
       scored.getMonth() === previousMonth.getMonth() &&
-      scored.getFullYear() === previousMonth.getFullYear()
+      scored.getFullYear() ===
+        previousMonth.getFullYear()
     );
   }
 );
@@ -761,7 +765,7 @@ window.location.reload();
 
         {/* HERO AREA WITH HIGH-FIDELITY LUXURY LIGHTING */}
         <div className="pt-6 md:pt-4">
-          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#160f0e] via-[#050303] to-[#050303] border border-[#2d1a17] p-6 sm:p-8 md:p-16 text-center shadow-2xl cinema-glow-container">
+          <section className="relative overflow-hidden rounded-3xl ... p-5 sm:p-6 md:p-10">
 
             {/* Animated Projector Flares */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/90 via-[#050303]/40 to-transparent" />
@@ -793,7 +797,7 @@ window.location.reload();
               </span>
 
               {/* 1. RESTORE ORIGINAL TAGLINE EXACTLY */}
-              <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tight leading-none mb-6 text-display text-white">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-none mb-6 text-display text-white">
 
                 Track predictions. <br />
                 Rate credibility. <br />
@@ -803,17 +807,17 @@ window.location.reload();
               </h1>
 
               {/* SUPPORTING COPY */}
-              <p className="max-w-2xl mx-auto text-neutral-400 text-xs sm:text-[13px] md:text-base font-medium leading-relaxed mb-10">
+              <p className="max-w-2xl mx-auto text-neutral-400 text-xs sm:text-[13px] md:text-base font-medium leading-relaxed mb-6">
                 Fans predict. Critics react. Trackers call the numbers. CineWars remembers who holds the ultimate box office accuracy rating and resolves the internet's loudest movie debates.
               </p>
 
               {/* HERO SECTION CLEAR INTERACTIVE CTAs */}
-              <div className="flex flex-wrap justify-center gap-4 mb-12 relative z-20">
+              <div className="flex flex-wrap justify-center gap-4 mb-6 relative z-20">
                 <motion.a
                   whileHover={{ scale: 1.05, y: -2, boxShadow: "0 0 30px rgba(230,57,23,0.55)" }}
                   whileTap={{ scale: 0.97 }}
                   href="#trending"
-                  className="px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest bg-gradient-to-r from-[#e63917] to-[#f97316] text-white shadow-[0_4px_25px_rgba(230,57,23,0.4)] flex items-center gap-2 font-bold transition-all duration-200"
+                  className="px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest bg-gradient-to-r from-[#e63917] to-[#f97316] text-white shadow-[0_4px_25px_rgba(230,57,23,0.4)] flex items-center gap-2 font-bold transition-all duration-200"
                 >
                   Join the Arena <Zap className="w-4 h-4 fill-current text-amber-300" />
                 </motion.a>
@@ -821,14 +825,14 @@ window.location.reload();
                   whileHover={{ scale: 1.05, backgroundColor: "#2b1814" }}
                   whileTap={{ scale: 0.97 }}
                   href="#trending"
-                  className="px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest bg-[#1a0f0d] border border-[#422621] text-neutral-300 font-bold transition-all duration-200"
+                  className="px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest bg-[#1a0f0d] border border-[#422621] text-neutral-300 font-bold transition-all duration-200"
                 >
                   Explore Predictions
                 </motion.a>
               </div>
 
               {/* 1. STATS BAR CARDS & 2. RE-STYLED SENTENCE CASE LABELS */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-8 border-t border-[#341d19]">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto pt-1 border-t border-[#341d19]">
                {[
   {
     count: heroStats.predictions.toLocaleString(),
@@ -847,12 +851,12 @@ window.location.reload();
     label: "Votes Cast",
   },
 ].map((stat, idx) => (
-                  <div key={idx} className="bg-[#1b100e] border-2 border-[#492822] rounded-2xl p-4 text-center relative overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.6)] group transition-all duration-300 hover:border-[#f97316]/50">
+                  <div key={idx} className="bg-[#1b100e] border border-[#492822] rounded-xl p-2 text-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-[#f97316]/0 to-[#f97316]/4 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="block text-3xl sm:text-4xl font-black text-white tracking-tight text-display">
+                    <span className="block text-2xl font-black text-white tracking-tight text-display">
                       {stat.count}
                     </span>
-                    <span className="block text-[13px] text-neutral-400 font-medium tracking-wide mt-1.5">
+                    <span className="block text-[11px] text-neutral-400 font-medium tracking-wide mt-1">
                       {stat.label}
                     </span>
                   </div>
@@ -1188,11 +1192,11 @@ window.location.reload();
               
               <div key={movie.id} className="glass-card rounded-2xl overflow-hidden border border-[#1f2c3d] bg-neutral-950 flex flex-col h-full group shadow-xl transition-all duration-500 hover:border-sky-400/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(56,189,248,0.10)]">
                 {/* Backdrop Layer */}
-                <div className="relative min-h-[240px] md:h-72 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
+                <div className="relative min-h-[200px] md:h-60 w-full flex items-center justify-center overflow-hidden bg-[#1c110f] overflow-hidden shrink-0">
                   <img
                     src={movie.poster}
                     alt={movie.title}
-                    className="object-contain w-full h-full max-h-[300px] md:max-h-full transition-all duration-700 ease-out" />
+                    className="object-contain w-full h-full max-h-[240px] md:max-h-full transition-all duration-700 ease-out" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/65 via-[#050303]/20 to-transparent" />
 
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
@@ -1246,10 +1250,10 @@ window.location.reload();
                 </div>
 
                 {/* Content Dashboard Area */}
-                <div className="p-4 md:p-5 justify-between space-y-6">
+                <div className="p-3 md:p-4 justify-between space-y-4">
                   <div>
                     <Link href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                      <h3 className="text-2xl md:text-3xl font-black uppercase tracking-normal text-white mb-2 text-display group-hover:text-orange-400 transition-colors">
+                      <h3 className="text-xl md:text-2xl font-black uppercase tracking-normal text-white mb-2 text-display group-hover:text-orange-400 transition-colors">
                         {movie.title}
                       </h3>
                     </Link>
