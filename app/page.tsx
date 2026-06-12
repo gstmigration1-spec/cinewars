@@ -660,7 +660,7 @@ await fetchMovies();
       {/* NAVIGATION BAR */}
       <nav className="sticky top-0 z-50 w-full border-b border-[#231512] bg-[#050303]/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-2xl font-black uppercase tracking-wider bg-gradient-to-r from-[#e63917] via-[#f97316] to-[#f5a60b] text-transparent bg-clip-text drop-shadow-[0_4px_12px_rgba(230,57,23,0.5)]">
+          <div className="flex items-center space-x-2 text-2xl font-black uppercase tracking-wider bg-gradient-to-r from-[#38bdf8] via-[#3b82f6] to-[#60a5fa] text-transparent bg-clip-text drop-shadow-[0_4px_12px_rgba(230,57,23,0.5)]">
             <Film className="w-6 h-6 text-[#e63917]" />
             <span className="text-display text-3xl">CineWars</span>
           </div>
@@ -719,7 +719,7 @@ await fetchMovies();
     }}
     whileHover={{ scale: 1.04 }}
     whileTap={{ scale: 0.98 }}
-    className="relative group overflow-hidden bg-gradient-to-r from-[#e63917] to-[#f97316] text-[11px] font-black uppercase tracking-widest px-5 py-3 rounded-xl text-white"
+    className="relative group overflow-hidden bg-gradient-to-r from-[#2563eb] to-[#38bdf8] text-[11px] font-black uppercase tracking-widest px-5 py-3 rounded-xl text-white"
   >
     {currentUser?.username ? (
       <span>@{currentUser.username} ▼</span>
@@ -791,8 +791,11 @@ window.location.reload();
               </motion.div>
             ))}
 
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-[#f97316]/10 text-[#f97316] uppercase tracking-widest border border-[#f97316]/20 mb-6 font-bold">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+  <div>
+
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-[#3b82f6]/10 text-[#f97316] uppercase tracking-widest border border-[#f97316]/20 mb-6 font-bold">
                 <Flame className="w-3.5 h-3.5 fill-[#f97316]" /> Movie prediction credibility tracking
               </span>
 
@@ -801,7 +804,7 @@ window.location.reload();
 
                 Track predictions. <br />
                 Rate credibility. <br />
-                <span className="bg-gradient-to-r from-[#e63917] via-[#f97316] to-[#f5a60b] text-transparent bg-clip-text drop-shadow-[0_4px_25px_rgba(249,115,22,0.4)]">
+                <span className="bg-gradient-to-r from-[#38bdf8] via-[#3b82f6] to-[#60a5fa] text-transparent bg-clip-text drop-shadow-[0_4px_25px_rgba(59,130,246,0.45)]">
                   Settle movie debates.
                 </span>
               </h1>
@@ -814,10 +817,10 @@ window.location.reload();
               {/* HERO SECTION CLEAR INTERACTIVE CTAs */}
               <div className="flex flex-wrap justify-center gap-4 mb-6 relative z-20">
                 <motion.a
-                  whileHover={{ scale: 1.05, y: -2, boxShadow: "0 0 30px rgba(230,57,23,0.55)" }}
+                  whileHover={{ scale: 1.05, y: -2, boxShadow: "0 0 30px rgba(59,130,246,0.55)" }}
                   whileTap={{ scale: 0.97 }}
                   href="#trending"
-                  className="px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest bg-gradient-to-r from-[#e63917] to-[#f97316] text-white shadow-[0_4px_25px_rgba(230,57,23,0.4)] flex items-center gap-2 font-bold transition-all duration-200"
+                  className="px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest bg-gradient-to-r from-[#2563eb] to-[#38bdf8] text-white shadow-[0_4px_25px_rgba(230,57,23,0.4)] flex items-center gap-2 font-bold transition-all duration-200"
                 >
                   Join the Arena <Zap className="w-4 h-4 fill-current text-amber-300" />
                 </motion.a>
@@ -851,7 +854,7 @@ window.location.reload();
     label: "Votes Cast",
   },
 ].map((stat, idx) => (
-                  <div key={idx} className="bg-[#1b100e] border border-[#492822] rounded-xl p-2 text-center relative overflow-hidden">
+                  <div key={idx} className="bg-[#0d1424] border border-[#1e3a8a] rounded-xl p-2 text-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-[#f97316]/0 to-[#f97316]/4 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="block text-2xl font-black text-white tracking-tight text-display">
                       {stat.count}
@@ -862,8 +865,11 @@ window.location.reload();
                   </div>
                 ))}
               </div>
+</div>
 
-            </motion.div>
+
+            </div>
+            
 
             {/* LIVE TICKER BELOW HERO */}
             <div className="absolute bottom-0 left-0 right-0 h-9 bg-[#080505] border-t border-[#2d1b18] flex items-center overflow-hidden z-10 select-none">
