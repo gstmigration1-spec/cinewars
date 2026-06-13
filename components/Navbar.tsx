@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, Menu, X, Home, Trophy, Ticket, Sparkles, LogIn, Film, Search } from "lucide-react";import { supabase } from "@/lib/supabase";
@@ -49,7 +50,7 @@ useEffect(() => {
 
     const { data } = await supabase
       .from("movies")
-      .select("title")
+      .select("movie_id,title")
       .ilike("title", `%${movieSearch}%`)
       .limit(6);
 
@@ -81,13 +82,22 @@ const handleLogout = async () => {
         <div className="flex h-20 items-center justify-between">
           
           {/* Logo Section */}
-          <Link 
-            href="/" 
-            className="group flex items-center space-x-2 text-2xl font-black uppercase tracking-wider bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-transparent bg-clip-text drop-shadow-[0_2px_15px_rgba(239,68,68,0.3)]"
-          >
-            <Flame className="w-7 h-7 text-red-500 fill-red-500 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
-            <span>CineWars TEST123</span>
-          </Link>
+          <Link
+  href="/"
+  className="group flex items-center gap-3"
+>
+  <Image
+  src="/posters/logo.png"
+    alt="CineWars"
+    width={42}
+    height={42}
+    className="rounded-md"
+  />
+
+  <span className="text-3xl font-black uppercase tracking-wider bg-gradient-to-r from-[#3b82f6] to-[#60a5fa] bg-clip-text text-transparent">
+    CineWars
+  </span>
+</Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
@@ -123,7 +133,7 @@ const handleLogout = async () => {
       value={movieSearch}
       onChange={(e) => setMovieSearch(e.target.value)}
       placeholder="Search movies..."
-className="w-40 md:w-64 bg-neutral-900 border border-neutral-800 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-orange-500"    />
+className="w-40 md:w-64 bg-neutral-900 border border-neutral-800 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-[#3b82f6]"    />
 
     {searchResults.length > 0 && (
       <div className="absolute top-12 left-0 w-full bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden shadow-xl z-50">

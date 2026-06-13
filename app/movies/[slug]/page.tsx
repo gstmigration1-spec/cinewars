@@ -270,7 +270,15 @@ setLikedDebates((prev: any) => ({
   [debateId]: true,
 }));
   fetchReactions();
-}; const handlePredictionSubmit = async () => {
+}; const handleSharePrediction = () => {
+  const text = `🎬 I just made my box office prediction for ${movieTitle} on CineWars. Think you can beat me?`;
+
+  navigator.clipboard.writeText(
+    `${text}\n\n${window.location.href}`
+  );
+
+  alert("Prediction link copied!");
+};const handlePredictionSubmit = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -387,8 +395,9 @@ setLikedDebates((prev: any) => ({
     placeholder="Lifetime Collection (Cr)"
     className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4 outline-none text-sm"
   />
-
+<div className="flex gap-3 flex-wrap"></div>
   <button
+  
   onClick={handlePredictionSubmit}
   disabled={predictionLoading}
   className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 transition-all duration-300 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-white shadow-md shadow-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -396,6 +405,12 @@ setLikedDebates((prev: any) => ({
   {predictionLoading
     ? "Submitting..."
     : "🚀 Submit Prediction"}
+</button>
+<button
+  onClick={handleSharePrediction}
+  className="ml-3 bg-[#120908] border border-[#2d1b18] hover:border-orange-500 transition-all duration-300 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-orange-400"
+>
+  📤 Share Prediction
 </button>
 
 </div>

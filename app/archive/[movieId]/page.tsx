@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 
 export default function ArchiveMoviePage() {
@@ -185,9 +186,15 @@ const avgLifetimePrediction =
         <div className="flex justify-between items-center">
 
           <div className="font-black text-orange-400">
-            #{index + 1} @{getUsername(call.user_id)}
-          </div>
+  #{index + 1}
 
+  <Link
+    href={`/user/${getUsername(call.user_id)}`}
+    className="ml-1 hover:text-white transition-colors"
+  >
+    @{getUsername(call.user_id)}
+  </Link>
+</div>
           <div className="font-black text-emerald-400">
             {Number(call.accuracy).toFixed(2)}%
           </div>
@@ -220,8 +227,15 @@ const avgLifetimePrediction =
         className="flex justify-between border-b border-[#2d1b18] pb-2"
       >
         <div>
-          #{index + 1} @{getUsername(predictor.user_id)}
-        </div>
+  #{index + 1}
+
+  <Link
+    href={`/user/${getUsername(predictor.user_id)}`}
+    className="ml-1 hover:text-orange-400 transition-colors"
+  >
+    @{getUsername(predictor.user_id)}
+  </Link>
+</div>
 
         <div className="font-black text-emerald-400">
           {Number(predictor.accuracy).toFixed(2)}%

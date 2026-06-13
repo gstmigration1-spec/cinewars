@@ -126,6 +126,10 @@ console.log("WELCOME:", data.welcome_seen);
   members: 0,
   votes: 0,
 });
+const mostDebatedMovie =
+  [...trendingMovies].sort(
+    (a, b) => (b.debateCount || 0) - (a.debateCount || 0)
+  )[0];
 async function fetchMovies() {
   try {
     const { data: movies } = await supabase
@@ -660,10 +664,17 @@ await fetchMovies();
       {/* NAVIGATION BAR */}
       <nav className="sticky top-0 z-50 w-full border-b border-[#231512] bg-[#050303]/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-2xl font-black uppercase tracking-wider bg-gradient-to-r from-[#38bdf8] via-[#3b82f6] to-[#60a5fa] text-transparent bg-clip-text drop-shadow-[0_4px_12px_rgba(230,57,23,0.5)]">
-            <Film className="w-6 h-6 text-[#e63917]" />
-            <span className="text-display text-3xl">CineWars</span>
-          </div>
+          <div className="flex items-center gap-3">
+  <img
+    src="/posters/logo.png"
+    alt="CineWars"
+    className="h-12 w-auto"
+  />
+
+  <span className="text-display text-3xl bg-gradient-to-r from-[#38bdf8] to-[#60a5fa] bg-clip-text text-transparent font-black">
+    CineWars
+  </span>
+</div>
 
           <div className="hidden md:flex items-center space-x-2 text-xs font-black uppercase tracking-wider text-neutral-400">
             {[
@@ -765,7 +776,7 @@ window.location.reload();
 
         {/* HERO AREA WITH HIGH-FIDELITY LUXURY LIGHTING */}
         <div className="pt-6 md:pt-4">
-          <section className="relative overflow-hidden rounded-3xl ... p-5 sm:p-6 md:p-10">
+          <section className="relative rounded-3xl p-5 sm:p-6 md:p-10">
 
             {/* Animated Projector Flares */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#050303]/90 via-[#050303]/40 to-transparent" />
@@ -791,7 +802,7 @@ window.location.reload();
               </motion.div>
             ))}
 
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="grid lg:grid-cols-[1fr_560px] gap-10 items-start">  
 
   <div>
 
@@ -828,7 +839,7 @@ window.location.reload();
                   whileHover={{ scale: 1.05, backgroundColor: "#2b1814" }}
                   whileTap={{ scale: 0.97 }}
                   href="#trending"
-                  className="px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest bg-[#1a0f0d] border border-[#422621] text-neutral-300 font-bold transition-all duration-200"
+                  className="px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest bg-[#1a0f0d] border border-[#fbbf24]/40 text-[#fbbf24] hover:bg-[#fbbf24] hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.12)]"
                 >
                   Explore Predictions
                 </motion.a>
@@ -854,8 +865,8 @@ window.location.reload();
     label: "Votes Cast",
   },
 ].map((stat, idx) => (
-                  <div key={idx} className="bg-[#0d1424] border border-[#1e3a8a] rounded-xl p-2 text-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#f97316]/0 to-[#f97316]/4 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div key={idx} className="bg-gradient-to-b from-[#0d1424] to-[#0a1020] border border-[#1e3a8a] rounded-xl p-2 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#fbbf24]/0 to-[#fbbf24]/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="block text-2xl font-black text-white tracking-tight text-display">
                       {stat.count}
                     </span>
@@ -866,13 +877,82 @@ window.location.reload();
                 ))}
               </div>
 </div>
+<div className="flex justify-end items-start pt-0">
+  {mostDebatedMovie && (
+   <Link
+  href={`/movies/${mostDebatedMovie.title
+    .toLowerCase()
+    .replace(/\s+/g, "-")}`}
+  onClick={() => {
+    console.log("CARD CLICKED");
+  }}
+  className="group w-full max-w-[560px] cursor-pointer"
+>
+      <div className="rounded-3xl border border-[#2d1b18] bg-[#120908] px-7 pb-7 pt-4 shadow-[0_0_40px_rgba(249,115,22,0.08)] hover:border-orange-500/50 hover:scale-[1.01] transition-all duration-300">
+
+        <div className="text-sm uppercase tracking-[0.15em] text-[#fbbf24] font-black pb-4">
+          🔥 Most Debated Right Now
+        </div>
+
+        <div className="flex gap-8 items-start mt-1">
+
+  <img
+    src={mostDebatedMovie.poster}
+    alt={mostDebatedMovie.title}
+    className="w-72 h-[430px] rounded-2xl object-contain border border-[#3b1f17] shadow-xl bg-black"
+  />
+
+  <div className="flex-1 pt-6">
+
+  <h3 className="text-4xl font-black text-white text-display leading-none">
+    {mostDebatedMovie.title}
+  </h3>
+
+  <p className="text-neutral-500 mt-4 text-base">
+   Currently leading the biggest fan debate
+  </p>
+
+  <div className="border-t border-[#2a1a16] my-8"></div>
+
+  <div className="space-y-6">
+
+    <div className="flex items-center justify-between">
+      <span className="text-neutral-400">
+        Debates
+      </span>
+
+      <span className="text-orange-400 text-2xl font-black">
+        {mostDebatedMovie.debateCount || 0}
+      </span>
+    </div>
+
+    <div className="flex items-center justify-between">
+      <span className="text-neutral-400">
+        Predictions
+      </span>
+
+      <span className="text-cyan-400 text-2xl font-black">
+        {mostDebatedMovie.totalPredictions || 0}
+      </span>
+    </div>
+
+  </div>
+
+</div>
+</div>
+       
+
+      </div>
+    </Link>
+  )}
+</div>
 
 
             </div>
-            
+
 
             {/* LIVE TICKER BELOW HERO */}
-            <div className="absolute bottom-0 left-0 right-0 h-9 bg-[#080505] border-t border-[#2d1b18] flex items-center overflow-hidden z-10 select-none">
+            <div className="absolute bottom-0 left-0 right-0 h-9 bg-[#080505] border-t border-[#2d1b18] flex items-center overflow-hidden z-10 select-none pointer-events-none">
               <div className="flex w-full overflow-hidden whitespace-nowrap relative">
                 <div className="flex gap-10 text-[9px] font-black uppercase tracking-widest text-neutral-400 items-center animate-marquee font-bold">
                   {[...marqueeItems, ...marqueeItems].map((item, index) => (
@@ -886,7 +966,8 @@ window.location.reload();
             </div>
           </section>
         </div>
-        <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#120908] border border-[#2d1b18] text-xs text-neutral-300 font-semibold tracking-wide shadow-lg">
+        
+        <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#120908] border border-[#2d1b18] text-xs text-white font-semibold tracking-wide shadow-lg">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500" />
@@ -942,9 +1023,10 @@ window.location.reload();
 
           <div className="flex items-end justify-between">
             <div>
-              <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
-                🔥 Hot Upcoming Releases
-              </h2>
+              <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-6" />
+              <h2 className="text-3xl font-black uppercase tracking-wider text-[#ff6b6b] text-display">
+  🔥 Hot Upcoming Releases
+</h2>
 
               <p className="text-xs text-neutral-500 mt-1">
                 The internet’s most anticipated upcoming movie battles.
@@ -962,7 +1044,7 @@ window.location.reload();
                   className="min-w-[180px] max-w-[180px] group"
                 >
 
-                  <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-1">
+                  <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#140707] transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-1">
 
                     <img
   src={movie.poster}
@@ -1105,9 +1187,10 @@ window.location.reload();
 
           <div className="flex items-end justify-between">
             <div>
-              <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">
-                🔥 Most Active Fan Wars
-              </h2>
+              <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-6" />
+              <h2 className="text-3xl font-black uppercase tracking-wider text-[#ff6b6b] text-display">
+  🔥 Most Active Fan Wars
+</h2>
 
               <p className="text-xs text-neutral-500 mt-1">
                 Movies generating the internet’s loudest fandom battles right now.
@@ -1131,7 +1214,7 @@ window.location.reload();
                   className="group"
                 >
 
-                  <div className="relative overflow-hidden rounded-2xl border border-[#2d1b18] bg-[#120908] p-5 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1">
+                  <div className="relative overflow-hidden rounded-2xl border border-[#4a1d1d] bg-[#140707] p-5 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1">
 
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -1330,7 +1413,7 @@ window.location.reload();
                   <div className="grid grid-cols-2 gap-2">
   <Link
     href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-    className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ea580c] via-[#f97316] to-[#fb923c] text-white text-[10px] font-black uppercase tracking-[0.15em] hover:scale-[1.01] transition-all duration-300"
+className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d] border border-[#fbbf24]/40 text-[#fbbf24] text-[10px] font-black uppercase tracking-[0.15em] hover:bg-[#fbbf24] hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.12)]"
   >
     Debate
   </Link>
@@ -1447,7 +1530,8 @@ window.location.reload();
         {/* PROVEN PREDICTIONS SECTION */}
         <section id="calls" className="space-y-6">
           <div>
-            <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
+            <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-[#ff6b6b] text-display">
+  <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-8" />
   🎯 Hit The Bull's Eye
 </h2>
 
@@ -1577,7 +1661,8 @@ https://www.thecinewars.com/user/${call.username}`;
         </section>
 <section className="space-y-6">
   <div>
-    <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
+    <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-[#ff6b6b] text-display">
+     <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-8" />
       💀 Terrible Misses
     </h2>
 
@@ -1677,7 +1762,8 @@ https://www.thecinewars.com/user/${call.username}`;
         <section id="reality-check" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
             <div>
-              <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
+              <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-[#ff6b6b] text-display">
+  <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-8" />
   🏆 {previousMonthName} Call Of The Month
 </h2>
 <p className="text-xs text-neutral-500 font-medium">
