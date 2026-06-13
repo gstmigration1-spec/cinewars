@@ -878,7 +878,8 @@ window.location.reload();
               </div>
 </div>
 <div className="flex justify-end items-start pt-0">
-  {mostDebatedMovie && (
+  {false && mostDebatedMovie && (
+  
    <Link
   href={`/movies/${mostDebatedMovie.title
     .toLowerCase()
