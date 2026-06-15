@@ -29,6 +29,7 @@ const [replies, setReplies] = useState<Record<string, any[]>>({});
   >>({});
   const [likedDebates, setLikedDebates] = useState<any>({});
   const [openingPrediction, setOpeningPrediction] = useState("");
+  const [communityPredictions, setCommunityPredictions] = useState<any[]>([]);
 const [lifetimePrediction, setLifetimePrediction] = useState("");
 const [predictionLoading, setPredictionLoading] = useState(false);
 const [openingResult, setOpeningResult] = useState<any>(null);
@@ -88,6 +89,27 @@ data.forEach((reaction) => {
 
 setReactionCounts(grouped);
 };
+const fetchPredictions = async () => {
+  const { data: predictions } = await supabase
+    .from("movie_predictions")
+    .select("*")
+    .eq("movie_id", slug);
+
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, username");
+
+  const merged =
+    predictions?.map((prediction) => ({
+      ...prediction,
+      username:
+        profiles?.find(
+          (p) => p.id === prediction.user_id
+        )?.username || "Unknown",
+    })) || [];
+
+  setCommunityPredictions(merged);
+};
 const fetchResults = async () => {
   const { data: result } = await supabase
     .from("movie_results")
@@ -95,6 +117,7 @@ const fetchResults = async () => {
     .eq("movie_id", slug)
     .eq("prediction_type", "opening_day")
     .maybeSingle();
+    
 
   setOpeningResult(result);
 
@@ -114,6 +137,7 @@ const fetchResults = async () => {
   fetchDebates();
 fetchReactions();
 fetchResults();
+fetchPredictions();
   const channel = supabase
   .channel("movie-debates-realtime")
 
@@ -297,14 +321,17 @@ setLikedDebates((prev: any) => ({
 
   try {
     if (openingPrediction) {
-      await supabase
-  .from("movie_predictions")
-  .update({
+      await supabase.from("movie_predictions").upsert(
+  {
+    user_id: user.id,
+    movie_id: slug,
+    prediction_type: "opening_day",
     predicted_value: Number(openingPrediction),
-  })
-  .eq("user_id", user.id)
-  .eq("movie_id", slug)
-  .eq("prediction_type", "opening_day");
+  },
+  {
+    onConflict: "user_id,movie_id,prediction_type",
+  }
+);
     }
 
     if (lifetimePrediction) {
@@ -430,7 +457,49 @@ setLikedDebates((prev: any) => ({
           </button>
 
         </div>
+<div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-5">
 
+  <h2 className="text-2xl font-black text-orange-400 mb-4">
+    🎯 Community Predictions
+  </h2>
+
+  <div className="space-y-3">
+
+    {communityPredictions.length === 0 ? (
+      <div className="text-neutral-500">
+        No predictions yet.
+      </div>
+    ) : (
+      communityPredictions.map((prediction) => (
+        <div
+          key={prediction.id}
+          className="border border-[#2d1b18] rounded-xl p-4"
+        >
+
+          <Link
+            href={`/user/${prediction.username}`}
+            className="font-black text-orange-400 hover:underline"
+          >
+            @{prediction.username}
+          </Link>
+
+          <div className="mt-2 text-neutral-300">
+            {prediction.prediction_type === "opening_day"
+              ? "Opening Day"
+              : "Lifetime"}
+          </div>
+
+          <div className="text-2xl font-black text-white">
+            ₹{prediction.predicted_value} Cr
+          </div>
+
+        </div>
+      ))
+    )}
+
+  </div>
+
+</div>
         <div className="space-y-4">
 
           {debates.length === 0 && (
