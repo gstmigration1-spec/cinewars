@@ -29,6 +29,7 @@ import {
   MessageCircle,
   Trophy,
   Search,
+Bell,
 } from "lucide-react";
 
 // ==========================================
@@ -74,6 +75,9 @@ export default function CineWarsHomepage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifications, setShowNotifications] =
+  useState(false);
   const now = new Date();
 
 const previousMonth = new Date(
@@ -103,9 +107,18 @@ const { data, error } = await supabase
   .eq("id", user.id)
   .single();
     if (data) {
-      console.log("PROFILE:", data);
-console.log("WELCOME:", data.welcome_seen);
   setCurrentUser(data);
+
+  const { data: notificationsData } =
+    await supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("is_read", false);
+
+  setNotifications(
+    notificationsData || []
+  );
 
   if (!data.welcome_seen) {
     setShowWelcomeModal(true);
@@ -718,7 +731,45 @@ await fetchMovies();
   )}
 </div>
 
-          
+          <button
+  onClick={() =>
+    setShowNotifications(
+      !showNotifications
+    )
+  }
+  className="relative mr-3"
+>
+  <Bell className="w-5 h-5 text-white" />
+
+  {notifications.length > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full">
+      {notifications.length}
+    </span>
+  )}
+</button>
+{showNotifications && (
+  <div className="absolute right-20 top-12 w-80 rounded-xl bg-neutral-900 border border-neutral-800 shadow-xl overflow-hidden z-50">
+
+    <div className="px-4 py-3 border-b border-neutral-800 font-black text-sm">
+      Notifications
+    </div>
+
+    {notifications.length === 0 ? (
+      <div className="px-4 py-6 text-center text-neutral-500 text-sm">
+        No notifications yet
+      </div>
+    ) : (
+      notifications.map((notification) => (
+        <div
+          key={notification.id}
+          className="px-4 py-3 border-b border-neutral-800 hover:bg-neutral-800 text-sm"
+        >
+          {notification.message}
+        </div>
+      ))
+    )}
+  </div>
+)}
             <div className="relative">
   <motion.button
     onClick={() => {

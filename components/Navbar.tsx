@@ -162,7 +162,7 @@ onClick={() => {
         className="flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-white"
       >
         <User className="w-4 h-4" />
-        <span>{currentUser.username}</span>
+        <span>TEST123</span>
         <ChevronDown className="w-4 h-4" />
       </button>
 

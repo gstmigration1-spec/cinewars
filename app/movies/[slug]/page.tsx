@@ -162,6 +162,7 @@ const fetchPredictionReactions = async () => {
 };
 const handlePredictionReaction = async (
   predictionId: string,
+  ownerId: string,
   reactionType: "like" | "dislike"
 ) => {
   let sessionId = localStorage.getItem(
@@ -189,8 +190,34 @@ const handlePredictionReaction = async (
         onConflict: "prediction_id,session_id",
       }
     );
+    const {
+  data: { user },
+} = await supabase.auth.getUser();
 
-  fetchPredictionReactions();
+if (
+  user &&
+  ownerId &&
+  ownerId !== user.id
+) {
+  const { data: profile } =
+    await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .single();
+
+  await supabase
+    .from("notifications")
+    .insert([
+      {
+        user_id: ownerId,
+        message:
+          reactionType === "like"
+            ? `${profile?.username || "Someone"} liked your prediction`
+            : `${profile?.username || "Someone"} disliked your prediction`,
+      },
+    ]);
+}fetchPredictionReactions();
 };
  useEffect(() => {
   fetchDebates();
@@ -356,13 +383,18 @@ setLikedDebates((prev: any) => ({
 }));
   fetchReactions();
 }; const handleSharePrediction = () => {
-  const text = `🎬 I just made my box office prediction for ${movieTitle} on CineWars. Think you can beat me?`;
+  const text = `🎯 My ${movieTitle} Prediction on CineWars
 
-  navigator.clipboard.writeText(
-    `${text}\n\n${window.location.href}`
-  );
+Opening Day: ₹${openingPrediction || "?"} Cr
+Lifetime: ₹${lifetimePrediction || "?"} Cr
 
-  alert("Prediction link copied!");
+Think you can beat this call?
+
+${window.location.href}`;
+
+  navigator.clipboard.writeText(text);
+
+  alert("Prediction copied!");
 };const handlePredictionSubmit = async () => {
   const {
     data: { user },
@@ -541,6 +573,8 @@ setLikedDebates((prev: any) => ({
   lifetime: null,
   openingPredictionId: null,
   lifetimePredictionId: null,
+  openingPredictionOwnerId: null,
+  lifetimePredictionOwnerId: null,
 };
     }
 
@@ -553,6 +587,8 @@ setLikedDebates((prev: any) => ({
 
 acc[prediction.user_id].openingPredictionId =
   prediction.id;
+  acc[prediction.user_id].openingPredictionOwnerId =
+  prediction.user_id;
     }
 
     if (
@@ -564,6 +600,8 @@ acc[prediction.user_id].openingPredictionId =
 
 acc[prediction.user_id].lifetimePredictionId =
   prediction.id;
+  acc[prediction.user_id].lifetimePredictionOwnerId =
+  prediction.user_id;
     }
 
     return acc;
@@ -594,11 +632,12 @@ acc[prediction.user_id].lifetimePredictionId =
 
   <button
     onClick={() =>
-      handlePredictionReaction(
-        prediction.openingPredictionId,
-        "like"
-      )
-    }
+  handlePredictionReaction(
+    prediction.openingPredictionId,
+    prediction.openingPredictionOwnerId,
+    "like"
+  )
+}
     className="px-2 py-1 rounded bg-green-500/10 border border-green-500/30 text-green-400 text-xs"
   >
     👍{" "}
@@ -610,9 +649,10 @@ acc[prediction.user_id].lifetimePredictionId =
   <button
     onClick={() =>
       handlePredictionReaction(
-        prediction.openingPredictionId,
-        "dislike"
-      )
+  prediction.openingPredictionId,
+  prediction.openingPredictionOwnerId,
+  "dislike"
+)
     }
     className="px-2 py-1 rounded bg-red-500/10 border border-red-500/30 text-red-400 text-xs"
   >
@@ -640,9 +680,10 @@ acc[prediction.user_id].lifetimePredictionId =
   <button
     onClick={() =>
       handlePredictionReaction(
-        prediction.lifetimePredictionId,
-        "like"
-      )
+  prediction.openingPredictionId,
+  prediction.openingPredictionOwnerId,
+  "like"
+)
     }
     className="px-2 py-1 rounded bg-green-500/10 border border-green-500/30 text-green-400 text-xs"
   >
@@ -655,9 +696,10 @@ acc[prediction.user_id].lifetimePredictionId =
   <button
     onClick={() =>
       handlePredictionReaction(
-        prediction.lifetimePredictionId,
-        "dislike"
-      )
+  prediction.lifetimePredictionId,
+  prediction.lifetimePredictionOwnerId,
+  "dislike"
+)
     }
     className="px-2 py-1 rounded bg-red-500/10 border border-red-500/30 text-red-400 text-xs"
   >
