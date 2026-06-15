@@ -20,10 +20,9 @@ export async function generateMetadata(
   const title = `TEST-${movieTitle} | CineWars`;
 
   return {
-    title: `${movieTitle} | CineWars`,
-    description: `Predict the box office performance of ${movieTitle} on CineWars.`,
-  };
-}
+  title,
+  description: `Predict the box office performance of ${movieTitle} on CineWars.`,
+};
 
 export default function Layout({
   children,
