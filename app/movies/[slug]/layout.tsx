@@ -18,13 +18,28 @@ export async function generateMetadata(
     )
     .join(" ");
 
-  const title = `TEST-${movieTitle} | CineWars`;
+  const title = `${movieTitle} | CineWars`;
+  const description = `Predict the box office performance of ${movieTitle} on CineWars.`;
 
   return {
     title,
-    description: `Predict the box office performance of ${movieTitle} on CineWars.`,
+    description,
+
+    openGraph: {
+      title,
+      description,
+      siteName: "CineWars",
+      type: "website",
+      url: `https://www.thecinewars.com/movies/${slug}`,
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
-} // <-- THIS BRACE WAS MISSING
+}
 
 export default function Layout({
   children,
