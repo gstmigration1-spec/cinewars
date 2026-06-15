@@ -759,14 +759,15 @@ await fetchMovies();
         No notifications yet
       </div>
     ) : (
-      notifications.map((notification) => (
-        <div
-          key={notification.id}
-          className="px-4 py-3 border-b border-neutral-800 hover:bg-neutral-800 text-sm"
-        >
-          {notification.message}
-        </div>
-      ))
+     notifications.map((notification) => (
+  <a
+    key={notification.id}
+    href={notification.link || "#"}
+    className="block px-4 py-3 border-b border-neutral-800 hover:bg-neutral-800 text-sm"
+  >
+    {notification.message}
+  </a>
+))
     )}
   </div>
 )}

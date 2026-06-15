@@ -207,17 +207,17 @@ if (
       .single();
 
   await supabase
-    .from("notifications")
-    .insert([
-      {
-        user_id: ownerId,
-        message:
-          reactionType === "like"
-            ? `${profile?.username || "Someone"} liked your prediction`
-            : `${profile?.username || "Someone"} disliked your prediction`,
-      },
-    ]);
-}fetchPredictionReactions();
+  .from("notifications")
+  .insert([
+    {
+      user_id: ownerId,
+      message:
+        reactionType === "like"
+          ? `${profile?.username || "Someone"} liked your prediction`
+          : `${profile?.username || "Someone"} disliked your prediction`,
+      link: `/movies/${slug}`,
+    },
+  ]);}fetchPredictionReactions();
 };
  useEffect(() => {
   fetchDebates();
