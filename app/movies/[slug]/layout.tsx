@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const movieTitle = params.slug
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata(
+  { params }: Props
+): Promise<Metadata> {
+  const { slug } = await params;
+
+  const movieTitle = slug
     .split("-")
     .map(
       (word) =>
@@ -17,20 +21,6 @@ export async function generateMetadata({
   return {
     title: `${movieTitle} | CineWars`,
     description: `Predict the box office performance of ${movieTitle} on CineWars.`,
-
-    openGraph: {
-      title: `${movieTitle} | CineWars`,
-      description: `Predict the box office performance of ${movieTitle} on CineWars.`,
-      type: "website",
-      url: `https://www.thecinewars.com/movies/${params.slug}`,
-      siteName: "CineWars",
-    },
-
-    twitter: {
-      card: "summary",
-      title: `${movieTitle} | CineWars`,
-      description: `Predict the box office performance of ${movieTitle} on CineWars.`,
-    },
   };
 }
 
@@ -39,5 +29,5 @@ export default function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return <>{children}</>;
 }
