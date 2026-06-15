@@ -30,6 +30,7 @@ const [replies, setReplies] = useState<Record<string, any[]>>({});
   const [likedDebates, setLikedDebates] = useState<any>({});
   const [openingPrediction, setOpeningPrediction] = useState("");
   const [communityPredictions, setCommunityPredictions] = useState<any[]>([]);
+  const [predictionReactions, setPredictionReactions] = useState<any>({});
 const [lifetimePrediction, setLifetimePrediction] = useState("");
 const [predictionLoading, setPredictionLoading] = useState(false);
 const [openingResult, setOpeningResult] = useState<any>(null);
@@ -132,12 +133,72 @@ const fetchResults = async () => {
 
   setOpeningPredictors(count || 0);
 };
+const fetchPredictionReactions = async () => {
+  const { data } = await supabase
+    .from("prediction_reactions")
+    .select("*");
 
+  if (!data) return;
+
+  const grouped: any = {};
+
+  data.forEach((reaction) => {
+    if (!grouped[reaction.prediction_id]) {
+      grouped[reaction.prediction_id] = {
+        like: 0,
+        dislike: 0,
+      };
+    }
+
+    if (reaction.reaction_type === "dislike") {
+      grouped[reaction.prediction_id].dislike++;
+    } else {
+      grouped[reaction.prediction_id].like++;
+    }
+  });
+
+  setPredictionReactions(grouped);
+  
+};
+const handlePredictionReaction = async (
+  predictionId: string,
+  reactionType: "like" | "dislike"
+) => {
+  let sessionId = localStorage.getItem(
+    "cinewars_prediction_session"
+  );
+
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+
+    localStorage.setItem(
+      "cinewars_prediction_session",
+      sessionId
+    );
+  }
+
+  await supabase
+    .from("prediction_reactions")
+    .upsert(
+      {
+        prediction_id: predictionId,
+        session_id: sessionId,
+        reaction_type: reactionType,
+      },
+      {
+        onConflict: "prediction_id,session_id",
+      }
+    );
+
+  fetchPredictionReactions();
+};
  useEffect(() => {
   fetchDebates();
 fetchReactions();
 fetchResults();
 fetchPredictions();
+fetchPredictionReactions();
+
   const channel = supabase
   .channel("movie-debates-realtime")
 
@@ -470,31 +531,150 @@ setLikedDebates((prev: any) => ({
         No predictions yet.
       </div>
     ) : (
-      communityPredictions.map((prediction) => (
-        <div
-          key={prediction.id}
-          className="border border-[#2d1b18] rounded-xl p-4"
-        >
+      Object.values(
+  communityPredictions.reduce((acc: any, prediction) => {
+    if (!acc[prediction.user_id]) {
+      acc[prediction.user_id] = {
+  user_id: prediction.user_id,
+  username: prediction.username,
+  openingDay: null,
+  lifetime: null,
+  openingPredictionId: null,
+  lifetimePredictionId: null,
+};
+    }
 
-          <Link
-            href={`/user/${prediction.username}`}
-            className="font-black text-orange-400 hover:underline"
-          >
-            @{prediction.username}
-          </Link>
+    if (
+      prediction.prediction_type ===
+      "opening_day"
+    ) {
+      acc[prediction.user_id].openingDay =
+  prediction.predicted_value;
 
-          <div className="mt-2 text-neutral-300">
-            {prediction.prediction_type === "opening_day"
-              ? "Opening Day"
-              : "Lifetime"}
+acc[prediction.user_id].openingPredictionId =
+  prediction.id;
+    }
+
+    if (
+      prediction.prediction_type ===
+      "lifetime"
+    ) {
+      acc[prediction.user_id].lifetime =
+  prediction.predicted_value;
+
+acc[prediction.user_id].lifetimePredictionId =
+  prediction.id;
+    }
+
+    return acc;
+  }, {})
+).map((prediction: any) => (
+  <div
+    key={prediction.user_id}
+    className="border border-[#2d1b18] rounded-xl p-4"
+  >
+    <Link
+      href={`/user/${prediction.username}`}
+      className="font-black text-orange-400 hover:underline"
+    >
+      @{prediction.username}
+    </Link>
+
+    <div className="mt-3 space-y-2">
+
+      {prediction.openingDay && (
+        <div>
+          <div className="text-neutral-400 text-sm">
+            Opening Day
           </div>
 
-          <div className="text-2xl font-black text-white">
-            ₹{prediction.predicted_value} Cr
-          </div>
+          <div className="text-xl font-black text-white">
+            ₹{prediction.openingDay} Cr
+            <div className="flex gap-2 mt-2">
 
+  <button
+    onClick={() =>
+      handlePredictionReaction(
+        prediction.openingPredictionId,
+        "like"
+      )
+    }
+    className="px-2 py-1 rounded bg-green-500/10 border border-green-500/30 text-green-400 text-xs"
+  >
+    👍{" "}
+    {predictionReactions[
+      prediction.openingPredictionId
+    ]?.like || 0}
+  </button>
+
+  <button
+    onClick={() =>
+      handlePredictionReaction(
+        prediction.openingPredictionId,
+        "dislike"
+      )
+    }
+    className="px-2 py-1 rounded bg-red-500/10 border border-red-500/30 text-red-400 text-xs"
+  >
+    👎{" "}
+    {predictionReactions[
+      prediction.openingPredictionId
+    ]?.dislike || 0}
+  </button>
+
+</div>
+          </div>
         </div>
-      ))
+      )}
+
+      {prediction.lifetime && (
+        <div>
+          <div className="text-neutral-400 text-sm">
+            Lifetime
+          </div>
+
+          <div className="text-xl font-black text-white">
+            ₹{prediction.lifetime} Cr
+            <div className="flex gap-2 mt-2">
+
+  <button
+    onClick={() =>
+      handlePredictionReaction(
+        prediction.lifetimePredictionId,
+        "like"
+      )
+    }
+    className="px-2 py-1 rounded bg-green-500/10 border border-green-500/30 text-green-400 text-xs"
+  >
+    👍{" "}
+    {predictionReactions[
+      prediction.lifetimePredictionId
+    ]?.like || 0}
+  </button>
+
+  <button
+    onClick={() =>
+      handlePredictionReaction(
+        prediction.lifetimePredictionId,
+        "dislike"
+      )
+    }
+    className="px-2 py-1 rounded bg-red-500/10 border border-red-500/30 text-red-400 text-xs"
+  >
+    👎{" "}
+    {predictionReactions[
+      prediction.lifetimePredictionId
+    ]?.dislike || 0}
+  </button>
+
+</div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  </div>
+))
     )}
 
   </div>
