@@ -22,6 +22,13 @@ export default function MovieDebatePage() {
   const [loading, setLoading] = useState(false);
   const [replyText, setReplyText] = useState<Record<string, string>>({});
 const [replies, setReplies] = useState<Record<string, any[]>>({});
+const [predictionReplies, setPredictionReplies] =
+  useState<Record<string, any[]>>({});
+
+const [predictionReplyText, setPredictionReplyText] =
+  useState<Record<string, string>>({});
+  const [showPredictionReplies, setShowPredictionReplies] =
+  useState<Record<string, boolean>>({});
   const [reactionCounts, setReactionCounts] =
   useState<Record<
     string,
@@ -133,6 +140,26 @@ const fetchResults = async () => {
 
   setOpeningPredictors(count || 0);
 };
+const fetchPredictionReplies = async () => {
+  const { data } = await supabase
+    .from("prediction_replies")
+    .select("*")
+    .order("created_at", {
+      ascending: true,
+    });
+
+  const grouped: Record<string, any[]> = {};
+
+  (data || []).forEach((reply) => {
+    if (!grouped[reply.prediction_id]) {
+      grouped[reply.prediction_id] = [];
+    }
+
+    grouped[reply.prediction_id].push(reply);
+  });
+
+  setPredictionReplies(grouped);
+};
 const fetchPredictionReactions = async () => {
   const { data } = await supabase
     .from("prediction_reactions")
@@ -168,6 +195,7 @@ const handlePredictionReaction = async (
   let sessionId = localStorage.getItem(
     "cinewars_prediction_session"
   );
+  
 
   if (!sessionId) {
     sessionId = crypto.randomUUID();
@@ -219,12 +247,48 @@ if (
     },
   ]);}fetchPredictionReactions();
 };
+const handlePredictionReplySubmit = async (
+  predictionId: string
+) => {
+  const message =
+    predictionReplyText[predictionId]?.trim();
+
+  if (!message) return;
+
+  const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("username")
+  .eq("id", user?.id)
+  .single();
+
+await supabase
+  .from("prediction_replies")
+  .insert([
+    {
+      prediction_id: predictionId,
+      username:
+        profile?.username || "Anonymous",
+      message,
+    },
+  ]);
+  setPredictionReplyText((prev) => ({
+    ...prev,
+    [predictionId]: "",
+  }));
+
+  await fetchPredictionReplies();
+};
  useEffect(() => {
   fetchDebates();
 fetchReactions();
 fetchResults();
 fetchPredictions();
 fetchPredictionReactions();
+fetchPredictionReplies();
 
   const channel = supabase
   .channel("movie-debates-realtime")
@@ -381,19 +445,27 @@ setLikedDebates((prev: any) => ({
   [debateId]: true,
 }));
   fetchReactions();
-}; const handleSharePrediction = () => {
-  const text = `🎯 My ${movieTitle} Prediction on CineWars
+}; const handleSharePrediction = async () => {
+  const text = `⚔️ Prediction Locked on CineWars
+
+🎬 ${movieTitle}
 
 Opening Day: ₹${openingPrediction || "?"} Cr
 Lifetime: ₹${lifetimePrediction || "?"} Cr
 
-Think you can beat this call?
+What's your call?? Enter the arena.
 
-${window.location.href}`;
-
-  navigator.clipboard.writeText(text);
-
-  alert("Prediction copied!");
+${window.location.origin}/movies/${slug}`;
+  if (navigator.share) {
+    await navigator.share({
+      title: `${movieTitle} Prediction`,
+      text,
+      url: `${window.location.origin}/movies/${slug}`,
+    });
+  } else {
+    await navigator.clipboard.writeText(text);
+    alert("Prediction copied!");
+  }
 };const handlePredictionSubmit = async () => {
   const {
     data: { user },
@@ -665,7 +737,54 @@ acc[prediction.user_id].lifetimePredictionId =
           </div>
         </div>
       )}
+<div className="mt-3 space-y-2">
 
+  {(predictionReplies[
+    prediction.openingPredictionId
+  ] || []).map((reply) => (
+    <div
+      key={reply.id}
+      className="ml-2 border-l border-[#38231e] pl-3 text-sm text-neutral-300"
+    >
+      <div className="text-orange-400 text-xs font-bold">
+        @{reply.username}
+      </div>
+
+      <div>{reply.message}</div>
+    </div>
+  ))}
+
+  <div className="flex gap-2">
+    <input
+      value={
+        predictionReplyText[
+          prediction.openingPredictionId
+        ] || ""
+      }
+      onChange={(e) =>
+        setPredictionReplyText((prev) => ({
+          ...prev,
+          [prediction.openingPredictionId]:
+            e.target.value,
+        }))
+      }
+      placeholder="Reply to prediction..."
+      className="flex-1 bg-black border border-[#38231e] rounded px-3 py-2 text-sm"
+    />
+
+    <button
+      onClick={() =>
+        handlePredictionReplySubmit(
+          prediction.openingPredictionId
+        )
+      }
+      className="px-3 py-2 rounded bg-orange-600 text-white text-sm font-bold"
+    >
+      Reply
+    </button>
+  </div>
+
+</div>
       {prediction.lifetime && (
         <div>
           <div className="text-neutral-400 text-sm">
@@ -712,6 +831,54 @@ acc[prediction.user_id].lifetimePredictionId =
           </div>
         </div>
       )}
+      <div className="mt-3 space-y-2">
+
+  {(predictionReplies[
+    prediction.lifetimePredictionId
+  ] || []).map((reply) => (
+    <div
+      key={reply.id}
+      className="ml-2 border-l border-[#38231e] pl-3 text-sm text-neutral-300"
+    >
+      <div className="text-orange-400 text-xs font-bold">
+        @{reply.username}
+      </div>
+
+      <div>{reply.message}</div>
+    </div>
+  ))}
+
+  <div className="flex gap-2">
+    <input
+      value={
+        predictionReplyText[
+          prediction.lifetimePredictionId
+        ] || ""
+      }
+      onChange={(e) =>
+        setPredictionReplyText((prev) => ({
+          ...prev,
+          [prediction.lifetimePredictionId]:
+            e.target.value,
+        }))
+      }
+      placeholder="Reply to prediction..."
+      className="flex-1 bg-black border border-[#38231e] rounded px-3 py-2 text-sm"
+    />
+
+    <button
+      onClick={() =>
+        handlePredictionReplySubmit(
+          prediction.lifetimePredictionId
+        )
+      }
+      className="px-3 py-2 rounded bg-orange-600 text-white text-sm font-bold"
+    >
+      Reply
+    </button>
+  </div>
+
+</div>
 
     </div>
   </div>
