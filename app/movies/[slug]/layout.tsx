@@ -17,6 +17,7 @@ export async function generateMetadata(
         word.slice(1)
     )
     .join(" ");
+  const title = `TEST-${movieTitle} | CineWars`;
 
   return {
     title: `${movieTitle} | CineWars`,
