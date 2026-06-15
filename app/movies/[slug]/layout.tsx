@@ -17,12 +17,14 @@ export async function generateMetadata(
         word.slice(1)
     )
     .join(" ");
+
   const title = `TEST-${movieTitle} | CineWars`;
 
   return {
-  title,
-  description: `Predict the box office performance of ${movieTitle} on CineWars.`,
-};
+    title,
+    description: `Predict the box office performance of ${movieTitle} on CineWars.`,
+  };
+} // <-- THIS BRACE WAS MISSING
 
 export default function Layout({
   children,
