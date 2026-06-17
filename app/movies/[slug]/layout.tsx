@@ -20,10 +20,12 @@ export async function generateMetadata(
     .join(" ");
 
   const { data: movie } = await supabase
-    .from("movies")
-    .select("poster")
-    .eq("movie_id", slug)
-    .single();
+  .from("movies")
+  .select("poster")
+  .or(
+    `movie_id.eq.${slug},title.ilike.${movieTitle}`
+  )
+  .single();
 
   const poster = movie?.poster || "";
 
