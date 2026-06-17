@@ -737,54 +737,6 @@ acc[prediction.user_id].lifetimePredictionId =
           </div>
         </div>
       )}
-<div className="mt-3 space-y-2">
-
-  {(predictionReplies[
-    prediction.openingPredictionId
-  ] || []).map((reply) => (
-    <div
-      key={reply.id}
-      className="ml-2 border-l border-[#38231e] pl-3 text-sm text-neutral-300"
-    >
-      <div className="text-orange-400 text-xs font-bold">
-        @{reply.username}
-      </div>
-
-      <div>{reply.message}</div>
-    </div>
-  ))}
-
-  <div className="flex gap-2">
-    <input
-      value={
-        predictionReplyText[
-          prediction.openingPredictionId
-        ] || ""
-      }
-      onChange={(e) =>
-        setPredictionReplyText((prev) => ({
-          ...prev,
-          [prediction.openingPredictionId]:
-            e.target.value,
-        }))
-      }
-      placeholder="Reply to prediction..."
-      className="flex-1 bg-black border border-[#38231e] rounded px-3 py-2 text-sm"
-    />
-
-    <button
-      onClick={() =>
-        handlePredictionReplySubmit(
-          prediction.openingPredictionId
-        )
-      }
-      className="px-3 py-2 rounded bg-orange-600 text-white text-sm font-bold"
-    >
-      Reply
-    </button>
-  </div>
-
-</div>
       {prediction.lifetime && (
         <div>
           <div className="text-neutral-400 text-sm">
@@ -831,10 +783,10 @@ acc[prediction.user_id].lifetimePredictionId =
           </div>
         </div>
       )}
+      
       <div className="mt-3 space-y-2">
-
   {(predictionReplies[
-    prediction.lifetimePredictionId
+    prediction.lifetimePredictionId || prediction.openingPredictionId
   ] || []).map((reply) => (
     <div
       key={reply.id}
@@ -852,13 +804,13 @@ acc[prediction.user_id].lifetimePredictionId =
     <input
       value={
         predictionReplyText[
-          prediction.lifetimePredictionId
+          prediction.lifetimePredictionId || prediction.openingPredictionId
         ] || ""
       }
       onChange={(e) =>
         setPredictionReplyText((prev) => ({
           ...prev,
-          [prediction.lifetimePredictionId]:
+          [prediction.lifetimePredictionId || prediction.openingPredictionId]:
             e.target.value,
         }))
       }
@@ -869,7 +821,7 @@ acc[prediction.user_id].lifetimePredictionId =
     <button
       onClick={() =>
         handlePredictionReplySubmit(
-          prediction.lifetimePredictionId
+          prediction.lifetimePredictionId || prediction.openingPredictionId
         )
       }
       className="px-3 py-2 rounded bg-orange-600 text-white text-sm font-bold"
@@ -879,6 +831,11 @@ acc[prediction.user_id].lifetimePredictionId =
   </div>
 
 </div>
+
+ 
+      
+      
+      
 
     </div>
   </div>
