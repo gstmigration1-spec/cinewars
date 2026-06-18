@@ -26,7 +26,7 @@ export async function generateMetadata(
   .single();
   const poster = movie?.poster || "";
 
-  const title = `${movieTitle} | CineWars`;
+  const title = movieTitle;
   const description = `Predict the box office performance of ${movieTitle} on CineWars.`;
 
   return {
