@@ -1980,10 +1980,9 @@ https://www.thecinewars.com/user/${call.username}`;
   </p>
 
   <p className="text-lg leading-relaxed">
-    From major releases like King, Spirit, Welcome To The Jungle and other upcoming blockbusters, CineWars lets fans compare predictions, challenge opinions, and discover who truly understands the box office.
+    Compare predictions, build your credibility score, join passionate fan debates, and prove who truly understands cinema and the box office.
   </p>
-</section>
-      {/* FOOTER */}
+</section>      {/* FOOTER */}
       <footer className="w-full border-t border-[#2d1b18] mt-24 bg-neutral-950/40 py-8 text-center text-xs text-neutral-600 font-medium tracking-wide">
         <div className="mt-2 flex items-center justify-center gap-2 text-[10px] text-neutral-600">
           <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
