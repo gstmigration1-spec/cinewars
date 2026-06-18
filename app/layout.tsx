@@ -86,8 +86,22 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
-      </body>
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "CineWars",
+        url: "https://www.thecinewars.com",
+        description:
+          "CineWars is a movie box office prediction platform where fans predict collections, debate movies, and track prediction accuracy.",
+      }),
+    }}
+  />
+
+  {children}
+</body>
     </html>
   );
 }

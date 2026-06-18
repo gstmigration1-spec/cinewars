@@ -27,12 +27,21 @@ export async function generateMetadata(
   const poster = movie?.poster || "";
 
   const title = movieTitle;
-  const description = `Predict the box office performance of ${movieTitle} on CineWars.`;
+  const description = `${movieTitle} box office prediction, opening day collection prediction, lifetime collection forecast and fan debates. Predict ${movieTitle} collections and compare opinions with movie fans on CineWars.`;
 
   return {
     title,
     description,
-
+    keywords: [
+  `${movieTitle} box office prediction`,
+  `${movieTitle} opening day collection prediction`,
+  `${movieTitle} lifetime collection prediction`,
+  `${movieTitle} box office forecast`,
+  `${movieTitle} fan debates`,
+],
+alternates: {
+  canonical: `https://www.thecinewars.com/movies/${slug}`,
+},
     openGraph: {
       title,
       description,

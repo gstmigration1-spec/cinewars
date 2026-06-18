@@ -42,6 +42,13 @@ const [lifetimePrediction, setLifetimePrediction] = useState("");
 const [predictionLoading, setPredictionLoading] = useState(false);
 const [openingResult, setOpeningResult] = useState<any>(null);
 const [openingPredictors, setOpeningPredictors] = useState(0);
+const movieSchema = {
+  "@context": "https://schema.org",
+  "@type": "Movie",
+  name: movieTitle,
+  url: `https://www.thecinewars.com/movies/${slug}`,
+  description: `${movieTitle} box office prediction, opening day collection prediction, lifetime collection prediction and fan debates on CineWars.`,
+};
 
   const fetchDebates = async () => {
     const { data } = await supabase
@@ -524,6 +531,12 @@ ${window.location.origin}/movies/${slug}`;
   setPredictionLoading(false);
 }; return (
     <main className="min-h-screen bg-[#050303] text-white px-4 py-10">
+      <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(movieSchema),
+  }}
+/>
 
   <div className="max-w-3xl mx-auto space-y-8">
 
