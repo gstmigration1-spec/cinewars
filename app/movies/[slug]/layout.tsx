@@ -22,11 +22,8 @@ export async function generateMetadata(
   const { data: movie } = await supabase
   .from("movies")
   .select("poster")
-  .or(
-    `movie_id.eq.${slug},title.ilike.${movieTitle}`
-  )
+  .eq("slug", slug)
   .single();
-
   const poster = movie?.poster || "";
 
   const title = `${movieTitle} | CineWars`;
