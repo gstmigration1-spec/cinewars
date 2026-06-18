@@ -632,7 +632,7 @@ await fetchMovies();
 
   return (
   
-    <><div className="min-h-screen pt-20 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-28 md:pb-0 relative overflow-x-hidden font-sans">
+    <><div className="min-h-screen pt-16 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-28 md:pb-0 relative overflow-x-hidden font-sans">
       {/* 8. FJALLA ONE TYPOGRAPHY ENGINE & REFINED PALETTE BACKGROUND */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Fjalla+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -681,10 +681,10 @@ await fetchMovies();
   <img
     src="/posters/logo.png"
     alt="CineWars"
-    className="h-12 w-auto"
+    className="h-14 md:h-12 w-auto"
   />
 
-  <span className="text-display text-3xl bg-gradient-to-r from-[#38bdf8] to-[#60a5fa] bg-clip-text text-transparent font-black">
+  <span className="text-display text-xl md:text-3xl bg-gradient-to-r from-[#38bdf8] to-[#60a5fa] bg-clip-text text-transparent font-black">
     CineWars
   </span>
 </div>
@@ -737,12 +737,12 @@ await fetchMovies();
       !showNotifications
     )
   }
-  className="relative mr-3"
+  className="relative mr-1"
 >
   <Bell className="w-5 h-5 text-white" />
 
   {notifications.length > 0 && (
-    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full">
+    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full">
       {notifications.length}
     </span>
   )}
@@ -782,7 +782,7 @@ await fetchMovies();
     }}
     whileHover={{ scale: 1.04 }}
     whileTap={{ scale: 0.98 }}
-    className="relative group overflow-hidden bg-gradient-to-r from-[#2563eb] to-[#38bdf8] text-[11px] font-black uppercase tracking-widest px-5 py-3 rounded-xl text-white"
+    className="relative group overflow-hidden bg-gradient-to-r from-[#2563eb] to-[#38bdf8] text-[9px] md:text-[11px] font-black uppercase tracking-wide px-3 md:px-5 py-2.5 md:py-3 rounded-xl text-white"
   >
     {currentUser?.username ? (
       <span>@{currentUser.username} ▼</span>
@@ -873,7 +873,7 @@ window.location.reload();
               </h1>
 
               {/* SUPPORTING COPY */}
-              <p className="max-w-2xl mx-auto text-neutral-400 text-xs sm:text-[13px] md:text-base font-medium leading-relaxed mb-6">
+              <p className="max-w-2xl mx-auto text-neutral-300 text-xs sm:text-[13px] md:text-base leading-relaxed font-medium leading-relaxed mb-6">
                 Fans predict. Critics react. Trackers call the numbers. CineWars remembers who holds the ultimate box office accuracy rating and resolves the internet's loudest movie debates.
               </p>
 
@@ -1077,8 +1077,8 @@ window.location.reload();
           <div className="flex items-end justify-between">
             <div>
               <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-6" />
-              <h2 className="text-3xl font-black uppercase tracking-wider text-[#ff6b6b] text-display">
-  🔥 Hot Upcoming Releases
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.15em] bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#f59e0b] bg-clip-text text-transparent text-display">
+🔥 Hot Upcoming Releases
 </h2>
 
               <p className="text-xs text-neutral-500 mt-1">
@@ -1146,181 +1146,12 @@ window.location.reload();
 
           </div>
         </section>
-
-        {/* 6. REDESIGNED USER IDENTITY SPACING PLATFORM & 7. STRUCTURAL INFO FOOTNOTE */}
-        <section className="space-y-5">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-[#2d1b18] pb-3">
-            <div>
-              <h3 className="text-[11px] font-black uppercase tracking-widest text-[#f97316] mb-1 font-bold">Accuracy Spotlights</h3>
-              <h2 className="text-3xl font-black uppercase tracking-wider text-white text-display">WHO’S ACTUALLY GETTING IT RIGHT?</h2>
-              <p className="text-sm text-neutral-400 mt-2">
-                Fans, critics, reviewers, and trackers ranked by long-term prediction accuracy.
-              </p>
-            </div>
-            <div className="text-right max-w-md bg-[#120908] border border-[#301c19] p-2.5 rounded-xl">
-              <p className="text-[11px] text-neutral-400 font-medium leading-normal">
-                ℹ️ <strong className="text-neutral-200">System Calibration:</strong> Accuracy reflects precision hit rate on final collections. Trust Score measures consistency, long-term performance, and community credibility weighting.
-              </p>
-            </div>
-          </div>
-
-          {/* Expanded Card spacing to reduce layout congestion */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-            {leaderboard.slice(0,3).map((user, index) => (
-              <motion.div
-                whileHover={{ y: -4, borderColor: "rgba(249,115,22,0.35)" }}
-                key={index + 1}
-                className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-5 relative overflow-hidden group shadow-2xl"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-3.5">
-                    <div className="w-10 h-10 rounded-xl border border-[#2d1b18] bg-[#0e0a09] flex items-center justify-center text-orange-400 font-black">
-  {index + 1}
-</div>
-                    <div>
-  <h4 className="text-sm font-black text-white">
-  <Link
-    href={`/user/${user.username}`}
-    className="hover:text-orange-400 transition-colors"
-  >
-    @{user.username}
-  </Link>
-</h4>
-  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#f97316] block mt-0.5">
-    {getLevel(user.trustScore).icon} {getLevel(user.trustScore).name}
-  </span>
-</div>
-                  </div>
-<span className="text-xs font-mono font-black text-neutral-500 bg-neutral-900/60 px-2 py-0.5 rounded border border-neutral-800">
-  Rank #{index + 1}
-</span>                </div>
-
-                <div className="grid grid-cols-2 gap-3 bg-[#0a0605]/80 border border-[#2d1b18] p-3 rounded-xl text-center">
-                  <div>
-                    <span className="text-[9px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Accuracy</span>
-                    <span className="text-sm font-black font-mono text-emerald-400">{user.accuracy}%</span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Trust Score</span>
-                    <span className="text-sm font-black font-mono text-white">{user.trustScore}</span>
-                  </div>
-                </div>
-
-                {/* 5. MULTI-CATEGORY DECORATED SPECIFIC ACCLAIM BADGES */}
-                <div className="text-[11px] border-t border-[#2d1b18] pt-3 flex items-center justify-between text-neutral-400 gap-2">
-  <span>
-    {user.trustScore >= 50
-      ? "🦈 Box Office Shark"
-      : "🎬 Rising Predictor"}
-  </span>
-
-  <span className="text-[9px] uppercase tracking-wider border px-2.5 py-1 rounded-lg font-black shrink-0 border-orange-500/30 text-orange-400">
-    {user.accuracy >= 90
-      ? "Oracle"
-      : user.accuracy >= 75
-      ? "Verified"
-      : "Active"}
-  </span>
-</div>
-              </motion.div>
-            ))}
-          </div>
-          <div className="flex justify-center pt-6">
-            <Link
-              href="/leaderboard"
-              className="px-6 py-3 rounded-xl border border-orange-500/30 text-orange-400 font-black uppercase tracking-widest hover:bg-orange-500/10 transition"
-            >
-              View Full Rankings →
-            </Link>
-          </div>
-
-        </section>
-        
-        <section className="space-y-5">
-
-          <div className="flex items-end justify-between">
-            <div>
-              <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-6" />
-              <h2 className="text-3xl font-black uppercase tracking-wider text-[#ff6b6b] text-display">
-  🔥 Most Active Fan Wars
-</h2>
-
-              <p className="text-xs text-neutral-500 mt-1">
-                Movies generating the internet’s loudest fandom battles right now.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            {[...trendingMovies]
-              .sort(
-                (a: any, b: any) => (b.debateCount || 0) -
-                  (a.debateCount || 0)
-              )
-              .slice(0, 3)
-              .map((movie: any, index) => (
-
-                <Link
-                  key={movie.id}
-                  href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="group"
-                >
-
-                  <div className="relative overflow-hidden rounded-2xl border border-[#4a1d1d] bg-[#140707] p-5 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1">
-
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                    <div className="flex items-start justify-between relative z-10">
-
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-black mb-2">
-                          #{index + 1} Fan War
-                        </p>
-
-                        <h3 className="text-2xl font-black uppercase text-white text-display leading-none">
-                          {movie.title}
-                        </h3>
-
-                        <p className="text-xs text-neutral-500 mt-2">
-                          {movie.debateCount || 0} active debates
-                        </p>
-                      </div>
-
-                      <div className="text-right">
-                        <span className="text-3xl">🔥</span>
-                      </div>
-
-                    </div>
-
-                    <div className="mt-5 h-2 rounded-full bg-black/40 overflow-hidden">
-
-                      <div
-                        className="h-full bg-gradient-to-r from-orange-500 to-red-500"
-                        style={{
-                          width: `${Math.min(
-                            100,
-                            (movie.debateCount || 0) * 8
-                          )}%`,
-                        }} />
-
-                    </div>
-
-                  </div>
-
-                </Link>
-
-              ))}
-
-          </div>
-
-        </section>
-        {/* MOVIE PREDICTIONS GRID */}
         <section id="trending" className="space-y-6">
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
-              <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-white text-display">
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.15em] bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#f59e0b] bg-clip-text text-transparent text-display">
+
                 
                 🔥 Hot Box Office Calls
               </h2>
@@ -1577,13 +1408,185 @@ className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d]
           </div>
         </section>
 
+
+        {/* 6. REDESIGNED USER IDENTITY SPACING PLATFORM & 7. STRUCTURAL INFO FOOTNOTE */}
+        <section className="space-y-5">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-[#2d1b18] pb-3">
+            <div>
+              <h3 className="text-[11px] font-black uppercase tracking-widest text-[#f97316] mb-1 font-bold">Accuracy Spotlights</h3>
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.15em] bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#f59e0b] bg-clip-text text-transparent text-display">
+WHO’S ACTUALLY GETTING IT RIGHT?</h2>
+              <p className="text-sm text-neutral-400 mt-2">
+                Fans, critics, reviewers, and trackers ranked by long-term prediction accuracy.
+              </p>
+            </div>
+            <div className="text-right max-w-md bg-[#120908] border border-[#301c19] p-2.5 rounded-xl">
+              <p className="text-[11px] text-neutral-400 font-medium leading-normal">
+                ℹ️ <strong className="text-neutral-200">System Calibration:</strong> Accuracy reflects precision hit rate on final collections. Trust Score measures consistency, long-term performance, and community credibility weighting.
+              </p>
+            </div>
+          </div>
+
+          {/* Expanded Card spacing to reduce layout congestion */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+            {leaderboard.slice(0,3).map((user, index) => (
+              <motion.div
+                whileHover={{ y: -4, borderColor: "rgba(249,115,22,0.35)" }}
+                key={index + 1}
+                className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-5 relative overflow-hidden group shadow-2xl"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-3.5">
+                    <div className="w-10 h-10 rounded-xl border border-[#2d1b18] bg-[#0e0a09] flex items-center justify-center text-orange-400 font-black">
+  {index + 1}
+</div>
+                    <div>
+  <h4 className="text-sm font-black text-white">
+  <Link
+    href={`/user/${user.username}`}
+    className="hover:text-orange-400 transition-colors"
+  >
+    @{user.username}
+  </Link>
+</h4>
+  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#f97316] block mt-0.5">
+    {getLevel(user.trustScore).icon} {getLevel(user.trustScore).name}
+  </span>
+</div>
+                  </div>
+<span className="text-xs font-mono font-black text-neutral-500 bg-neutral-900/60 px-2 py-0.5 rounded border border-neutral-800">
+  Rank #{index + 1}
+</span>                </div>
+
+                <div className="grid grid-cols-2 gap-3 bg-[#0a0605]/80 border border-[#2d1b18] p-3 rounded-xl text-center">
+                  <div>
+                    <span className="text-[9px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Accuracy</span>
+                    <span className="text-sm font-black font-mono text-emerald-400">{user.accuracy}%</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-neutral-500 font-black uppercase tracking-widest block mb-0.5 font-bold">Trust Score</span>
+                    <span className="text-sm font-black font-mono text-white">{user.trustScore}</span>
+                  </div>
+                </div>
+
+                {/* 5. MULTI-CATEGORY DECORATED SPECIFIC ACCLAIM BADGES */}
+                <div className="text-[11px] border-t border-[#2d1b18] pt-3 flex items-center justify-between text-neutral-400 gap-2">
+  <span>
+    {user.trustScore >= 50
+      ? "🦈 Box Office Shark"
+      : "🎬 Rising Predictor"}
+  </span>
+
+  <span className="text-[9px] uppercase tracking-wider border px-2.5 py-1 rounded-lg font-black shrink-0 border-orange-500/30 text-orange-400">
+    {user.accuracy >= 90
+      ? "Oracle"
+      : user.accuracy >= 75
+      ? "Verified"
+      : "Active"}
+  </span>
+</div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="flex justify-center pt-6">
+            <Link
+              href="/leaderboard"
+              className="px-6 py-3 rounded-xl border border-orange-500/30 text-orange-400 font-black uppercase tracking-widest hover:bg-orange-500/10 transition"
+            >
+              View Full Rankings →
+            </Link>
+          </div>
+
+        </section>
+        
+        <section className="space-y-5">
+
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-6" />
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.15em] bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#f59e0b] bg-clip-text text-transparent text-display">
+  🔥 Most Active Fan Wars
+</h2>
+
+              <p className="text-xs text-neutral-500 mt-1">
+                Movies generating the internet’s loudest fandom battles right now.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            {[...trendingMovies]
+              .sort(
+                (a: any, b: any) => (b.debateCount || 0) -
+                  (a.debateCount || 0)
+              )
+              .slice(0, 3)
+              .map((movie: any, index) => (
+
+                <Link
+                  key={movie.id}
+                  href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="group"
+                >
+
+                  <div className="relative overflow-hidden rounded-2xl border border-[#4a1d1d] bg-[#140707] p-5 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1">
+
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    <div className="flex items-start justify-between relative z-10">
+
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-black mb-2">
+                          #{index + 1} Fan War
+                        </p>
+
+                        <h3 className="text-xl font-bold text-white tracking-wide leading-tight">
+                          {movie.title}
+                        </h3>
+
+                        <p className="text-xs text-neutral-500 mt-2">
+                          {movie.debateCount || 0} active debates
+                        </p>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="text-3xl">🔥</span>
+                      </div>
+
+                    </div>
+
+                    <div className="mt-5 h-2 rounded-full bg-black/40 overflow-hidden">
+
+                      <div
+                        className="h-full bg-gradient-to-r from-orange-500 to-red-500"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            (movie.debateCount || 0) * 8
+                          )}%`,
+                        }} />
+
+                    </div>
+
+                  </div>
+
+                </Link>
+
+              ))}
+
+          </div>
+
+        </section>
+        {/* MOVIE PREDICTIONS GRID */}
+        
       
         
 
         {/* PROVEN PREDICTIONS SECTION */}
         <section id="calls" className="space-y-6">
           <div>
-            <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-[#ff6b6b] text-display">
+            <h2 className="text-2xl md:text-3xl tracking-wider flex items-center gap-2 text-[#fbbf24] text-display">
   <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-8" />
   🎯 Hit The Bull's Eye
 </h2>
@@ -1623,7 +1626,7 @@ className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d]
   </div>
 
   <div>
-    <h3 className="text-xl font-black uppercase text-white mt-1.5 truncate text-display">
+    <h3 className="text-lg font-bold text-white mt-1.5 tracking-wide">
       {call.movieTitle}
     </h3>
   </div>
@@ -1678,7 +1681,16 @@ className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d]
 
 🏆 VERIFIED CALL
 
-🎬 ${call.movieTitle || call.movie_id}
+🎬 ${
+  (call.movieTitle || call.movie_id)
+    ?.split("-")
+    .map(
+      (word: string) =>
+        word.charAt(0).toUpperCase() +
+        word.slice(1)
+    )
+    .join(" ")
+}
 
 💰 Predicted: ₹${call.predicted_value} Cr
 🎯 Actual: ₹${call.actual_value} Cr
@@ -1714,7 +1726,7 @@ https://www.thecinewars.com/user/${call.username}`;
         </section>
 <section className="space-y-6">
   <div>
-    <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-[#ff6b6b] text-display">
+    <h2 className="text-2xl md:text-3xl tracking-wider flex items-center gap-2 text-[#fbbf24] text-display">
      <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-8" />
       💀 Terrible Misses
     </h2>
@@ -1755,7 +1767,7 @@ https://www.thecinewars.com/user/${call.username}`;
             </div>
 
             <div>
-              <h3 className="text-xl font-black uppercase text-white mt-1.5 truncate text-display">
+              <h3 className="text-lg font-bold text-white mt-1.5 tracking-wide">
                 {call.movieTitle}
               </h3>
             </div>
@@ -1815,7 +1827,7 @@ https://www.thecinewars.com/user/${call.username}`;
         <section id="reality-check" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
             <div>
-              <h2 className="text-4xl font-black uppercase tracking-wider flex items-center gap-2 text-[#ff6b6b] text-display">
+              <h2 className="text-2xl md:text-3xl tracking-wider flex items-center gap-2 text-[#fbbf24] text-display">
   <div className="h-px bg-gradient-to-r from-transparent via-[#7f1d1d] to-transparent mb-8" />
   🏆 {previousMonthName} Call Of The Month
 </h2>
@@ -1905,7 +1917,7 @@ https://www.thecinewars.com/user/${call.username}`;
     Future Feature
   </div>
 
-  <h2 className="text-4xl font-black uppercase tracking-tight text-white text-display">
+  <h2 className="text-2xl md:text-3xl tracking-tight text-white text-display">
     AI Box Office Analyst
   </h2>
 

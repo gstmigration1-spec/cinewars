@@ -27,7 +27,7 @@ export async function generateMetadata(
   const poster = movie?.poster || "";
 
   const title = movieTitle;
-  const description = `${movieTitle} box office prediction, opening day collection prediction, lifetime collection forecast and fan debates. Predict ${movieTitle} collections and compare opinions with movie fans on CineWars.`;
+  const description = `Predict ${movieTitle} box office collection, opening day numbers, lifetime collection and join fan debates on CineWars.`;
 
   return {
     title,
@@ -48,16 +48,14 @@ alternates: {
       siteName: "CineWars",
       type: "website",
       url: `https://www.thecinewars.com/movies/${slug}`,
-      images: poster
-        ? [
-            {
-              url: poster,
-              width: 500,
-              height: 750,
-              alt: movieTitle,
-            },
-          ]
-        : [],
+      images: [
+  {
+    url: poster || "/og-image.jpg",
+    width: 1200,
+    height: 630,
+    alt: movieTitle,
+  },
+],
     },
 
     twitter: {
