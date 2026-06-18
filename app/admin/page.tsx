@@ -20,14 +20,7 @@ useEffect(() => {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", user.id)
-      .single();
-
-    
-setCurrentUser(profile);
+    setCurrentUser(user);
     setLoading(false);
   };
 
@@ -89,7 +82,7 @@ if (loading) {
 
 if (
   !currentUser ||
-  currentUser.username?.toLowerCase() !== "mafiamovie"
+  currentUser.email?.toLowerCase() !== "ishatpreet500@gmail.com"
 ) {
   return (
     <div className="min-h-screen bg-black text-white p-8">
