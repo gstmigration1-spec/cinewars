@@ -64,6 +64,16 @@ if (rpcError) {
 
 console.log("RPC DATA:", data);
 console.log("RPC ERROR:", rpcError);
+await fetch("/api/send-score-emails", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    movieId,
+    predictionType,
+  }),
+});
 
 
 
