@@ -3,6 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.thecinewars.com"),
+  icons: {
+  icon: "/icon.png",
+  apple: "/icon.png",
+},
 
   alternates: {
   canonical: "/",
