@@ -21,9 +21,7 @@ export default function HeroSection() {
         {/* Text Content */}
         <div className="text-center md:text-left md:order-1">
 
-          <span className="inline-flex items-center rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#fbbf24]">
-            🏆 Championship Season 1
-          </span>
+        
 
 
           <h1 className="mt-3 text-3xl md:text-5xl font-black uppercase leading-none text-white">
