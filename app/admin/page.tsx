@@ -7,8 +7,15 @@ export default function AdminPage() {
   const [predictionType, setPredictionType] =
     useState("opening_day");
   const [actualValue, setActualValue] = useState("");
+  const [title, setTitle] = useState("");
+const [poster, setPoster] = useState("");
+const [releaseDate, setReleaseDate] = useState("");
+const [status, setStatus] = useState("upcoming");
+const [isChampionship, setIsChampionship] = useState(false);
+const [championshipSeason, setChampionshipSeason] = useState("");
   const [currentUser, setCurrentUser] = useState<any>(null);
 const [loading, setLoading] = useState(true);
+
 useEffect(() => {
   const checkAdmin = async () => {
     const {
@@ -26,6 +33,40 @@ useEffect(() => {
 
   checkAdmin();
 }, []);
+const addMovie = async () => {
+  const generatedMovieId = title
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-");
+
+  const { error } = await supabase
+    .from("movies")
+    .insert({
+      movie_id: generatedMovieId,
+      title,
+      poster,
+      release_date: releaseDate,
+      status,
+      is_championship: isChampionship,
+      championship_season: isChampionship
+        ? championshipSeason
+        : null,
+    });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Movie added successfully!");
+
+  setTitle("");
+  setPoster("");
+  setReleaseDate("");
+  setStatus("upcoming");
+  setIsChampionship(false);
+  setChampionshipSeason("");
+};
   const saveResult = async () => {
   const { error } = await supabase
   
@@ -109,7 +150,76 @@ if (
         <h1 className="text-5xl font-black text-orange-400 mb-8">
           Admin Panel
         </h1>
+<h1 className="text-5xl font-black text-orange-400 mb-8">
+  Admin Panel
+</h1>
+<div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 space-y-4 mb-8">
 
+  <h2 className="text-2xl font-black text-yellow-400">
+    🎬 Movie Management
+  </h2>
+
+  <input
+    value={title}
+    onChange={(e) => setTitle(e.target.value)}
+    placeholder="Movie Title (e.g. War 3)"
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+  />
+
+  <input
+    value={poster}
+    onChange={(e) => setPoster(e.target.value)}
+    placeholder="Poster URL"
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+  />
+
+  <input
+    type="date"
+    value={releaseDate}
+    onChange={(e) => setReleaseDate(e.target.value)}
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+  />
+
+  <select
+    value={status}
+    onChange={(e) => setStatus(e.target.value)}
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+  >
+    <option value="upcoming">Upcoming</option>
+    <option value="released">Released</option>
+  </select>
+
+  <label className="flex items-center gap-3 text-white">
+    <input
+      type="checkbox"
+      checked={isChampionship}
+      onChange={(e) =>
+        setIsChampionship(e.target.checked)
+      }
+      className="h-5 w-5"
+    />
+    Championship Movie
+  </label>
+
+  {isChampionship && (
+    <input
+      value={championshipSeason}
+      onChange={(e) =>
+        setChampionshipSeason(e.target.value)
+      }
+      placeholder="Championship Season (e.g. July 2026 Championship)"
+      className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+    />
+  )}
+
+  <button
+    onClick={addMovie}
+    className="bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-3 rounded-xl font-black uppercase"
+  >
+    Add Movie
+  </button>
+
+</div>
         <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 space-y-4">
 
           <input

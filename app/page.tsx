@@ -4,6 +4,9 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import HeroSection from "@/components/home/HeroSection";
+import ChampionshipBanner from "@/components/home/ChampionshipBanner";
+import { default as ChampionshipMovies } from "@/components/home/ChampionshipMovies";
 
 import { 
   Flame, 
@@ -66,7 +69,10 @@ export default function CineWarsHomepage() {
   const marqueeItems = liveFeed.map(
   (item) => item.text
 );
+
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
+  
+  const [championshipMovies, setChampionshipMovies] = useState<any[]>([]);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
   const [terribleMisses, setTerribleMisses] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -145,6 +151,19 @@ const mostDebatedMovie =
   )[0];
 async function fetchMovies() {
   try {
+    const { data: championship } = await supabase
+  .from("movies")
+  .select("*")
+  .eq("is_championship", true)
+  .eq(
+    "championship_season",
+    "July 2026 Championship"
+  );
+
+console.log("CHAMPIONSHIP DATA:", championship);
+
+setChampionshipMovies(championship || []);
+
     const { data: movies } = await supabase
   .from("movies")
   .select("*")
@@ -825,9 +844,17 @@ window.location.reload();
 
       {/* CORE WRAPPER HUB */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 md:space-y-20 relative z-10">
+        <HeroSection />
+
+<ChampionshipBanner />
+
+<ChampionshipMovies 
+  movies={championshipMovies}
+/>
 
         {/* HERO AREA WITH HIGH-FIDELITY LUXURY LIGHTING */}
-        <div className="pt-6 md:pt-4">
+        {false && (
+<div className="pt-6 md:pt-4">
           <section className="relative rounded-3xl p-5 sm:p-6 md:p-10">
 
             {/* Animated Projector Flares */}
@@ -1018,7 +1045,8 @@ window.location.reload();
               </div>
             </div>
           </section>
-        </div>
+</div>
+)}
         
         <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#120908] border border-[#2d1b18] text-xs text-white font-semibold tracking-wide shadow-lg">
           <span className="relative flex h-2.5 w-2.5">
@@ -1072,7 +1100,8 @@ window.location.reload();
             </AnimatePresence>
           </div>
         </section>
-        <section className="space-y-5">
+        {false && (
+<section className="space-y-5">
 
           <div className="flex items-end justify-between">
             <div>
@@ -1145,8 +1174,9 @@ window.location.reload();
               ))}
 
           </div>
-        </section>
-        <section id="trending" className="space-y-6">
+        </section>)}
+       {false && (
+<section id="trending" className="space-y-6">
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
@@ -1407,6 +1437,7 @@ className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d]
             ))}
           </div>
         </section>
+)}
 
 
         {/* 6. REDESIGNED USER IDENTITY SPACING PLATFORM & 7. STRUCTURAL INFO FOOTNOTE */}
