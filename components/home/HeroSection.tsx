@@ -21,8 +21,8 @@ export default function HeroSection() {
         {/* Text Content */}
         <div className="text-center md:text-left md:order-1">
 
-          <span className="inline-flex items-center rounded-full border border-[#f97316]/30 bg-[#f97316]/10 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-[#fbbf24]">
-            🏆 CineWars Championship - Season 1
+          <span className="inline-flex items-center rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#fbbf24]">
+            🏆 Championship Season 1
           </span>
 
 
@@ -36,9 +36,9 @@ export default function HeroSection() {
 
 
           <p className="mt-5 text-sm md:text-lg text-neutral-300 max-w-xl">
-            Make opening day and lifetime box office predictions,
-            earn CinePoints, climb the leaderboard, and prove you
-            understand cinema better than every other fan.
+            Make opening day and lifetime box office predictions, 
+earn CinePoints, climb the leaderboard, and prove your 
+box office instincts in the ultimate fan championship.
           </p>
 
 
