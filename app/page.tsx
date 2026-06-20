@@ -1685,7 +1685,7 @@ WHO’S ACTUALLY GETTING IT RIGHT?</h2>
   (call.movieTitle || call.movie_id)
     ?.split("-")
     .map(
-      (word: string) =>
+      (word: string) => 
         word.charAt(0).toUpperCase() +
         word.slice(1)
     )
@@ -1995,6 +1995,16 @@ https://www.thecinewars.com/user/${call.username}`;
     Compare predictions, build your credibility score, join passionate fan debates, and prove who truly understands cinema and the box office.
   </p>
 </section>      {/* FOOTER */}
+<div className="mb-4">
+  <a
+    href="https://x.com/TheCinewars"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-neutral-400 hover:text-white transition font-medium"
+  >
+    Follow us on 𝕏
+  </a>
+</div>
       <footer className="w-full border-t border-[#2d1b18] mt-24 bg-neutral-950/40 py-8 text-center text-xs text-neutral-600 font-medium tracking-wide">
         <div className="mt-2 flex items-center justify-center gap-2 text-[10px] text-neutral-600">
           <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
