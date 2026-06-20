@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   apple: "/icon.png",
 },
 
-  alternates: {
-  canonical: "/",
+ alternates: {
+  canonical: "https://www.thecinewars.com",
 },
 
   title: {
