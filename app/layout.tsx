@@ -4,6 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.thecinewars.com"),
 
+  alternates: {
+  canonical: "/",
+},
+
   title: {
     default: "CineWars - Movie Box Office Predictions & Fan Debates",
     template: "%s | CineWars",
