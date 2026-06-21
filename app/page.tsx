@@ -1075,11 +1075,11 @@ window.location.reload();
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-400 shadow-[0_0_8px_#38bdf8]" />
               </div>
               <h2 className="text-xs font-black uppercase tracking-widest text-white font-bold flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-sky-400" /> What's Trending Right Now
+                <Activity className="w-3.5 h-3.5 text-sky-400" /> What's Trending Now
               </h2>
             </div>
             <span className="text-[9px] uppercase tracking-wider bg-sky-500/10 text-sky-400 px-2 py-0.5 rounded border border-emerald-500/20 font-black">
-              Live Platform Pulse
+              Live Fan Arena
             </span>
           </div>
 
