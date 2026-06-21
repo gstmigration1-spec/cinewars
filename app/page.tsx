@@ -1441,16 +1441,22 @@ className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d]
 
 
         {/* 6. REDESIGNED USER IDENTITY SPACING PLATFORM & 7. STRUCTURAL INFO FOOTNOTE */}
-      {false && (<section className="space-y-5">
-          <div className=="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-[#2d1b18] pb-3">
-            <div >
-              <h3 className="text-[11px] font-black uppercase tracking-widest text-[#f97316] mb-1 font-bold">Accuracy Spotlights</h3>
-              <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.15em] bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#f59e0b] bg-clip-text text-transparent text-display">
-WHO’S ACTUALLY GETTING IT RIGHT?</h2>
-              <p className="text-sm text-neutral-400 mt-2">
-                Fans, critics, reviewers, and trackers ranked by long-term prediction accuracy.
-              </p>
-            </div>
+      {false && (
+<section className="space-y-5">
+  <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-[#2d1b18] pb-3">
+    <div>
+      <h3 className="text-[11px] font-black uppercase tracking-widest text-[#f97316] mb-1 font-bold">
+        Accuracy Spotlights
+      </h3>
+
+      <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.15em] bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#f59e0b] bg-clip-text text-transparent text-display">
+        WHO'S ACTUALLY GETTING IT RIGHT?
+      </h2>
+
+      <p className="text-sm text-neutral-400 mt-2">
+        Fans, critics, reviewers, and trackers ranked by long-term prediction accuracy.
+      </p>
+    </div>
             <div className="text-right max-w-md bg-[#120908] border border-[#301c19] p-2.5 rounded-xl">
               <p className="text-[11px] text-neutral-400 font-medium leading-normal">
                 ℹ️ <strong className="text-neutral-200">System Calibration:</strong> Accuracy reflects precision hit rate on final collections. Trust Score measures consistency, long-term performance, and community credibility weighting.
