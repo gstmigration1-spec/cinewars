@@ -1530,7 +1530,8 @@ WHO’S ACTUALLY GETTING IT RIGHT?</h2>
 
         </section>
         
-        <section className="space-y-5">
+        {false && (
+<section className="space-y-5">
 
           <div className="flex items-end justify-between">
             <div>
@@ -1608,7 +1609,7 @@ WHO’S ACTUALLY GETTING IT RIGHT?</h2>
 
           </div>
 
-        </section>
+        </section>)}
         {/* MOVIE PREDICTIONS GRID */}
         
       
@@ -2033,7 +2034,7 @@ https://www.thecinewars.com/user/${call.username}`;
     rel="noopener noreferrer"
     className="text-neutral-400 hover:text-white transition font-medium"
   >
-    Follow us on 𝕏
+          Follow us on 𝕏
   </a>
 </div>
       <footer className="w-full border-t border-[#2d1b18] mt-24 bg-neutral-950/40 py-8 text-center text-xs text-neutral-600 font-medium tracking-wide">
