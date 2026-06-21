@@ -10,19 +10,15 @@ export default function HeroSection() {
 
       <div className="relative grid items-center gap-10 md:grid-cols-2">
 
-        {/* Mobile Trophy First */}
+        {/* Trophy */}
         <div className="flex justify-center md:order-2">
           <div className="rounded-full border border-[#fbbf24]/30 bg-[#1a0f0d] p-5 md:p-7 shadow-[0_0_50px_rgba(251,191,36,0.25)]">
-            <Trophy className="h-16 w-16 md:h-28 md:w-28" />
+            <Trophy className="h-16 w-16 md:h-28 md:w-28 text-[#fbbf24]" />
           </div>
         </div>
 
-
         {/* Text Content */}
         <div className="text-center md:text-left md:order-1">
-
-        
-
 
           <h1 className="mt-3 text-3xl md:text-5xl font-black uppercase leading-none text-white">
             Predict Box Office.
@@ -32,9 +28,39 @@ export default function HeroSection() {
             Win Rewards.
           </h1>
 
-
           <p className="mt-5 text-sm md:text-lg text-neutral-300 max-w-xl">
-            Make opening day and lifetime box office predictions, 
+            Make opening day and lifetime box office predictions,
+            earn CinePoints, climb the leaderboard, and prove your
+            box office instincts in the ultimate fan championship.
+          </p>
+
+          {/* Buttons */}
+          <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+
+            <Link
+              href="#championship"
+              className="rounded-xl bg-gradient-to-r from-[#facc15] to-[#f59e0b] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-black flex items-center justify-center gap-2 hover:scale-[1.02] transition-all duration-300 shadow-[0_0_25px_rgba(251,191,36,0.35)]"
+            >
+              Enter The Arena
+              <Zap className="h-4 w-4 text-black fill-black" />
+            </Link>
+
+            <Link
+              href="/leaderboard"
+              className="rounded-xl border border-[#fbbf24]/40 bg-[#1a0f0d] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-[#fbbf24] flex items-center justify-center hover:bg-[#fbbf24] hover:text-black transition-all duration-300"
+            >
+              View Leaderboard
+            </Link>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+  );
+}            Make opening day and lifetime box office predictions, 
 earn CinePoints, climb the leaderboard, and prove your 
 box office instincts in the ultimate fan championship.
           </p>
