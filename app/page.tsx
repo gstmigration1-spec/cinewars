@@ -1441,9 +1441,9 @@ className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d]
 
 
         {/* 6. REDESIGNED USER IDENTITY SPACING PLATFORM & 7. STRUCTURAL INFO FOOTNOTE */}
-        <section className="space-y-5">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-[#2d1b18] pb-3">
-            <div>
+      {false && (<section className="space-y-5">
+          <div lassName=="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-[#2d1b18] pb-3">
+            <iv >
               <h3 className="text-[11px] font-black uppercase tracking-widest text-[#f97316] mb-1 font-bold">Accuracy Spotlights</h3>
               <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.15em] bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#f59e0b] bg-clip-text text-transparent text-display">
 WHO’S ACTUALLY GETTING IT RIGHT?</h2>
@@ -1528,7 +1528,7 @@ WHO’S ACTUALLY GETTING IT RIGHT?</h2>
             </Link>
           </div>
 
-        </section>
+        </section>)}
         
         {false && (
 <section className="space-y-5">
