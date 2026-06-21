@@ -8,26 +8,31 @@ export default function ChampionshipMovies({
   return (
     <section id="championship" className="text-white">
 
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
+
         <div>
           <p className="text-[#fbbf24] text-sm font-black uppercase tracking-widest">
-            July Championship
+            🏆 Monthly Championship
           </p>
 
-          <h2 className="text-3xl md:text-4xl font-black uppercase">
-            Choose Your Battle
+          <h2 className="text-3xl md:text-4xl font-black uppercase text-white">
+            ⚔️ Current Fan Battles
           </h2>
         </div>
 
         <div className="hidden md:block text-sm text-neutral-400">
-          Predict. Debate. Climb Rankings.
+          Make your prediction. Earn CinePoints. Climb the rankings.
         </div>
+
       </div>
 
 
+      {/* Movie Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
 
         {movies.map((movie) => (
+
           <div
             key={movie.movie_id}
             className="
@@ -35,8 +40,11 @@ export default function ChampionshipMovies({
               overflow-hidden
               bg-[#120908]
               border border-[#2d1b18]
-              hover:border-[#f97316]/60
-              transition
+              hover:border-[#fbbf24]/60
+              hover:shadow-[0_0_25px_rgba(251,191,36,0.18)]
+              transition-all
+              duration-300
+              hover:-translate-y-1
             "
           >
 
@@ -45,6 +53,7 @@ export default function ChampionshipMovies({
               alt={movie.title}
               className="w-full h-72 object-cover"
             />
+
 
             <div className="p-4">
 
@@ -57,18 +66,25 @@ export default function ChampionshipMovies({
               </p>
 
 
+              {/* Buttons */}
               <div className="mt-4 grid grid-cols-2 gap-2">
 
                 <Link
                   href={`/movies/${movie.movie_id}`}
                   className="
                     rounded-xl
-                    bg-[#2563eb]
+                    bg-gradient-to-r
+                    from-[#facc15]
+                    to-[#f59e0b]
                     py-3
                     text-center
                     text-xs
                     font-black
                     uppercase
+                    text-black
+                    shadow-[0_0_20px_rgba(251,191,36,0.25)]
+                    hover:scale-[1.03]
+                    transition-all
                   "
                 >
                   Predict
@@ -79,16 +95,20 @@ export default function ChampionshipMovies({
                   href={`/movies/${movie.movie_id}#debates`}
                   className="
                     rounded-xl
-                    border border-[#fbbf24]/40
-                    text-[#fbbf24]
+                    bg-gradient-to-r
+                    from-purple-700
+                    to-purple-500
                     py-3
                     text-center
                     text-xs
                     font-black
                     uppercase
+                    text-white
+                    hover:scale-[1.03]
+                    transition-all
                   "
                 >
-                  Debate
+                  Battle
                 </Link>
 
               </div>
@@ -96,6 +116,7 @@ export default function ChampionshipMovies({
             </div>
 
           </div>
+
         ))}
 
       </div>
