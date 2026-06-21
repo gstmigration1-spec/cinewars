@@ -6,9 +6,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import HeroSection from "@/components/home/HeroSection";
 import ChampionshipBanner from "@/components/home/ChampionshipBanner";
-import { default as ChampionshipMovies } from "@/components/home/ChampionshipMovies";
+import ChampionshipMovies from "@/components/home/ChampionshipMovies";
 
-import { 
 import {
   Flame,
   ShieldCheck,
