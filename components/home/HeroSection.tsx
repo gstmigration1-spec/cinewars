@@ -17,7 +17,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Text Content */}
+        {/* Hero Content */}
         <div className="text-center md:text-left md:order-1">
 
           <h1 className="mt-3 text-3xl md:text-5xl font-black uppercase leading-none text-white">
@@ -34,7 +34,7 @@ export default function HeroSection() {
             box office instincts in the ultimate fan championship.
           </p>
 
-          {/* Buttons */}
+          {/* CTA Buttons */}
           <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
 
             <Link
@@ -48,37 +48,6 @@ export default function HeroSection() {
             <Link
               href="/leaderboard"
               className="rounded-xl border border-[#fbbf24]/40 bg-[#1a0f0d] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-[#fbbf24] flex items-center justify-center hover:bg-[#fbbf24] hover:text-black transition-all duration-300"
-            >
-              View Leaderboard
-            </Link>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-  );
-}            Make opening day and lifetime box office predictions, 
-earn CinePoints, climb the leaderboard, and prove your 
-box office instincts in the ultimate fan championship.
-          </p>
-
-
-          <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-
-            <Link
-              href="#championship"
-              className="rounded-xl bg-gradient-to-r from-[#facc15] to-[#f59e0b] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-black flex items-center justify-center gap-2 hover:scale-[1.02] transition-all duration-300 shadow-[0_0_25px_rgba(251,191,36,0.35)]"></Link>
-              Enter The Arena
-              <Zap className="h-4 w-4 text-black fill-black" />
-            </Link>
-
-
-            <Link
-              href="/leaderboard"
-              className="rounded-xl border border-[#fbbf24]/40 bg-[#1a0f0d] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-[#fbbf24]"
             >
               View Leaderboard
             </Link>
