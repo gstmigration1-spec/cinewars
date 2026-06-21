@@ -1048,7 +1048,7 @@ window.location.reload();
 </div>
 )}
         
-        <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#120908] border border-[#2d1b18] text-xs text-white font-semibold tracking-wide shadow-lg">
+      {false && (<div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#120908] border border-[#2d1b18] text-xs text-white font-semibold tracking-wide shadow-lg">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500" />
@@ -1065,7 +1065,7 @@ window.location.reload();
   </span>
   right now
 </span>
-        </div>
+        </div>)}
         {/* 3. IMPROVED LIVE PULSE FEED SECTION WITH GLOW & PULSING DOT */}
         <section className="space-y-4 bg-gradient-to-r from-[#170e0d] to-[#0c0807] border border-[#341d19] rounded-2xl p-5 shadow-xl">
           <div className="flex items-center justify-between px-1">
