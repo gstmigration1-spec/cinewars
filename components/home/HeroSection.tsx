@@ -44,10 +44,9 @@ box office instincts in the ultimate fan championship.
 
             <Link
               href="#championship"
-              className="rounded-xl bg-gradient-to-r from-[#2563eb] to-[#38bdf8] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-white flex items-center justify-center gap-2"
-            >
+              className="rounded-xl bg-gradient-to-r from-[#facc15] to-[#f59e0b] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-black flex items-center justify-center gap-2 hover:scale-[1.02] transition-all duration-300 shadow-[0_0_25px_rgba(251,191,36,0.35)]"></Link>
               Enter The Arena
-              <Zap className="h-4 w-4 text-yellow-300 fill-yellow-300" />
+              <Zap className="h-4 w-4 text-black fill-black" />
             </Link>
 
 
