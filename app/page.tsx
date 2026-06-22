@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import HeroSection from "@/components/home/HeroSection";
 import ChampionshipBanner from "@/components/home/ChampionshipBanner";
 import ChampionshipMovies from "@/components/home/ChampionshipMovies";
+import HowItWorks from "@/components/home/HowItWorks";
 
 import {
   Flame,
@@ -847,6 +848,7 @@ window.location.reload();
         <HeroSection />
 
 <ChampionshipBanner />
+<HowItWorks />
 
 <ChampionshipMovies 
   movies={championshipMovies}
