@@ -695,21 +695,27 @@ await fetchMovies();
       `}</style>
 
       {/* NAVIGATION BAR */}
-      <nav className="sticky top-0 z-50 w-full border-b border-[#231512] bg-[#050303]/95 backdrop-blur-md">
+      <nav className="sticky top-0 z-50 w-full border-b border-[#fbbf24]/20 bg-black/75 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
   <img
     src="/posters/logo.png"
     alt="CineWars"
-    className="h-14 md:h-12 w-auto"
+    className="h-12 md:h-14 w-auto drop-shadow-[0_0_15px_rgba(251,191,36,0.6)]"
   />
 
-  <span className="text-display text-xl md:text-3xl bg-gradient-to-r from-[#38bdf8] to-[#60a5fa] bg-clip-text text-transparent font-black">
-    CineWars
-  </span>
+  <div className="leading-none">
+    <span className="block text-display text-xl md:text-3xl font-black bg-gradient-to-r from-[#fde047] via-[#f59e0b] to-[#d97706] bg-clip-text text-transparent">
+      CineWars
+    </span>
+
+    <span className="hidden md:block mt-1 text-[9px] tracking-[0.25em] uppercase text-purple-300 drop-shadow-[0_0_8px_rgba(168,85,247,0.7)] font-bold">
+      Fan Championship
+    </span>
+  </div>
 </div>
 
-          <div className="hidden md:flex items-center space-x-2 text-xs font-black uppercase tracking-wider text-neutral-400">
+          <div className="hidden md:flex items-center space-x-5 text-sm font-black uppercase tracking-[0.15em]">
             {[
   { label: "Predictions", href: "#trending" },
   { label: "Rankings", href: "/leaderboard" },
@@ -732,17 +738,17 @@ await fetchMovies();
     value={movieSearch}
     onChange={(e) => setMovieSearch(e.target.value)}
     placeholder="Search movies..."
-    className="w-56 rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-white focus:outline-none focus:border-orange-500"
+    className="w-60 rounded-full border border-[#fbbf24]/25 bg-[#120908]/80 px-5 py-2.5 text-sm text-white placeholder:text-neutral-500 backdrop-blur-md transition-all duration-300 focus:outline-none focus:border-[#fbbf24] focus:shadow-[0_0_18px_rgba(251,191,36,0.45)]"
   />
 
   {searchResults.length > 0 && (
-    <div className="absolute top-12 left-0 w-72 rounded-xl border border-neutral-800 bg-neutral-950 shadow-xl overflow-hidden z-50">
+    <div className="absolute top-14 left-0 w-72 rounded-2xl border border-[#fbbf24]/20 bg-black/95 backdrop-blur-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-hidden z-50">
       {searchResults.map((movie: any) => (
         <Link
           key={movie.movie_id}
           href={`/movies/${movie.title.toLowerCase().replace(/\s+/g, "-")}`}
           onClick={() => setMovieSearch("")}
-          className="block px-4 py-3 text-sm text-white hover:bg-neutral-900 border-b border-neutral-900 last:border-0"
+          className="block px-4 py-3 text-sm text-neutral-100 hover:text-[#fbbf24] hover:bg-[#fbbf24]/10 transition border-b border-neutral-900 last:border-0"
         >
           {movie.title}
         </Link>
@@ -802,25 +808,27 @@ await fetchMovies();
     }}
     whileHover={{ scale: 1.04 }}
     whileTap={{ scale: 0.98 }}
-    className="relative group overflow-hidden bg-gradient-to-r from-[#2563eb] to-[#38bdf8] text-[9px] md:text-[11px] font-black uppercase tracking-wide px-3 md:px-5 py-2.5 md:py-3 rounded-xl text-white"
+    className="relative group overflow-hidden bg-gradient-to-r from-[#facc15] via-[#f59e0b] to-[#ea580c] text-[9px] md:text-[11px] font-black uppercase tracking-wider px-3 md:px-5 py-2.5 md:py-3 rounded-xl text-black shadow-[0_0_20px_rgba(251,191,36,0.45)] hover:shadow-[0_0_30px_rgba(251,191,36,0.8)] transition-all duration-300"
   >
     {currentUser?.username ? (
-      <span>@{currentUser.username} ▼</span>
+      <span className="tracking-wide">
+  👑 @{currentUser.username}
+</span>
     ) : (
       <span className="flex items-center gap-1.5">
         Join Arena
-        <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
+        <Zap className="w-3.5 h-3.5 fill-current text-black" />
       </span>
     )}
   </motion.button>
 
   {showDropdown && currentUser?.username && (
-    <div className="absolute right-0 mt-2 w-40 rounded-xl bg-neutral-900 border border-neutral-800 shadow-lg overflow-hidden">
+    <div className="absolute right-0 mt-3 w-44 rounded-2xl bg-[#120908]/95 backdrop-blur-xl border border-[#fbbf24]/25 shadow-[0_0_25px_rgba(0,0,0,0.8)] overflow-hidden">
      <button
   onClick={() => {
     window.location.href = `/user/${currentUser.username}`;
   }}
-  className="block w-full text-left px-4 py-3 hover:bg-neutral-800"
+  className="block w-full text-left px-4 py-3 text-neutral-300 hover:text-[#fbbf24] hover:bg-[#fbbf24]/10 transition"
 >
   Profile
 </button>
@@ -999,7 +1007,7 @@ window.location.reload();
   <div className="space-y-6">
 
     <div className="flex items-center justify-between">
-      <span className="text-neutral-400">
+      <span className="px-3 py-2 rounded-xl text-neutral-300 transition-all duration-300 hover:text-[#fbbf24] hover:bg-[#fbbf24]/10 hover:drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
         Debates
       </span>
 
@@ -1009,7 +1017,7 @@ window.location.reload();
     </div>
 
     <div className="flex items-center justify-between">
-      <span className="text-neutral-400">
+      <span className="px-3 py-2 rounded-xl text-neutral-300 transition-all duration-300 hover:text-[#fbbf24] hover:bg-[#fbbf24]/10 hover:drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
         Predictions
       </span>
 
@@ -1274,7 +1282,7 @@ window.location.reload();
                       <span className="text-[#f97316] flex items-center gap-1">
                         <Flame className="w-3.5 h-3.5 fill-[#f97316] animate-pulse" /> Hype Ignition Level ({movie.hypeScore}%)
                       </span>
-                      <span className="text-neutral-400">Sentiment: {movie.fanSentiment}</span>
+                      <span className="px-3 py-2 rounded-xl text-neutral-300 transition-all duration-300 hover:text-[#fbbf24] hover:bg-[#fbbf24]/10 hover:drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">Sentiment: {movie.fanSentiment}</span>
                     </div>
                     <div className="h-3 w-full bg-[#050303] rounded-full overflow-hidden border border-[#492d27] p-[2px] relative">
                       <motion.div
@@ -1947,115 +1955,53 @@ https://www.thecinewars.com/user/${call.username}`;
         {/* GLOBAL STANDINGS */}
 
 
-        {/* AI CINE ANALYST HUB */}
-        <section id="ai-analyst" className="glass-card rounded-3xl border border-red-500/10 p-6 md:p-10 relative overflow-hidden bg-gradient-to-tr from-[#0b0807] via-[#1c1210]/30 to-black shadow-2xl">
-          <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-orange-500/5 blur-[80px] rounded-full pointer-events-none" />
+       
+      </div>
+<section className="max-w-6xl mx-auto px-6 pt-2 pb-10">
+  <div className="rounded-3xl border border-[#2d1b18] bg-[#120908]/70 p-8">
 
-          <div className="max-w-3xl space-y-5">
-  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-500 uppercase border border-orange-500/20 tracking-wider">
-    <Sparkles className="w-3.5 h-3.5" />
-    Future Feature
-  </div>
+    <h2 className="text-3xl font-black text-white mb-5">
+      🎬 About CineWars
+    </h2>
 
-  <h2 className="text-2xl md:text-3xl tracking-tight text-white text-display">
-    AI Box Office Analyst
-  </h2>
-
-  <p className="text-sm text-neutral-400 leading-relaxed">
-    We're training the CineWars AI Analyst on real prediction history,
-    trust scores, community sentiment, and box office outcomes.
-  </p>
-
-  <div className="bg-neutral-950/80 border border-[#2d1b18] rounded-2xl p-6 space-y-4">
-    <div className="flex items-center gap-3">
-      <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse" />
-
-      <span className="text-orange-400 font-black uppercase tracking-widest text-xs">
-        Coming Soon
-      </span>
-    </div>
-
-    <p className="text-sm text-neutral-300 leading-relaxed">
-      The AI Analyst will launch once CineWars has accumulated enough
-      prediction history and outcome data to generate reliable insights.
+    <p className="text-neutral-300 text-lg leading-relaxed mb-4 max-w-4xl">
+      CineWars is India's fan-driven movie box office prediction platform where cinema lovers predict opening day collections, lifetime numbers, and debate upcoming Bollywood and South Indian films.
     </p>
 
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
-      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
-        <div className="text-white font-black">
-          {heroStats.predictions}
-        </div>
-        <div className="text-[10px] text-neutral-500 uppercase">
-          Predictions
-        </div>
-      </div>
+    <p className="text-neutral-400 text-lg leading-relaxed max-w-4xl">
+  Compare predictions, build your credibility score, join fan wars, earn CinePoints, climb the leaderboard and prove who truly understands the box office.
+</p>
 
-      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
-        <div className="text-white font-black">
-          {heroStats.debates}
-        </div>
-        <div className="text-[10px] text-neutral-500 uppercase">
-          Debates
-        </div>
-      </div>
+<a
+  href="https://x.com/TheCinewars"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex mt-6 rounded-xl border border-purple-500/40 px-5 py-3 text-purple-300 hover:bg-purple-500/10 transition font-bold"
+>
+  Follow us on 𝕏
+</a>
 
-      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
-        <div className="text-white font-black">
-          {heroStats.members}
-        </div>
-        <div className="text-[10px] text-neutral-500 uppercase">
-          Members
-        </div>
-      </div>
-
-      <div className="bg-[#120908] border border-[#2d1b18] rounded-xl p-3 text-center">
-        <div className="text-white font-black">
-          {heroStats.votes}
-        </div>
-        <div className="text-[10px] text-neutral-500 uppercase">
-          Votes
-        </div>
-      </div>
-    </div>
   </div>
-</div>
-        </section>
-
-      </div>
-<section className="max-w-5xl mx-auto px-6 py-12 text-neutral-300">
-  <h2 className="text-3xl font-black text-white mb-4">
-    About CineWars
-  </h2>
-
-  <p className="text-lg leading-relaxed mb-4">
-    CineWars is India's fan-driven movie box office prediction platform where cinema lovers predict opening day collections, lifetime box office numbers, and debate upcoming Bollywood and South Indian films.
-  </p>
-
-  <p className="text-lg leading-relaxed">
-    Compare predictions, build your credibility score, join passionate fan debates, and prove who truly understands cinema and the box office.
-  </p>
 </section>      {/* FOOTER */}
-<div className="mb-4">
-  <a
-    href="https://x.com/TheCinewars"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-neutral-400 hover:text-white transition font-medium"
-  >
-          Follow us on 𝕏
-  </a>
-</div>
-      <footer className="w-full border-t border-[#2d1b18] mt-24 bg-neutral-950/40 py-8 text-center text-xs text-neutral-600 font-medium tracking-wide">
-        <div className="mt-2 flex items-center justify-center gap-2 text-[10px] text-neutral-600">
-          <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+      <footer className="w-full border-t border-[#2d1b18] mt-16 bg-neutral-950/50 py-5">
 
-          <img
-            src="/tmdb-logo.svg"
-            alt="TMDB Logo"
-            className="h-4 w-auto opacity-80" />
-        </div>
-      </footer>
+  <div className="max-w-6xl mx-auto px-6 text-center">
 
+    <div>
+      <h3 className="text-white font-black text-lg">
+        CineWars
+      </h3>
+
+      <p className="text-sm text-neutral-400">
+        India's fan championship for box office predictions.
+      </p>
+    </div>
+
+
+  </div>
+
+
+</footer>
       {/* MOBILE INTERACTION NAVIGATION */}
       <div className="fixed bottom-4 left-3 right-3 z-50 md:hidden">
         <div className="flex items-center justify-between rounded-2xl border border-neutral-700 bg-black px-5 py-3 shadow-2xl">
@@ -2087,7 +2033,9 @@ https://www.thecinewars.com/user/${call.username}`;
         </div>
       </div>
 
-    </div><AnimatePresence>
+    </div>
+    
+    <AnimatePresence>
   {showSearch && (
     <motion.div
       initial={{ opacity: 0 }}

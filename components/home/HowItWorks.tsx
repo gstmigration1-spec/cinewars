@@ -20,64 +20,59 @@ export default function HowItWorks() {
   ];
 
   const highlights = [
-    "🎬 India Net collections only",
-    "📅 Minimum 5 movies required",
-    "🔒 One edit allowed until 5 days before release",
-    "🐦 Follow CineWars on X for reward eligibility",
-  ];
+  "🎬 India Net collections only",
+  "📅 Minimum 5 movies required",
+  "🔒 One edit allowed until 5 days before release",
+];
 
   return (
     <section className="text-white">
-      <div className="mb-8 text-center">
-        <p className="text-purple-400 text-sm font-black uppercase tracking-widest">
-          ⚡ Championship Guide
-        </p>
+      
 
-        <h2 className="text-3xl md:text-4xl font-black uppercase bg-gradient-to-r from-purple-400 to-purple-700 bg-clip-text text-transparent">
-          How CineWars Works
-        </h2>
-
-        <p className="text-neutral-400 mt-3">
-          Predict. Earn. Climb. Become the ultimate box office champion.
-        </p>
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-3 gap-3">
         {steps.map((step) => (
           <div
             key={step.title}
-            className="rounded-2xl border border-[#2d1b18] bg-[#120908] p-6 text-center"
+            className="rounded-xl border border-[#2d1b18] bg-[#120908] p-3 text-center"
           >
-            <div className="text-4xl mb-3">
+            <div className="text-3xl mb-2">
               {step.icon}
             </div>
 
-            <h3 className="font-black text-lg">
+            <h3 className="font-black text-base">
               {step.title}
             </h3>
 
-            <p className="text-sm text-neutral-400 mt-2">
+            <p className="text-xs text-neutral-400 mt-1">
               {step.text}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 rounded-2xl border border-purple-500/30 bg-purple-900/10 p-5">
+      <div className="mt-3 rounded-xl border border-purple-500/30 bg-purple-900/10 p-3">
         <h3 className="font-black text-purple-300 mb-3">
           Key Championship Rules
         </h3>
 
-        <ul className="space-y-2 text-sm text-neutral-300">
+        <ul className="space-y-1 text-xs text-neutral-300">
           {highlights.map((rule) => (
             <li key={rule}>
               {rule}
             </li>
           ))}
         </ul>
+        <a
+  href="https://x.com/TheCinewars"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex mt-3 text-sm font-bold text-purple-300 hover:text-purple-200 transition"
+>
+  🐦 Follow @TheCineWars on X for reward eligibility
+</a>
       </div>
 
-      <div className="mt-5 text-center">
+      <div className="mt-3 text-center">
         <Link
           href="/rules"
           className="
@@ -86,9 +81,9 @@ export default function HowItWorks() {
             bg-gradient-to-r
             from-[#facc15]
             to-[#f59e0b]
-            px-6
-            py-3
-            text-sm
+            px-5
+            py-2.5
+            text-xs
             font-black
             uppercase
             text-black
