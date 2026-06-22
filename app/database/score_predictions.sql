@@ -56,7 +56,7 @@ BEGIN
 
       +
 
-      -- Early prediction bonus
+      -- Early Prediction Bonus
       COALESCE(
         (
           SELECT CASE
@@ -74,6 +74,11 @@ BEGIN
         ),
         0
       )
+
+      +
+
+      -- X Share Bonus
+      COALESCE(mp.share_bonus, 0)
 
     ),
 

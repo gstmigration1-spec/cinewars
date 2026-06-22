@@ -40,6 +40,9 @@ const [predictionReplyText, setPredictionReplyText] =
   const [predictionReactions, setPredictionReactions] = useState<any>({});
 const [lifetimePrediction, setLifetimePrediction] = useState("");
 const [predictionLoading, setPredictionLoading] = useState(false);
+const [showShareButton, setShowShareButton] = useState(false);
+const [currentPredictionIds, setCurrentPredictionIds] = useState<string[]>([]);
+const [shared, setShared] = useState(false);
 const [openingResult, setOpeningResult] = useState<any>(null);
 const [openingPredictors, setOpeningPredictors] = useState(0);
 const movieSchema = {
@@ -453,27 +456,52 @@ setLikedDebates((prev: any) => ({
 }));
   fetchReactions();
 }; const handleSharePrediction = async () => {
-  const text = `⚔️ Prediction Locked on CineWars
+
+  const text = `⚔️ I just locked my box office prediction on CineWars!
 
 🎬 ${movieTitle}
 
-Opening Day: ₹${openingPrediction || "?"} Cr
-Lifetime: ₹${lifetimePrediction || "?"} Cr
+Opening Day: ₹${openingPrediction || "Locked"} Cr
+Lifetime: ₹${lifetimePrediction || "Locked"} Cr
 
-What's your call?? Enter the arena.
+Can you beat my prediction?
 
-${window.location.origin}/movies/${slug}`;
-  if (navigator.share) {
-    await navigator.share({
-      title: `${movieTitle} Prediction`,
-      text,
-      url: `${window.location.origin}/movies/${slug}`,
-    });
-  } else {
-    await navigator.clipboard.writeText(text);
-    alert("Prediction copied!");
+🔥 Join the fan championship:
+${window.location.origin}/movies/${slug}
+
+#CineWars #BoxOffice`;
+
+  // Open X Share
+  window.open(
+    `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
+    "_blank"
+  );
+
+  // Give bonus only once
+for (const id of currentPredictionIds) {
+  const { data: prediction } = await supabase
+    .from("movie_predictions")
+    .select("points, shared_on_x")
+    .eq("id", id)
+    .single();
+
+  if (prediction && !prediction.shared_on_x) {
+    await supabase
+      .from("movie_predictions")
+      .update({
+        shared_on_x: true,
+        share_bonus: 10,
+        points: (prediction.points || 0) + 10,
+      })
+      .eq("id", id);
   }
-};const handlePredictionSubmit = async () => {
+}
+
+setShared(true);
+
+  
+};
+const handlePredictionSubmit = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -489,37 +517,60 @@ ${window.location.origin}/movies/${slug}`;
   }
 
   setPredictionLoading(true);
+  setCurrentPredictionIds([]);
+setShared(false);
 
   try {
     if (openingPrediction) {
-      await supabase.from("movie_predictions").upsert(
-  {
-    user_id: user.id,
-    movie_id: slug,
-    prediction_type: "opening_day",
-    predicted_value: Number(openingPrediction),
-  },
-  {
-    onConflict: "user_id,movie_id,prediction_type",
+  const { data } = await supabase
+    .from("movie_predictions")
+    .upsert(
+      {
+        user_id: user.id,
+        movie_id: slug,
+        prediction_type: "opening_day",
+        predicted_value: Number(openingPrediction),
+      },
+      {
+        onConflict: "user_id,movie_id,prediction_type",
+      }
+    )
+    .select();
+
+  if (data?.[0]) {
+    setCurrentPredictionIds((prev) => [
+      ...prev,
+      data[0].id,
+    ]);
   }
-);
-    }
+}
 
     if (lifetimePrediction) {
-      await supabase.from("movie_predictions").upsert(
-  {
-    user_id: user.id,
-    movie_id: slug,
-    prediction_type: "lifetime",
-    predicted_value: Number(lifetimePrediction),
-  },
-  {
-    onConflict: "user_id,movie_id,prediction_type",
+  const { data } = await supabase
+    .from("movie_predictions")
+    .upsert(
+      {
+        user_id: user.id,
+        movie_id: slug,
+        prediction_type: "lifetime",
+        predicted_value: Number(lifetimePrediction),
+      },
+      {
+        onConflict: "user_id,movie_id,prediction_type",
+      }
+    )
+    .select();
+
+  if (data?.[0]) {
+    setCurrentPredictionIds((prev) => [
+      ...prev,
+      data[0].id,
+    ]);
   }
-);
-    }
+}
 
     alert("Prediction submitted!");
+    setShowShareButton(true);
 
     setOpeningPrediction("");
     setLifetimePrediction("");
@@ -610,13 +661,17 @@ ${window.location.origin}/movies/${slug}`;
     ? "Submitting..."
     : "🚀 Submit Prediction"}
 </button>
-<button
-  onClick={handleSharePrediction}
-  className="ml-3 bg-[#120908] border border-[#2d1b18] hover:border-orange-500 transition-all duration-300 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-orange-400"
->
-  📤 Share Prediction
-</button>
-
+{showShareButton && (
+  <button
+    onClick={handleSharePrediction}
+    disabled={shared}
+    className="ml-3 bg-[#120908] border border-[#2d1b18] hover:border-blue-500 transition-all duration-300 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-blue-400 disabled:opacity-50"
+  >
+    {shared
+      ? "✅ Shared +10 Points"
+      : "𝕏 Share & Earn +10"}
+  </button>
+)}
 </div>
           <textarea
             value={message}
