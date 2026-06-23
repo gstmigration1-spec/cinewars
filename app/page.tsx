@@ -967,56 +967,64 @@ window.location.reload();
 <ChampionshipBanner />
 
 {dailyChallenge && (
-  <section className="max-w-3xl px-3 mt-6 mb-4">
-    <div className="rounded-3xl border border-cyan-500/30 bg-cyan-500/5 p-6">
-      <div className="text-cyan-400 font-black text-3xl mb-2">
-        🎯 Daily Box Office Challenge
-      </div>
+<section className="mt-4 rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-[#051015] via-[#07131a] to-[#051015] p-4">
 
-      <div className="text-white text-xl font-bold">
+  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
+    <div className="flex flex-wrap items-center gap-3">
+
+      <h2 className="text-lg font-black uppercase text-cyan-400">
+        🎯 Daily Challenge
+      </h2>
+
+      <span className="text-white font-bold">
         {dailyChallenge.movies?.title || dailyChallenge.movie_id}
-        <div className="mt-3 text-sm font-semibold text-neutral-300">
-  🔥 Streak: {streak?.current_streak || 0}
-  {" • "}
-  🏆 Best: {streak?.best_streak || 0}
-  {" • "}
-  🎁 +20 every 7 days
-</div>
+      </span>
 
-</div>
+      <span className="text-sm text-neutral-300">
+        🔥 {streak?.current_streak || 0} Day Streak
+      </span>
 
-{!dailySubmitted ? (
-  <div className="mt-4 space-y-3">
-    <input
-      type="number"
-      value={dailyPrediction}
-      onChange={(e) =>
-        setDailyPrediction(e.target.value)
-      }
-      placeholder="Enter Collection (₹ Cr)"
-      className="w-full bg-black/40 border border-cyan-500/20 rounded-xl p-4"
-    />
+      <span className="text-sm text-neutral-300">
+        🏆 Best {streak?.best_streak || 0}
+      </span>
 
-    <button
-      onClick={submitDailyPrediction}
-      className="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-3 rounded-xl font-black uppercase"
-    >
-      Lock Prediction
-    </button>
+      <span className="text-sm text-neutral-300">
+        🎁 +20 every 7 days
+      </span>
 
-    <div className="text-sm text-neutral-400">
-      🔥 Earn Daily Points • ⚡ Build Streak • 🏆 Boost Monthly Ranking
     </div>
+
+    {!dailySubmitted ? (
+      <div className="flex gap-2 w-full md:w-auto">
+
+        <input
+          type="number"
+          value={dailyPrediction}
+          onChange={(e) => setDailyPrediction(e.target.value)}
+          placeholder="₹ Cr"
+          className="flex-1 md:w-32 rounded-xl border border-cyan-500/20 bg-black/50 px-3 py-2 text-center"
+        />
+
+        <button
+          onClick={submitDailyPrediction}
+          className="rounded-xl bg-cyan-500 px-4 py-2 font-black text-black whitespace-nowrap"
+        >
+          Predict
+        </button>
+
+      </div>
+    ) : (
+      <div className="rounded-xl bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+        {new Date().getHours() < 19
+          ? "✏️ Submitted"
+          : "🔒 Locked"}
+      </div>
+    )}
+
   </div>
-) : (
-  <div className="mt-4 text-green-400 font-bold">
-    {new Date().getHours() < 19
-  ? "✏️ Prediction Submitted "
-  : "🔒 Prediction Locked"}
-  </div>
-)}
-    </div>
-  </section>
+
+</section>
 )}
 
 <ChampionshipMovies 
