@@ -77,6 +77,7 @@ export default function CineWarsHomepage() {
   const [dailyChallenge, setDailyChallenge] = useState<any>(null);
   const [dailyPrediction, setDailyPrediction] = useState("");
   const [dailySubmitted, setDailySubmitted] = useState(false);
+  const [streak, setStreak] = useState<any>(null);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
   const [terribleMisses, setTerribleMisses] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -141,6 +142,25 @@ const { data, error } = await supabase
 
   loadCurrentUser();
 }, []);
+useEffect(() => {
+  const loadStreak = async () => {
+    if (!currentUser?.id) return;
+
+    const { data } = await supabase
+      .from("daily_streaks")
+      .select(
+        "current_streak,best_streak"
+      )
+      .eq("user_id", currentUser.id)
+      .single();
+
+    if (data) {
+      setStreak(data);
+    }
+  };
+
+  loadStreak();
+}, [currentUser]);
   const [movieSearch, setMovieSearch] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showSearch, setShowSearch] = useState(false);
@@ -669,6 +689,17 @@ await fetchMovies();
     }, 1000);
   };
 const submitDailyPrediction = async () => {
+  const now = new Date();
+
+const lockTime = new Date();
+lockTime.setHours(19, 0, 0, 0);
+
+if (now > lockTime) {
+  alert(
+    "Daily Challenge is locked after 7:00 PM"
+  );
+  return;
+}
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -697,7 +728,21 @@ const submitDailyPrediction = async () => {
     alert(error.message);
     return;
   }
+const { error: streakError } = await supabase.rpc(
+  "update_daily_streak",
+  {
+    p_user_id: user.id,
+    p_prediction_date:
+      dailyChallenge.challenge_date,
+  }
+);
 
+if (streakError) {
+  console.log(
+  "STREAK ERROR",
+  JSON.stringify(streakError, null, 2)
+);
+}
   setDailySubmitted(true);
   alert("Prediction Locked!");
 };
@@ -854,8 +899,12 @@ const submitDailyPrediction = async () => {
       if (currentUser?.username) {
         setShowDropdown(!showDropdown);
       } else {
-        setShowLoginModal(true);
-      }
+  document
+    .getElementById("movies")
+    ?.scrollIntoView({
+      behavior: "smooth",
+    });
+}
     }}
     whileHover={{ scale: 1.04 }}
     whileTap={{ scale: 0.98 }}
@@ -917,6 +966,17 @@ window.location.reload();
 
       <div className="text-white text-xl font-bold">
         {dailyChallenge.movies?.title || dailyChallenge.movie_id}
+        <div className="mt-3 space-y-1 text-sm">
+  <div className="mt-3 space-y-1 text-sm">
+    <div className="text-orange-400 font-bold">
+      🔥 Current Streak: {streak?.current_streak || 0}
+    </div>
+
+    <div className="text-yellow-400 font-bold">
+      🏆 Best Streak: {streak?.best_streak || 0}
+    </div>
+  </div>
+</div>
       </div>
 
       <div className="text-neutral-400 mt-2">
@@ -948,7 +1008,9 @@ window.location.reload();
   </div>
 ) : (
   <div className="mt-4 text-green-400 font-bold">
-    ✅ Prediction Locked
+    {new Date().getHours() < 19
+  ? "✏️ Prediction Submitted "
+  : "🔒 Prediction Locked"}
   </div>
 )}
     </div>

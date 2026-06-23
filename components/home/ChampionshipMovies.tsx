@@ -6,7 +6,10 @@ export default function ChampionshipMovies({
   movies: any[];
 }) {
   return (
-    <section id="championship" className="text-white">
+    <section
+  id="championship"
+  className="scroll-mt-24 text-white"
+>
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-2">
@@ -29,7 +32,10 @@ export default function ChampionshipMovies({
 
 
       {/* Movie Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+      <div
+  id="movies"
+  className="grid grid-cols-2 md:grid-cols-4 gap-5"
+>
 
         {movies.map((movie) => (
           <div

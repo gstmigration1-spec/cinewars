@@ -67,7 +67,7 @@ export default function HeroSection() {
           <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
 
             <Link
-              href="#championship"
+              href="#movies"
               className="rounded-xl bg-gradient-to-r from-[#facc15] to-[#f59e0b] px-5 py-2.5 text-sm font-black uppercase tracking-wider text-black flex items-center justify-center gap-2 hover:scale-[1.02] transition-all duration-300 shadow-[0_0_25px_rgba(251,191,36,0.35)]"
             >
               Enter The Arena
