@@ -969,63 +969,58 @@ window.location.reload();
 {dailyChallenge && (
 <section className="mt-4 rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-[#051015] via-[#07131a] to-[#051015] p-4">
 
-  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-<div>
+<div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
 
-  {/* Row 1 */}
   <div className="flex flex-wrap items-center gap-3">
 
-    <h2 className="text-cyan-400 text-sm md:text-base font-black uppercase">
+    <h2 className="text-lg font-black uppercase text-cyan-400">
       🎯 Daily Challenge
     </h2>
 
-    <span className="font-bold text-white">
+    <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-white font-black">
       {dailyChallenge.movies?.title || dailyChallenge.movie_id}
     </span>
 
-    <span className="text-xs text-neutral-300">
+    <span className="text-sm text-neutral-300">
       🔥 {streak?.current_streak || 0}
     </span>
 
-    <span className="text-xs text-neutral-300">
+    <span className="text-sm text-neutral-300">
       🏆 {streak?.best_streak || 0}
     </span>
 
-    <span className="text-xs text-neutral-300">
-      🎁 +20/7 Days
+    <span className="text-sm text-neutral-300">
+      🎁 +20/7d
     </span>
 
   </div>
 
-  {/* Row 2 */}
   {!dailySubmitted ? (
-    <div className="mt-2 flex gap-2">
+    <div className="flex gap-2 w-full md:w-auto">
 
       <input
         type="number"
         value={dailyPrediction}
         onChange={(e) => setDailyPrediction(e.target.value)}
         placeholder="₹ Cr"
-        className="flex-1 rounded-xl border border-cyan-500/20 bg-black/50 px-3 py-2 text-center"
+        className="flex-1 md:w-32 rounded-xl border border-cyan-500/20 bg-black/50 px-3 py-2 text-center"
       />
 
       <button
         onClick={submitDailyPrediction}
-        className="rounded-xl bg-cyan-500 px-5 py-2 font-black text-black"
+        className="rounded-xl bg-cyan-500 px-4 py-2 font-black text-black whitespace-nowrap"
       >
         Predict
       </button>
 
     </div>
   ) : (
-    <div className="mt-2 rounded-xl bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+    <div className="rounded-xl bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
       {new Date().getHours() < 19
-        ? "✏️ Prediction Submitted"
-        : "🔒 Prediction Locked"}
+        ? "✏️ Submitted"
+        : "🔒 Locked"}
     </div>
   )}
-
-</div>
 
 </div>
 
