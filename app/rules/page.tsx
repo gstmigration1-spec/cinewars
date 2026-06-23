@@ -1,7 +1,14 @@
 export default function RulesPage() {
   return (
     <main className="min-h-screen bg-black text-white px-4 py-10 md:px-8">
+import Link from "next/link";
 
+<Link
+  href="/"
+  className="inline-flex items-center text-sm text-neutral-400 hover:text-white mb-6"
+>
+  ← Back to Championship
+</Link>
       {/* Hero */}
       <div className="text-center max-w-4xl mx-auto">
 
