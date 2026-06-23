@@ -983,6 +983,8 @@ window.location.reload();
   🎁 +20 every 7 days
 </div>
 
+</div>
+
 {!dailySubmitted ? (
   <div className="mt-4 space-y-3">
     <input
