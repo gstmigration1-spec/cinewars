@@ -1027,6 +1027,8 @@ window.location.reload();
 
 </div>
 
+</div>
+
 </section>
 )}
 
