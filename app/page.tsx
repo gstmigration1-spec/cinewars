@@ -977,20 +977,20 @@ window.location.reload();
       🎯 Daily Challenge
     </h2>
 
-    <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-white font-black">
+    <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 font-black text-white">
       {dailyChallenge.movies?.title || dailyChallenge.movie_id}
     </span>
 
     <span className="text-sm text-neutral-300">
-      🔥 {streak?.current_streak || 0}
+      🔥 {streak?.current_streak || 0} Day Streak
     </span>
 
     <span className="text-sm text-neutral-300">
-      🏆 {streak?.best_streak || 0}
+      🏆 Best {streak?.best_streak || 0}
     </span>
 
     <span className="text-sm text-neutral-300">
-      🎁 +20/7d
+      🎁 +20 every 7 days
     </span>
 
   </div>
