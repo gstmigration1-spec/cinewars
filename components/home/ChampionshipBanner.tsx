@@ -1,4 +1,5 @@
-import { Gift, Trophy } from "lucide-react";
+import Link from "next/link";
+import { Gift, Trophy, ScrollText } from "lucide-react";
 
 export default function ChampionshipBanner() {
   return (
@@ -6,8 +7,8 @@ export default function ChampionshipBanner() {
       id="championship"
       className="mt-4 rounded-2xl border border-[#3a241a] bg-gradient-to-br from-[#120908] via-[#0b0807] to-black p-4"
     >
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
         <div>
           <h2 className="text-lg md:text-2xl font-black uppercase text-white">
             🏆 CineWars Championship
@@ -18,12 +19,12 @@ export default function ChampionshipBanner() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          
+        <div className="flex flex-wrap items-center gap-2">
+
           <div className="flex items-center gap-2 rounded-full border border-[#fbbf24]/20 bg-[#150d0b] px-3 py-2">
             <Gift className="h-4 w-4 text-[#fbbf24]" />
             <span className="text-xs font-bold text-[#fbbf24]">
-              Rewards ₹500
+              Rewards ₹1000
             </span>
           </div>
 
@@ -33,6 +34,16 @@ export default function ChampionshipBanner() {
               🟢 LIVE
             </span>
           </div>
+
+          <Link
+            href="/championship"
+            className="flex items-center gap-2 rounded-full border border-[#7c3aed]/20 bg-[#120a1f] px-3 py-2 transition hover:border-[#7c3aed]/40"
+          >
+            <ScrollText className="h-4 w-4 text-[#c084fc]" />
+            <span className="text-xs font-bold text-[#c084fc]">
+              Championship Rules →
+            </span>
+          </Link>
 
         </div>
 
