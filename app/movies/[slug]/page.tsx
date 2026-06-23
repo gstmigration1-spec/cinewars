@@ -45,6 +45,8 @@ const [currentPredictionIds, setCurrentPredictionIds] = useState<string[]>([]);
 const [shared, setShared] = useState(false);
 const [openingResult, setOpeningResult] = useState<any>(null);
 const [openingPredictors, setOpeningPredictors] = useState(0);
+const [sharedOpeningValue, setSharedOpeningValue] = useState("");
+const [sharedLifetimeValue, setSharedLifetimeValue] = useState("");
 const movieSchema = {
   "@context": "https://schema.org",
   "@type": "Movie",
@@ -457,19 +459,23 @@ setLikedDebates((prev: any) => ({
   fetchReactions();
 }; const handleSharePrediction = async () => {
 
-  const text = `⚔️ I just locked my box office prediction on CineWars!
+  const hashtags = movieTitle
+  .split(" ")
+  .map((word) => `#${word.replace(/[^a-zA-Z0-9]/g, "")}`)
+  .join(" ");
 
-🎬 ${movieTitle}
+const text = `⚔️ My ${movieTitle} prediction is LOCKED!
 
-Opening Day: ₹${openingPrediction || "Locked"} Cr
-Lifetime: ₹${lifetimePrediction || "Locked"} Cr
+🎬 Opening Day: ₹${sharedOpeningValue || "-"} Cr
+🎬 Lifetime: ₹${sharedLifetimeValue || "-"} Cr
 
-Can you beat my prediction?
+Think I'm wrong?
 
-🔥 Join the fan championship:
+Challenge me on CineWars 👇
+
 ${window.location.origin}/movies/${slug}
 
-#CineWars #BoxOffice`;
+${hashtags} #BoxOffice #CineWars`;
 
   // Open X Share
   window.open(
@@ -498,6 +504,7 @@ for (const id of currentPredictionIds) {
 }
 
 setShared(true);
+alert("🎉 +10 CinePoints awarded for sharing!");
 
   
 };
@@ -571,7 +578,8 @@ setShared(false);
 
     alert("Prediction submitted!");
     setShowShareButton(true);
-
+setSharedOpeningValue(openingPrediction);
+setSharedLifetimeValue(lifetimePrediction);
     setOpeningPrediction("");
     setLifetimePrediction("");
   } catch (error) {
