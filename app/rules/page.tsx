@@ -2,7 +2,6 @@ import Link from "next/link";
 export default function RulesPage() {
   return (
     <main className="min-h-screen bg-black text-white px-4 py-10 md:px-8">
-import Link from "next/link";
 
 <Link
   href="/"
