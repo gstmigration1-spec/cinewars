@@ -975,25 +975,12 @@ window.location.reload();
 
       <div className="text-white text-xl font-bold">
         {dailyChallenge.movies?.title || dailyChallenge.movie_id}
-        <div className="mt-3 space-y-1 text-sm">
-  <div className="mt-3 space-y-1 text-sm">
-    <div className="text-orange-400 font-bold">
-      🔥 Current Streak: {streak?.current_streak || 0}
-    </div>
-
-    <div className="text-yellow-400 font-bold">
-      🏆 Best Streak: {streak?.best_streak || 0}
-    </div>
-  </div>
-</div>
-      </div>
-
-      <div className="text-neutral-400 mt-2">
-  🔥 Keep Your Streak Alive
-  <br />
-  🎁 +20 CinePoints Every 7 Consecutive Days
-  <br />
-  🏆 Climb The Championship Leaderboard
+        <div className="mt-3 text-sm font-semibold text-neutral-300">
+  🔥 Streak: {streak?.current_streak || 0}
+  {" • "}
+  🏆 Best: {streak?.best_streak || 0}
+  {" • "}
+  🎁 +20 every 7 days
 </div>
 
 {!dailySubmitted ? (
