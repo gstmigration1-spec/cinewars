@@ -48,6 +48,16 @@ export default function ChampionshipBanner() {
         </div>
 
       </div>
+      <div className="mt-3 text-center md:text-left">
+  <a
+    href="https://x.com/TheCinewars"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-xs text-neutral-400 hover:text-[#fbbf24] transition"
+  >
+    🐦 Follow @TheCineWars on X for reward eligibility
+  </a>
+</div>
     </section>
   );
 }
