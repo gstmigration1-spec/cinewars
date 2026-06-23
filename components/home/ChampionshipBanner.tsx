@@ -4,61 +4,39 @@ export default function ChampionshipBanner() {
   return (
     <section
       id="championship"
-      className="mt-6 rounded-3xl border border-[#3a241a] bg-gradient-to-br from-[#120908] via-[#0b0807] to-black p-4 md:p-5"
+      className="mt-4 rounded-2xl border border-[#3a241a] bg-gradient-to-br from-[#120908] via-[#0b0807] to-black p-4"
     >
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        
+        <div>
+          <h2 className="text-lg md:text-2xl font-black uppercase text-white">
+            🏆 CineWars Championship
+          </h2>
 
-      <div className="text-center">
-        <h2 className="text-xl md:text-3xl font-black uppercase text-white">
-          🏆 CineWars Championship
-        </h2>
-
-        <p className="mt-1 text-xs md:text-sm text-neutral-400">
-          Season 1 is LIVE. Predict the biggest movies and climb the ultimate box office leaderboard.
-        </p>
-      </div>
-
-
-      {/* Reward + Status */}
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3">
-
-        <div className="rounded-2xl border border-[#fbbf24]/20 bg-[#150d0b] p-5 text-center">
-
-          <Gift className="mx-auto h-8 w-8 text-[#fbbf24]" />
-
-          <h3 className="mt-3 text-sm font-black uppercase text-[#fbbf24]">
-            Season Rewards
-          </h3>
-
-          <p className="mt-2 text-lg font-bold text-white">
-            PVR Vouchers up to ₹500
+          <p className="mt-1 text-xs md:text-sm text-neutral-400">
+            Season 1 LIVE • Predict Box Office • Earn CinePoints
           </p>
-
         </div>
 
+        <div className="flex flex-wrap gap-2">
+          
+          <div className="flex items-center gap-2 rounded-full border border-[#fbbf24]/20 bg-[#150d0b] px-3 py-2">
+            <Gift className="h-4 w-4 text-[#fbbf24]" />
+            <span className="text-xs font-bold text-[#fbbf24]">
+              Rewards ₹500
+            </span>
+          </div>
 
-        <div className="rounded-2xl border border-[#38bdf8]/20 bg-[#091019] p-4 text-center">
-
-          <Trophy className="mx-auto h-8 w-8 text-[#38bdf8]" />
-
-          <h3 className="mt-3 text-sm font-black uppercase text-[#38bdf8]">
-            Championship Status
-          </h3>
-
-          <p className="mt-2 text-lg font-bold text-white">
-            🟢 LIVE
-          </p>
-
-          <p className="text-xs text-neutral-400 mt-2">
-            Ends after final box office results of all championship movies.
-          </p>
+          <div className="flex items-center gap-2 rounded-full border border-[#38bdf8]/20 bg-[#091019] px-3 py-2">
+            <Trophy className="h-4 w-4 text-[#38bdf8]" />
+            <span className="text-xs font-bold text-[#38bdf8]">
+              🟢 LIVE
+            </span>
+          </div>
 
         </div>
 
       </div>
-
-
-      
-
     </section>
   );
 }
