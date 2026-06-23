@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import HeroSection from "@/components/home/HeroSection";
 import ChampionshipBanner from "@/components/home/ChampionshipBanner";
 import ChampionshipMovies from "@/components/home/ChampionshipMovies";
-import HowItWorks from "@/components/home/HowItWorks";
+
 
 import {
   Flame,
@@ -965,7 +965,7 @@ window.location.reload();
         <HeroSection />
 
 <ChampionshipBanner />
-<HowItWorks />
+
 {dailyChallenge && (
   <section className="max-w-3xl px-3 mt-6 mb-4">
     <div className="rounded-3xl border border-cyan-500/30 bg-cyan-500/5 p-6">
