@@ -16,7 +16,7 @@ export default function ChampionshipMovies({
 
         <div>
           <p className="text-[#fbbf24] text-sm font-black uppercase tracking-widest">
-            🏆 Monthly Championship
+            🏆 SEASON ONE
           </p>
 
           <h2 className="text-3xl md:text-4xl font-black uppercase text-white">
@@ -56,10 +56,10 @@ export default function ChampionshipMovies({
             <img
               src={movie.poster}
               alt={movie.title}
-              className="w-full h-72 object-cover"
+              className="w-full h-52 md:h-60 object-cover"
             />
 
-            <div className="p-4">
+            <div className="p-3">
 
               <h3 className="font-black text-lg truncate">
                 {movie.title}
@@ -80,7 +80,7 @@ export default function ChampionshipMovies({
                     bg-gradient-to-r
                     from-[#facc15]
                     to-[#f59e0b]
-                    py-3
+                    py-2.5
                     text-center
                     text-xs
                     font-black

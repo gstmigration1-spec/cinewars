@@ -475,11 +475,20 @@ const loadLeaderboard = async () => {
       .select("points, accuracy")
       .eq("user_id", profile.id);
 
-    const trustScore =
-      predictions?.reduce(
-        (sum, p) => sum + (p.points || 0),
-        0
-      ) || 0;
+    const { data: streak } = await supabase
+  .from("daily_streaks")
+  .select("total_streak_bonus")
+  .eq("user_id", profile.id)
+  .single();
+
+const trustScore =
+  (
+    predictions?.reduce(
+      (sum, p) => sum + (p.points || 0),
+      0
+    ) || 0
+  ) +
+  (streak?.total_streak_bonus || 0);
 
     const scored =
       predictions?.filter(
@@ -958,9 +967,9 @@ window.location.reload();
 <ChampionshipBanner />
 <HowItWorks />
 {dailyChallenge && (
-  <section className="max-w-7xl mx-auto px-4 mt-10 mb-10">
+  <section className="max-w-3xl px-3 mt-6 mb-4">
     <div className="rounded-3xl border border-cyan-500/30 bg-cyan-500/5 p-6">
-      <div className="text-cyan-400 font-black text-2xl mb-2">
+      <div className="text-cyan-400 font-black text-3xl mb-2">
         🎯 Daily Box Office Challenge
       </div>
 
@@ -980,7 +989,11 @@ window.location.reload();
       </div>
 
       <div className="text-neutral-400 mt-2">
-  Predict tomorrow's collection and keep your streak alive.
+  🔥 Keep Your Streak Alive
+  <br />
+  🎁 +20 CinePoints Every 7 Consecutive Days
+  <br />
+  🏆 Climb The Championship Leaderboard
 </div>
 
 {!dailySubmitted ? (
