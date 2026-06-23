@@ -36,7 +36,7 @@ export default function ChampionshipBanner() {
           </div>
 
           <Link
-            href="/championship"
+            href="/rules"
             className="flex items-center gap-2 rounded-full border border-[#7c3aed]/20 bg-[#120a1f] px-3 py-2 transition hover:border-[#7c3aed]/40"
           >
             <ScrollText className="h-4 w-4 text-[#c084fc]" />
