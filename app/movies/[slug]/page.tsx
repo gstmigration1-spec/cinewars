@@ -47,6 +47,8 @@ const [openingResult, setOpeningResult] = useState<any>(null);
 const [openingPredictors, setOpeningPredictors] = useState(0);
 const [sharedOpeningValue, setSharedOpeningValue] = useState("");
 const [sharedLifetimeValue, setSharedLifetimeValue] = useState("");
+const [dailyPrediction, setDailyPrediction] = useState("");
+const [dailySubmitted, setDailySubmitted] = useState(false);
 const movieSchema = {
   "@context": "https://schema.org",
   "@type": "Movie",

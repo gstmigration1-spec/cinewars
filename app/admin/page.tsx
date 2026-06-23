@@ -1,270 +1,396 @@
-"use client";
+  "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-export default function AdminPage() {
-  const [movieId, setMovieId] = useState("");
-  const [predictionType, setPredictionType] =
-    useState("opening_day");
-  const [actualValue, setActualValue] = useState("");
-  const [title, setTitle] = useState("");
-const [poster, setPoster] = useState("");
-const [releaseDate, setReleaseDate] = useState("");
-const [status, setStatus] = useState("upcoming");
-const [isChampionship, setIsChampionship] = useState(false);
-const [championshipSeason, setChampionshipSeason] = useState("");
-  const [currentUser, setCurrentUser] = useState<any>(null);
-const [loading, setLoading] = useState(true);
+  import { useEffect, useState } from "react";
+  import { supabase } from "@/lib/supabase";
+  export default function AdminPage() {
+    const [movieId, setMovieId] = useState("");
+    const [predictionType, setPredictionType] =
+      useState("opening_day");
+    const [actualValue, setActualValue] = useState("");
+    const [title, setTitle] = useState("");
+  const [poster, setPoster] = useState("");
+  const [releaseDate, setReleaseDate] = useState("");
+  const [status, setStatus] = useState("upcoming");
+  const [isChampionship, setIsChampionship] = useState(false);
+  const [championshipSeason, setChampionshipSeason] = useState("");
+    const [currentUser, setCurrentUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [dailyMovieId, setDailyMovieId] = useState("");
+const [challengeDate, setChallengeDate] = useState("");
+const [dailyActual, setDailyActual] = useState("");
+const [scoreMovieId, setScoreMovieId] = useState("");
+const [scoreDate, setScoreDate] = useState("");
+const [scoreActual, setScoreActual] = useState("");
 
-useEffect(() => {
-  const checkAdmin = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (!user) {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      setCurrentUser(user);
       setLoading(false);
+    };
+
+    checkAdmin();
+  }, []);
+  const addMovie = async () => {
+    const generatedMovieId = title
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-");
+
+    const { error } = await supabase
+      .from("movies")
+      .insert({
+        movie_id: generatedMovieId,
+        title,
+        poster,
+        release_date: releaseDate,
+        status,
+        is_championship: isChampionship,
+        championship_season: isChampionship
+          ? championshipSeason
+          : null,
+      });
+
+    if (error) {
+      alert(error.message);
       return;
     }
 
-    setCurrentUser(user);
-    setLoading(false);
+    alert("Movie added successfully!");
+
+    setTitle("");
+    setPoster("");
+    setReleaseDate("");
+    setStatus("upcoming");
+    setIsChampionship(false);
+    setChampionshipSeason("");
   };
-
-  checkAdmin();
-}, []);
-const addMovie = async () => {
-  const generatedMovieId = title
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-");
-
+  const createDailyChallenge = async () => {
   const { error } = await supabase
-    .from("movies")
-    .insert({
-      movie_id: generatedMovieId,
-      title,
-      poster,
-      release_date: releaseDate,
-      status,
-      is_championship: isChampionship,
-      championship_season: isChampionship
-        ? championshipSeason
-        : null,
-    });
+    .from("daily_challenges")
+    .upsert(
+      {
+        movie_id: dailyMovieId,
+        challenge_date: challengeDate,
+        status: "active",
+      },
+      {
+        onConflict: "challenge_date",
+      }
+    );
 
   if (error) {
     alert(error.message);
     return;
   }
 
-  alert("Movie added successfully!");
+  alert("Daily Challenge Created");
 
-  setTitle("");
-  setPoster("");
-  setReleaseDate("");
-  setStatus("upcoming");
-  setIsChampionship(false);
-  setChampionshipSeason("");
+  setDailyMovieId("");
+  setChallengeDate("");
 };
-  const saveResult = async () => {
+const scoreDailyChallenge = async () => {
   const { error } = await supabase
-  
-  
-  .from("movie_results")
-  .upsert(
+    .from("daily_challenges")
+    .update({
+      actual_collection: Number(scoreActual),
+      status: "completed",
+    })
+    .eq("movie_id", scoreMovieId)
+    .eq("challenge_date", scoreDate);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  const { error: scoreError } = await supabase.rpc(
+    "score_daily_challenge",
     {
-      movie_id: movieId,
-      prediction_type: predictionType,
-      actual_value: Number(actualValue),
-    },
-    {
-      onConflict: "movie_id,prediction_type",
+      p_movie_id: scoreMovieId,
+      p_challenge_date: scoreDate,
+      p_actual_collection: Number(scoreActual),
     }
   );
-  if (error) {
-    alert(error.message);
+
+  if (scoreError) {
+    alert(scoreError.message);
     return;
   }
-  console.log("MOVIE ID:", movieId);
-console.log("TYPE:", predictionType);
-console.log("ACTUAL:", Number(actualValue));
-const { data, error: rpcError } = await supabase.rpc(
-  "score_predictions",
-  {
-    p_movie_id: movieId,
-    p_prediction_type: predictionType,
-    p_actual_value: Number(actualValue),
-  }
-);
-if (rpcError) {
-  alert(rpcError.message);
-  console.error(rpcError);
-  return;
-}
 
-console.log("RPC DATA:", data);
-console.log("RPC ERROR:", rpcError);
-await fetch("/api/send-score-emails", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    movieId,
-    predictionType,
-  }),
-});
+  alert("Daily Challenge Scored Successfully");
 
-
-
-alert("Result saved successfully");
-
-  setMovieId("");
-  setActualValue("");
+  setScoreMovieId("");
+  setScoreDate("");
+  setScoreActual("");
 };
-if (loading) {
-  return (
-    <div className="min-h-screen bg-black text-white p-8">
-      Loading...
-    </div>
+    const saveResult = async () => {
+    const { error } = await supabase
+    
+    
+    .from("movie_results")
+    .upsert(
+      {
+        movie_id: movieId,
+        prediction_type: predictionType,
+        actual_value: Number(actualValue),
+      },
+      {
+        onConflict: "movie_id,prediction_type",
+      }
+    );
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    console.log("MOVIE ID:", movieId);
+  console.log("TYPE:", predictionType);
+  console.log("ACTUAL:", Number(actualValue));
+  const { data, error: rpcError } = await supabase.rpc(
+    "score_predictions",
+    {
+      p_movie_id: movieId,
+      p_prediction_type: predictionType,
+      p_actual_value: Number(actualValue),
+    }
   );
-}
+  if (rpcError) {
+    alert(rpcError.message);
+    console.error(rpcError);
+    return;
+  }
 
-if (
-  !currentUser ||
-  currentUser.email?.toLowerCase() !== "ishatpreet500@gmail.com"
-) {
-  return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-3xl font-bold text-red-500">
-        Access Denied
-      </h1>
-    </div>
-  );
-}
-  return (
-    <main className="min-h-screen bg-[#050303] text-white p-8">
-      <div className="max-w-4xl mx-auto">
+  console.log("RPC DATA:", data);
+  console.log("RPC ERROR:", rpcError);
+  await fetch("/api/send-score-emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      movieId,
+      predictionType,
+    }),
+  });
 
-        <h1 className="text-5xl font-black text-orange-400 mb-8">
-          Admin Panel
+
+
+  alert("Result saved successfully");
+
+    setMovieId("");
+    setActualValue("");
+  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white p-8">
+        Loading...
+      </div>
+    );
+  }
+
+  if (
+    !currentUser ||
+    currentUser.email?.toLowerCase() !== "ishatpreet500@gmail.com"
+  ) {
+    return (
+      <div className="min-h-screen bg-black text-white p-8">
+        <h1 className="text-3xl font-bold text-red-500">
+          Access Denied
         </h1>
-<h1 className="text-5xl font-black text-orange-400 mb-8">
-  Admin Panel
-</h1>
+      </div>
+    );
+  }
+    return (
+      <main className="min-h-screen bg-[#050303] text-white p-8">
+        <div className="max-w-4xl mx-auto">
+
+          
+  <h1 className="text-5xl font-black text-orange-400 mb-8">
+    Admin Panel
+  </h1>
+  <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 space-y-4 mb-8">
+
+    <h2 className="text-2xl font-black text-yellow-400">
+      🎬 Movie Management
+    </h2>
+
+    <input
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      placeholder="Movie Title (e.g. War 3)"
+      className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+    />
+
+    <input
+      value={poster}
+      onChange={(e) => setPoster(e.target.value)}
+      placeholder="Poster URL"
+      className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+    />
+
+    <input
+      type="date"
+      value={releaseDate}
+      onChange={(e) => setReleaseDate(e.target.value)}
+      className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+    />
+
+    <select
+      value={status}
+      onChange={(e) => setStatus(e.target.value)}
+      className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+    >
+      <option value="upcoming">Upcoming</option>
+      <option value="released">Released</option>
+    </select>
+
+    <label className="flex items-center gap-3 text-white">
+      <input
+        type="checkbox"
+        checked={isChampionship}
+        onChange={(e) =>
+          setIsChampionship(e.target.checked)
+        }
+        className="h-5 w-5"
+      />
+      Championship Movie
+    </label>
+
+    {isChampionship && (
+      <input
+        value={championshipSeason}
+        onChange={(e) =>
+          setChampionshipSeason(e.target.value)
+        }
+        placeholder="Championship Season (e.g. July 2026 Championship)"
+        className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+      />
+    )}
+
+    <button
+      onClick={addMovie}
+      className="bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-3 rounded-xl font-black uppercase"
+    >
+      Add Movie
+    </button>
+
+  </div>
+  <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 space-y-4 mb-8">
 <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 space-y-4 mb-8">
 
-  <h2 className="text-2xl font-black text-yellow-400">
-    🎬 Movie Management
+  <h2 className="text-2xl font-black text-green-400">
+    🏆 Score Daily Challenge
   </h2>
 
   <input
-    value={title}
-    onChange={(e) => setTitle(e.target.value)}
-    placeholder="Movie Title (e.g. War 3)"
-    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
-  />
-
-  <input
-    value={poster}
-    onChange={(e) => setPoster(e.target.value)}
-    placeholder="Poster URL"
+    value={scoreMovieId}
+    onChange={(e) => setScoreMovieId(e.target.value)}
+    placeholder="Movie ID"
     className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
   />
 
   <input
     type="date"
-    value={releaseDate}
-    onChange={(e) => setReleaseDate(e.target.value)}
+    value={scoreDate}
+    onChange={(e) => setScoreDate(e.target.value)}
     className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
   />
 
-  <select
-    value={status}
-    onChange={(e) => setStatus(e.target.value)}
+  <input
+    type="number"
+    value={scoreActual}
+    onChange={(e) => setScoreActual(e.target.value)}
+    placeholder="Actual Collection"
     className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
-  >
-    <option value="upcoming">Upcoming</option>
-    <option value="released">Released</option>
-  </select>
-
-  <label className="flex items-center gap-3 text-white">
-    <input
-      type="checkbox"
-      checked={isChampionship}
-      onChange={(e) =>
-        setIsChampionship(e.target.checked)
-      }
-      className="h-5 w-5"
-    />
-    Championship Movie
-  </label>
-
-  {isChampionship && (
-    <input
-      value={championshipSeason}
-      onChange={(e) =>
-        setChampionshipSeason(e.target.value)
-      }
-      placeholder="Championship Season (e.g. July 2026 Championship)"
-      className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
-    />
-  )}
+  />
 
   <button
-    onClick={addMovie}
-    className="bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-3 rounded-xl font-black uppercase"
+    onClick={scoreDailyChallenge}
+    className="bg-green-500 hover:bg-green-400 text-black px-6 py-3 rounded-xl font-black uppercase"
   >
-    Add Movie
+    Score Daily Challenge
   </button>
 
 </div>
-        <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 space-y-4">
+  <h2 className="text-2xl font-black text-cyan-400">
+    🎯 Daily Challenge
+  </h2>
 
-          <input
-            value={movieId}
-            onChange={(e) => setMovieId(e.target.value)}
-            placeholder="Movie ID (e.g. monkey-in-a-cage)"
-            className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
-          />
+  <input
+    value={dailyMovieId}
+    onChange={(e) => setDailyMovieId(e.target.value)}
+    placeholder="Movie ID"
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+  />
 
-          <select
-            value={predictionType}
-            onChange={(e) =>
-              setPredictionType(e.target.value)
-            }
-            className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
-          >
-            <option value="opening_day">
-              Opening Day
-            </option>
+  <input
+    type="date"
+    value={challengeDate}
+    onChange={(e) => setChallengeDate(e.target.value)}
+    className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+  />
 
-            <option value="lifetime">
-              Lifetime
-            </option>
-          </select>
+  <button
+    onClick={createDailyChallenge}
+    className="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-3 rounded-xl font-black uppercase"
+  >
+    Create Daily Challenge
+  </button>
 
-          <input
-            type="number"
-            value={actualValue}
-            onChange={(e) =>
-              setActualValue(e.target.value)
-            }
-            placeholder="Actual Collection"
-            className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
-          />
+</div>
+          <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6 space-y-4">
 
-          <button
-  onClick={saveResult}
-  className="bg-orange-500 hover:bg-orange-400 px-6 py-3 rounded-xl font-black uppercase"
->
-  Save Result
-</button>
+            <input
+              value={movieId}
+              onChange={(e) => setMovieId(e.target.value)}
+              placeholder="Movie ID (e.g. monkey-in-a-cage)"
+              className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+            />
+
+            <select
+              value={predictionType}
+              onChange={(e) =>
+                setPredictionType(e.target.value)
+              }
+              className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+            >
+              <option value="opening_day">
+                Opening Day
+              </option>
+
+              <option value="lifetime">
+                Lifetime
+              </option>
+            </select>
+
+            <input
+              type="number"
+              value={actualValue}
+              onChange={(e) =>
+                setActualValue(e.target.value)
+              }
+              placeholder="Actual Collection"
+              className="w-full bg-black/40 border border-[#2d1b18] rounded-xl p-4"
+            />
+
+            <button
+    onClick={saveResult}
+    className="bg-orange-500 hover:bg-orange-400 px-6 py-3 rounded-xl font-black uppercase"
+  >
+    Save Result
+  </button>
+
+          </div>
 
         </div>
-
-      </div>
-    </main>
-  );
-}
+      </main>
+    );
+  }

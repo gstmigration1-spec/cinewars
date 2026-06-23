@@ -74,6 +74,9 @@ export default function CineWarsHomepage() {
   const [trendingMovies, setTrendingMovies] = useState<any[]>([]);
   
   const [championshipMovies, setChampionshipMovies] = useState<any[]>([]);
+  const [dailyChallenge, setDailyChallenge] = useState<any>(null);
+  const [dailyPrediction, setDailyPrediction] = useState("");
+  const [dailySubmitted, setDailySubmitted] = useState(false);
   const [provenPredictions, setProvenPredictions] = useState<any[]>([]);
   const [terribleMisses, setTerribleMisses] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -83,7 +86,9 @@ export default function CineWarsHomepage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+
   const [showNotifications, setShowNotifications] =
+  
   useState(false);
   const now = new Date();
 
@@ -317,7 +322,21 @@ const scoreB =
     return scoreB - scoreA;
   }
 );
+const { data: challenge } = await supabase
+  .from("daily_challenges")
+  .select(`
+    *,
+    movies (
+      title,
+      poster
+    )
+  `)
+  .eq("status", "active")
+  .order("challenge_date", { ascending: false })
+  .limit(1)
+  .single();
 
+setDailyChallenge(challenge);
 setTrendingMovies(sortedMovies);
   } catch (error) {
     console.error("TMDB fetch failed:", error);
@@ -649,7 +668,39 @@ await fetchMovies();
       setLoadingAi(false);
     }, 1000);
   };
+const submitDailyPrediction = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
+  if (!user) {
+    alert("Please login first");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("daily_predictions")
+    .upsert(
+      {
+        user_id: user.id,
+        movie_id: dailyChallenge.movie_id,
+        prediction_date: dailyChallenge.challenge_date,
+        predicted_collection: Number(dailyPrediction),
+      },
+      {
+        onConflict:
+          "user_id,movie_id,prediction_date",
+      }
+    );
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setDailySubmitted(true);
+  alert("Prediction Locked!");
+};
   return (
   
     <><div className="min-h-screen pt-16 md:pt-0 bg-[#050303] text-[#f5f5f7] antialiased selection:bg-[#d43f00] selection:text-white pb-28 md:pb-0 relative overflow-x-hidden font-sans">
@@ -857,6 +908,52 @@ window.location.reload();
 
 <ChampionshipBanner />
 <HowItWorks />
+{dailyChallenge && (
+  <section className="max-w-7xl mx-auto px-4 mt-10 mb-10">
+    <div className="rounded-3xl border border-cyan-500/30 bg-cyan-500/5 p-6">
+      <div className="text-cyan-400 font-black text-2xl mb-2">
+        🎯 Daily Box Office Challenge
+      </div>
+
+      <div className="text-white text-xl font-bold">
+        {dailyChallenge.movies?.title || dailyChallenge.movie_id}
+      </div>
+
+      <div className="text-neutral-400 mt-2">
+  Predict tomorrow's collection and keep your streak alive.
+</div>
+
+{!dailySubmitted ? (
+  <div className="mt-4 space-y-3">
+    <input
+      type="number"
+      value={dailyPrediction}
+      onChange={(e) =>
+        setDailyPrediction(e.target.value)
+      }
+      placeholder="Enter Collection (₹ Cr)"
+      className="w-full bg-black/40 border border-cyan-500/20 rounded-xl p-4"
+    />
+
+    <button
+      onClick={submitDailyPrediction}
+      className="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-3 rounded-xl font-black uppercase"
+    >
+      Lock Prediction
+    </button>
+
+    <div className="text-sm text-neutral-400">
+      🔥 Earn Daily Points • ⚡ Build Streak • 🏆 Boost Monthly Ranking
+    </div>
+  </div>
+) : (
+  <div className="mt-4 text-green-400 font-bold">
+    ✅ Prediction Locked
+  </div>
+)}
+    </div>
+  </section>
+)}
 
 <ChampionshipMovies 
   movies={championshipMovies}
