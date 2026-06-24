@@ -804,10 +804,10 @@ if (streakError) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
   <img
-    src="/posters/logo.png"
-    alt="CineWars"
-    className="h-12 md:h-14 w-auto drop-shadow-[0_0_15px_rgba(251,191,36,0.6)]"
-  />
+  src="/posters/logo-small.webp"
+  alt="CineWars"
+  className="h-12 md:h-14 w-auto drop-shadow-[0_0_15px_rgba(251,191,36,0.6)]"
+/>
 
   <div className="leading-none">
     <span className="block text-display text-xl md:text-3xl font-black bg-gradient-to-r from-[#fde047] via-[#f59e0b] to-[#d97706] bg-clip-text text-transparent">

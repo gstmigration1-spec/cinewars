@@ -87,12 +87,12 @@ const handleLogout = async () => {
   className="group flex items-center gap-3"
 >
   <Image
-  src="/posters/logo.png"
-    alt="CineWars"
-    width={42}
-    height={42}
-    className="rounded-md"
-  />
+  src="/posters/logo-small.webp"
+  alt="CineWars"
+  width={42}
+  height={42}
+  className="rounded-md"
+/>
 
   <span className="text-3xl font-black uppercase tracking-wider bg-gradient-to-r from-[#3b82f6] to-[#60a5fa] bg-clip-text text-transparent">
     CineWars
