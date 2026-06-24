@@ -13,24 +13,52 @@ export default function UserProfilePage() {
   trustScore: number,
   accuracy: number,
   predictionCount: number,
-  rank?: number
+  rank?: number,
+  streak?: number
 ) => {
   const badges = [];
 
-  if (accuracy >= 90 && predictionCount >= 5)
-    badges.push("🎯 Oracle");
-
-  if (trustScore >= 50)
+  // Primary Title Badge (only one)
+  if (
+    (rank || 999) <= 3 &&
+    trustScore >= 2500 &&
+    accuracy >= 85 &&
+    predictionCount >= 50
+  ) {
+    badges.push("🏆 CineWars Legend");
+  } else if (
+    (rank || 999) <= 10 &&
+    trustScore >= 1000 &&
+    accuracy >= 80
+  ) {
+    badges.push("👑 Elite Predictor");
+  } else if (
+    trustScore >= 500 &&
+    accuracy >= 80
+  ) {
     badges.push("🦈 Box Office Shark");
+  } else if (
+    accuracy >= 75 &&
+    predictionCount >= 25
+  ) {
+    badges.push("🎯 Sharp Shooter");
+  } else if (
+    predictionCount >= 10
+  ) {
+    badges.push("🥉 Rookie Predictor");
+  }
 
-  if (predictionCount >= 10)
-    badges.push("🎬 Veteran");
+  // Streak Badge
+  if ((streak || 0) >= 30) {
+    badges.push("🔥 Unstoppable");
+  } else if ((streak || 0) >= 7) {
+    badges.push("🔥 Hot Streak");
+  }
 
-  if (rank === 1)
-    badges.push("👑 Top Predictor");
-
-  if (predictionCount >= 25)
-    badges.push("🏆 Prediction Master");
+  // Season Badge
+  if ((rank || 999) <= 10) {
+    badges.push("🏅 Season 1 Top 10");
+  }
 
   return badges;
 };
@@ -44,9 +72,9 @@ const badges = getBadges(
   trustScore,
   avgAccuracy,
   predictionCount,
-  rank || undefined
-);
-  useEffect(() => {
+  rank || undefined,
+  0
+);  useEffect(() => {
   const loadProfile = async () => {
   const { data: profile, error } = await supabase
   .from("profiles")

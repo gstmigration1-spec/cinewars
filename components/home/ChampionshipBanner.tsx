@@ -24,7 +24,7 @@ export default function ChampionshipBanner() {
           <div className="flex items-center gap-2 rounded-full border border-[#fbbf24]/20 bg-[#150d0b] px-3 py-2">
             <Gift className="h-4 w-4 text-[#fbbf24]" />
             <span className="text-xs font-bold text-[#fbbf24]">
-              Rewards ₹1000
+              Movie Ticket Vouchers up to ₹1000
             </span>
           </div>
 
