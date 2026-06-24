@@ -352,7 +352,7 @@ const { data: challenge } = await supabase
     )
   `)
   .eq("status", "active")
-  .order("challenge_date", { ascending: false })
+  .order("challenge_date", { ascending: true })
   .limit(1)
   .single();
 
@@ -891,10 +891,24 @@ if (streakError) {
       </div>
     ) : (
      notifications.map((notification) => (
-  <Link
+ <Link
   key={notification.id}
   href={notification.link || "#"}
-  className="block px-4 py-3 border-b border-neutral-800 hover:bg-neutral-800 text-sm"
+  onClick={async (e) => {
+    e.preventDefault();
+
+    await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("id", notification.id);
+
+    setNotifications((prev) =>
+      prev.filter((n) => n.id !== notification.id)
+    );
+
+    window.location.href = notification.link;
+  }}
+  className="block px-4 py-3 text-sm border-b border-neutral-800 hover:bg-neutral-800"
 >
   {notification.message}
 </Link>
@@ -966,7 +980,9 @@ window.location.reload();
 
 <ChampionshipBanner />
 
-{dailyChallenge && (
+{dailyChallenge &&
+ dailyChallenge.challenge_date ===
+ new Date().toISOString().split("T")[0] && (
 <section className="mt-4 rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-[#051015] via-[#07131a] to-[#051015] p-4">
 
 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -990,7 +1006,7 @@ window.location.reload();
     </span>
 
     <span className="text-sm text-amber-300 font-medium">
-  🎁 Weekly Streak Bonus: +20 Points
+  🎁 Weekly Streak Bonus: +20 CinePoints
 </span>
 
   </div>
@@ -1889,7 +1905,7 @@ className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1a0f0d]
 
                   <div className="bg-[#0e0a09] px-4 py-3 flex items-center justify-between border-t border-[#2d1b18] text-[10px] text-neutral-500 font-medium rounded-b-2xl">
   <span>
-    Points: <strong className="text-white">{call.points}</strong>
+    CinePoints: <strong className="text-white">{call.points}</strong>
   </span>
 
   <button
@@ -2027,7 +2043,7 @@ https://www.thecinewars.com/user/${call.username}`;
 
           <div className="bg-[#0e0a09] px-4 py-3 flex items-center justify-between border-t border-[#2d1b18] text-[10px] text-neutral-500 font-medium rounded-b-2xl">
             <span>
-              Points: <strong className="text-white">{call.points}</strong>
+              CinePoints: <strong className="text-white">{call.points}</strong>
             </span>
 
             <span className="text-red-400 font-black uppercase tracking-wider">
@@ -2101,7 +2117,7 @@ https://www.thecinewars.com/user/${call.username}`;
     {Number(item.accuracy).toFixed(2)}%
   </span>
   {" • "}
-  Points Earned: <span className="text-orange-400 font-black">
+  CinePoints Earned: <span className="text-orange-400 font-black">
     {item.points}
   </span>
 </div>
@@ -2111,7 +2127,7 @@ https://www.thecinewars.com/user/${call.username}`;
   </span>
 
   <span className="text-orange-400 font-black">
-    +{item.points} Points
+    +{item.points} CinePoints
   </span>
 </div>
               </motion.div>

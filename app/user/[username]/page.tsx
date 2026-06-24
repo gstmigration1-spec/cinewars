@@ -66,13 +66,13 @@ if (!profile) return;
 
 
 setPredictionCount(predictions?.length || 0);
-const totalPoints =
+const totalCinePoints =
   predictions?.reduce(
     (sum, prediction) => sum + (prediction.points || 0),
     0
   ) || 0;
 
-setTrustScore(totalPoints);
+setTrustScore(totalCinePoints);
 
 const scoredPredictions =
   predictions?.filter(
@@ -178,8 +178,8 @@ setRecentPredictions(
   </div>
 
   <div className="bg-[#120908] border border-[#2d1b18] rounded-2xl p-6">
-    <p className="text-neutral-400 text-sm">Trust Score</p>
-    <p className="text-3xl font-black">
+    <p className="text-neutral-400 text-sm">CinePoints</p>
+    <p className="text-3xl font-black text-orange-400">
   {trustScore}
 </p>
   </div>
@@ -249,7 +249,7 @@ setRecentPredictions(
 
             <div>
               <div className="text-neutral-500 text-xs">
-                Points
+                CinePoints
               </div>
               <div>{prediction.points}</div>
             </div>

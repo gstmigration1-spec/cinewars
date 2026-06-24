@@ -4,14 +4,14 @@ import { Zap } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-[#3a241a] bg-gradient-to-br from-[#0b0807] via-[#120908] to-black px-4 py-6 md:px-8 md:py-12">
+    <section className="relative overflow-hidden rounded-3xl border border-[#3a241a] bg-gradient-to-br from-[#0b0807] via-[#120908] to-black px-4 py-5 md:px-8 md:py-8">
 
       {/* Background Glow */}
       <div className="absolute top-0 left-1/3 h-80 w-80 rounded-full bg-purple-700/20 blur-[140px]" />
 
       <div className="absolute top-10 right-20 h-72 w-72 rounded-full bg-orange-500/20 blur-[130px]" />
 
-      <div className="relative grid items-center gap-5 md:gap-10 md:grid-cols-2">
+      <div className="relative grid items-center gap-4 md:gap-6 md:grid-cols-2">
 
         {/* Trophy */}
         <div className="flex justify-center md:order-2">
@@ -25,7 +25,7 @@ export default function HeroSection() {
   priority
   className="
     relative z-10
-    w-28 md:w-56
+    w-24 md:w-44
     object-contain
     drop-shadow-[0_0_40px_rgba(251,191,36,0.8)]
   "
@@ -47,7 +47,7 @@ export default function HeroSection() {
         {/* Hero Content */}
         <div className="text-center md:text-left md:order-1">
 
-          <h1 className="mt-1 text-3xl md:text-6xl font-black uppercase leading-[0.9] tracking-tight">
+          <h1 className="mt-1 text-3xl md:text-5xl font-black uppercase leading-[0.9] tracking-tight">
 
             <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-neutral-500 drop-shadow-[0_3px_10px_rgba(255,255,255,0.35)]">
               Predict Box Office.
@@ -70,7 +70,7 @@ export default function HeroSection() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="mt-4 flex flex-row gap-2 justify-center md:justify-start">
+          <div className="mt-3 flex flex-row gap-2 justify-center md:justify-start">
 
             <Link
               href="#movies"

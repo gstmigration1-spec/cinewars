@@ -50,13 +50,25 @@ export default function ChampionshipBanner() {
       </div>
       <div className="mt-3 text-center md:text-left">
   <a
-    href="https://x.com/TheCinewars"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-xs text-neutral-400 hover:text-[#fbbf24] transition"
-  >
-    🐦 Follow @TheCineWars on X for reward eligibility
-  </a>
+  href="https://x.com/TheCineWars"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-[#1DA1F2]/40 bg-[#1DA1F2]/10 px-4 py-3 text-sm font-bold transition-all hover:bg-[#1DA1F2]/20 hover:scale-[1.02]"
+>
+  <span>🐦</span>
+
+  <span className="text-neutral-200">
+    Follow
+  </span>
+
+  <span className="text-[#1DA1F2] underline underline-offset-4 font-black">
+    @TheCineWars
+  </span>
+
+  <span className="text-[#fbbf24]">
+    for Reward Eligibility 🏆
+  </span>
+</a>
 </div>
     </section>
   );

@@ -110,7 +110,7 @@ leaderboardData.push({
 
   <div className="text-right">
     <div className="text-2xl font-black text-orange-400">
-  {user.trustScore} Pts
+  {user.trustScore} CinePoints
 </div>
 
     <div className="text-sm text-neutral-400">

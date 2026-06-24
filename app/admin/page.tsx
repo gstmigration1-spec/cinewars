@@ -385,7 +385,7 @@ const scoreDailyChallenge = async () => {
     onClick={saveResult}
     className="bg-orange-500 hover:bg-orange-400 px-6 py-3 rounded-xl font-black uppercase"
   >
-    Save Result
+    Save / Update Result
   </button>
 
           </div>

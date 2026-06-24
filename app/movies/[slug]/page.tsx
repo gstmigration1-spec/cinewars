@@ -47,8 +47,6 @@ const [openingResult, setOpeningResult] = useState<any>(null);
 const [openingPredictors, setOpeningPredictors] = useState(0);
 const [sharedOpeningValue, setSharedOpeningValue] = useState("");
 const [sharedLifetimeValue, setSharedLifetimeValue] = useState("");
-const [dailyPrediction, setDailyPrediction] = useState("");
-const [dailySubmitted, setDailySubmitted] = useState(false);
 const movieSchema = {
   "@context": "https://schema.org",
   "@type": "Movie",
@@ -678,7 +676,7 @@ setSharedLifetimeValue(lifetimePrediction);
     className="ml-3 bg-[#120908] border border-[#2d1b18] hover:border-blue-500 transition-all duration-300 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-wider text-blue-400 disabled:opacity-50"
   >
     {shared
-      ? "✅ Shared +10 Points"
+      ? "✅ Shared +10 CinePoints"
       : "𝕏 Share & Earn +10"}
   </button>
 )}
