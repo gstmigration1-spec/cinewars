@@ -989,9 +989,9 @@ window.location.reload();
       🏆 Best {streak?.best_streak || 0}
     </span>
 
-    <span className="text-sm text-neutral-300">
-      🎁 +20 every 7 days
-    </span>
+    <span className="text-sm text-amber-300 font-medium">
+  🎁 Weekly Streak Bonus: +20 Points
+</span>
 
   </div>
 

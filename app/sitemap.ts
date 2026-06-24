@@ -1,22 +1,41 @@
 import { MetadataRoute } from "next";
+import { supabase } from "@/lib/supabase";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = "https://thecinewars.com";
+
+  const { data: movies } = await supabase
+    .from("movies")
+    .select("movie_id");
+
+  const movieUrls =
+    movies?.map((movie) => ({
+      url: `${baseUrl}/movies/${movie.movie_id}`,
+      lastModified: new Date(),
+    })) || [];
+
   return [
     {
-      url: "https://thecinewars.com",
+      url: baseUrl,
       lastModified: new Date(),
     },
     {
-      url: "https://thecinewars.com/archive",
+      url: `${baseUrl}/archive`,
       lastModified: new Date(),
     },
     {
-      url: "https://thecinewars.com/debates",
+      url: `${baseUrl}/debates`,
       lastModified: new Date(),
     },
     {
-      url: "https://thecinewars.com/leaderboard",
+      url: `${baseUrl}/leaderboard`,
       lastModified: new Date(),
     },
+    {
+      url: `${baseUrl}/rules`,
+      lastModified: new Date(),
+    },
+
+    ...movieUrls,
   ];
 }
