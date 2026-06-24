@@ -23,12 +23,7 @@ export default function HeroSection() {
   width={500}
   height={500}
   priority
-  className="
-    relative z-10
-    w-24 md:w-44
-    object-contain
-    drop-shadow-[0_0_40px_rgba(251,191,36,0.8)]
-  "
+  unoptimized
 />
 
             <div className="mt-3 text-center">
