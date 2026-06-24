@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Zap } from "lucide-react";
 
 export default function HeroSection() {
@@ -16,16 +17,19 @@ export default function HeroSection() {
         <div className="flex justify-center md:order-2">
           <div className="relative flex flex-col items-center justify-center p-2 md:p-6">
 
-            <img
-              src="/images/champion-trophy.png"
-              alt="CineWars Champion Trophy"
-              className="
-                relative z-10
-                w-28 md:w-56
-                object-contain
-                drop-shadow-[0_0_40px_rgba(251,191,36,0.8)]
-              "
-            />
+            <Image
+  src="/images/champion-trophy.png"
+  alt="CineWars Champion Trophy"
+  width={500}
+  height={500}
+  priority
+  className="
+    relative z-10
+    w-28 md:w-56
+    object-contain
+    drop-shadow-[0_0_40px_rgba(251,191,36,0.8)]
+  "
+/>
 
             <div className="mt-3 text-center">
               <p className="text-[10px] md:text-xs tracking-[0.3em] text-[#fbbf24] uppercase font-black">
