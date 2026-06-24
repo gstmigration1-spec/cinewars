@@ -15,14 +15,7 @@ export default function AuthPage() {
     });
   };
 
-  const checkUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    alert(user?.email || "No user");
-    console.log(user);
-  };
+  
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
@@ -33,12 +26,6 @@ export default function AuthPage() {
         Sign in with Google
       </button>
 
-      <button
-        onClick={checkUser}
-        className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold"
-      >
-        Check User
-      </button>
     </div>
   );
 }

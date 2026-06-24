@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 
 export default function UsernamePage() {
   const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -14,6 +15,10 @@ export default function UsernamePage() {
       alert("Enter a username");
       return;
     }
+    if (!/^\d{10}$/.test(phoneNumber)) {
+  alert("Enter a valid 10-digit mobile number");
+  return;
+}
 
     setLoading(true);
 
@@ -46,6 +51,7 @@ if (!user) {
   .upsert({
     id: user.id,
     username,
+    phone_number: phoneNumber,
   });
 
 setLoading(false);
@@ -68,7 +74,7 @@ router.push("/");
         </h1>
 
         <p className="text-neutral-400 mb-6">
-          This name will appear on debates, rankings and profiles.
+          Choose a username and register your mobile number to participate in CineWars Championship rewards.
         </p>
 
         <input
@@ -77,6 +83,16 @@ router.push("/");
           placeholder="MovieMafia"
           className="w-full px-4 py-3 rounded-xl bg-neutral-800 text-white border border-neutral-700 outline-none"
         />
+        <input
+  value={phoneNumber}
+  onChange={(e) =>
+    setPhoneNumber(
+      e.target.value.replace(/\D/g, "").slice(0, 10)
+    )
+  }
+  placeholder="Mobile Number"
+  className="w-full mt-4 px-4 py-3 rounded-xl bg-neutral-800 text-white border border-neutral-700 outline-none"
+/>
 
         <button
           onClick={saveUsername}

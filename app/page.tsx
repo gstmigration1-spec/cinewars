@@ -922,15 +922,12 @@ if (streakError) {
       if (currentUser?.username) {
         setShowDropdown(!showDropdown);
       } else {
-  document
-    .getElementById("movies")
-    ?.scrollIntoView({
-      behavior: "smooth",
-    });
-}
-    }}
-    whileHover={{ scale: 1.04 }}
-    whileTap={{ scale: 0.98 }}
+      window.location.href = "/auth";
+    }
+  }}
+  whileHover={{ scale: 1.04 }}
+  whileTap={{ scale: 0.98 }}
+
     className="relative group overflow-hidden bg-gradient-to-r from-[#facc15] via-[#f59e0b] to-[#ea580c] text-[9px] md:text-[11px] font-black uppercase tracking-wider px-3 md:px-5 py-2.5 md:py-3 rounded-xl text-black shadow-[0_0_20px_rgba(251,191,36,0.45)] hover:shadow-[0_0_30px_rgba(251,191,36,0.8)] transition-all duration-300"
   >
     {currentUser?.username ? (
