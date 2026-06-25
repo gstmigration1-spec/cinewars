@@ -458,13 +458,12 @@ setLikedDebates((prev: any) => ({
 }));
   fetchReactions();
 }; const handleSharePrediction = async () => {
-
   const hashtags = movieTitle
-  .split(" ")
-  .map((word) => `#${word.replace(/[^a-zA-Z0-9]/g, "")}`)
-  .join(" ");
+    .split(" ")
+    .map((word) => `#${word.replace(/[^a-zA-Z0-9]/g, "")}`)
+    .join(" ");
 
-const text = `⚔️ My ${movieTitle} prediction is LOCKED!
+  const shareText = `⚔️ My ${movieTitle} prediction is LOCKED!
 
 🎬 Opening Day: ₹${sharedOpeningValue || "-"} Cr
 🎬 Lifetime: ₹${sharedLifetimeValue || "-"} Cr
@@ -473,40 +472,55 @@ Think I'm wrong?
 
 Challenge me on CineWars 👇
 
-${window.location.origin}/movies/${slug}
-
 ${hashtags} #BoxOffice #CineWars`;
 
-  // Open X Share
-  window.open(
-    `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
-    "_blank"
-  );
+  const shareUrl = `${window.location.origin}/movies/${slug}`;
 
-  // Give bonus only once
-for (const id of currentPredictionIds) {
-  const { data: prediction } = await supabase
-    .from("movie_predictions")
-    .select("points, shared_on_x")
-    .eq("id", id)
-    .single();
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: `${movieTitle} Prediction`,
+        text: shareText,
+        url: shareUrl,
+      });
+    } else {
+      await navigator.clipboard.writeText(
+        `${shareText}\n\n${shareUrl}`
+      );
 
-  if (prediction && !prediction.shared_on_x) {
-    await supabase
-      .from("movie_predictions")
-      .update({
-        shared_on_x: true,
-        share_bonus: 10,
-        points: (prediction.points || 0) + 10,
-      })
-      .eq("id", id);
+      alert(
+        "Share text copied! Paste it on X, WhatsApp or anywhere you like."
+      );
+    }
+
+    // Give bonus only once
+    for (const id of currentPredictionIds) {
+      const { data: prediction } = await supabase
+        .from("movie_predictions")
+        .select("points, shared_on_x")
+        .eq("id", id)
+        .single();
+
+      if (prediction && !prediction.shared_on_x) {
+        await supabase
+          .from("movie_predictions")
+          .update({
+            shared_on_x: true,
+            share_bonus: 10,
+            points: (prediction.points || 0) + 10,
+          })
+          .eq("id", id);
+      }
+    }
+
+    setShared(true);
+    alert("🎉 +10 CinePoints awarded for sharing!");
+  } catch (error: any) {
+    // User cancelled share
+    if (error?.name !== "AbortError") {
+      alert("Sharing failed. Please try again.");
+    }
   }
-}
-
-setShared(true);
-alert("🎉 +10 CinePoints awarded for sharing!");
-
-  
 };
 const handlePredictionSubmit = async () => {
   const {
